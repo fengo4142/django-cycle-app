@@ -9,4 +9,9 @@ urlpatterns = [
     path('CycleTransactionGet', views.CycleTransactionGet, name='CycleTransactionGet'),
     path('saveData', views.saveData, name='saveData'),
     path('old', CycleTransactionCreateOld.as_view()),
+
+    path('sample_size', views.sample_size, name='sample_size'),
+    path('upload_sample', views.upload_sample, name='upload_sample'),
+    path(r'^(?P<id>\d+)/edit/$', views.TOC_update, name='TOC_update'),
+
 ]

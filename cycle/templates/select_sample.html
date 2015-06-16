@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+{% load widget_tweaks %}
+
+
+     <form id="sampling_method" method="POST" enctype="multipart/form-data">
+     	{% csrf_token %}
+     	<div class="modal-header">
+     	
+    	<h4 class="modal-title">Select the sampling method and Upload Population file</h4>
+  		</div>
+   <!--      {{ form.sampling_method }}
+        {{ form.field_selected }}
+        {{ form.field_selected_value }}
+        {{ form.samples}} -->
+        {% for field in form %}
+
+
+  <div class="form-group{% if field.errors %} has-error{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {% render_field field class="form-control" %}
+    {% for error in field.errors %}
+      <p class="help-block">{{ error }}</p>
+    {% endfor %}
+     </div>
+{% endfor %}
+
+<!-- 
+	 <input type="file" class="btn btn-purple" name="file" >
+                        &nbsp;&nbsp;
+    <button name="upload_populations" id="upload_population" class="btn btn-purple btn-labeled fa dropzone" >Upload Population</button> -->
+   <!--    <div class="form-actions">
+ 		<input type="submit" />
+ 		</div> -->
+ 	<div class="modal-footer">
+ 	<input type="file" class="modal-title" name="file" >
+    <button type="submit" class="btn btn-primary">Select Samples</button>
+  </div>
+
+        </form>
+
+ <!--  <form id = "sample-list" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <input type="file" class="btn btn-purple" name="file" >
+                        &nbsp;&nbsp;
+    <button name="upload_inventory" id="upload_inventory" class="btn btn-purple btn-labeled fa dropzone" >Upload Inventory</button> -->
+   <!--  <button type="submit">Upload</button> -->
+       {% if form.errors %}
+          {% for field in form.forms %}
+              {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+              {% endfor %}
+            {% endfor %}
+          {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                    </div>
+        {% endfor %}
+      {% endif %}
+  </form>
+
+  
+
+
+     
+
+
+
+
+
+<head>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function (){
+            $("#id_sampling_method").change(function() {
+                // foo is the id of the other select box 
+                if ($(this).val() == "Condition") {
+                    $("#id_field_selected").show();
+                    $("#id_field_selected_value").show();
+                }else{
+                    $("#id_field_selected").hide();
+                    $("#id_field_selected_value").hide();
+                } 
+            });
+            $(function() {
+                // foo is the id of the other select box 
+                if ($(this).val() == "Condition") {
+                    $("#id_field_selected").show();
+                    $("#id_field_selected_value").show();
+                }else{
+                    $("#id_field_selected").hide();
+                    $("#id_field_selected_value").hide();
+                } 
+            });
+        });
+    </script>
+
+</head>
+{% endblock %}
+
