@@ -1,0 +1,146 @@
+{% load static %}
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+		<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+
+		
+		<main class="transaction-page">
+
+			<section class="inner-wrap">
+                <div class="video">
+                    <video autoplay loop src="video/video.mp4" type="video/mp4">
+                    </video>
+                </div>
+				
+                <div class="overlay"></div>
+
+                <div class="nav-icon">
+                    <span class="nav-icon_box">
+                        <i class="nav-icon_line"></i>
+                        <i class="nav-icon_line"></i>
+                        <i class="nav-icon_line"></i>
+                    </span>
+                </div>
+
+                <div class="account-bar">
+                    <article class="user_info">
+                        <div class="user_photo">
+
+                        </div>
+                        <h3 class="user_name">User Name</h3>
+                    </article>
+
+                    <ul class="account-bar_list">
+                        <li><a href="#">Build Process</a></li>
+                        <li><a href="#">Risk Matrix</a></li>
+                        <li><a href="#">Text of Controls</a></li>
+                        <li><a href="#">Reports</a></li>
+                        <li><a href="#">Settings</a></li>
+                    </ul>
+
+                    <article class="general_social-links">
+						<a href="#"><i class="fab fa-facebook"></i></a>
+						<a href="#"><i class="fab fa-twitter-square"></i></a>
+						<a href="#"><i class="fab fa-instagram"></i></a>
+						<a href="#"><i class="fab fa-linkedin"></i></a>
+					</article>
+                </div>
+
+				<div class="general_form">
+
+                    <div class="btn-box flex flex-column flex-vertical-bottom flex-sd-row flex-end">
+                        <button class="general_btn">New Client
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+    
+                        <button class="general_btn">New Cycle
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
+
+                    
+
+
+					<form action="">
+
+                        <div class="dropdown-box flex flex-sb flex-vertical-top">
+                            <div class="general_dropdown-list">
+                                <span>lorem</span>
+                                <ul>
+                                    <li>lorem 1</li>
+                                    <li>lorem 2</li>
+                                    <li>lorem 3</li>
+                                    <li>lorem 4</li>
+                                </ul>
+                            </div>
+
+                            <div class="general_dropdown-list">
+                                <span>lorem</span>
+                                <ul>
+                                    <li>lorem 1</li>
+                                    <li>lorem 2</li>
+                                    <li>lorem 3</li>
+                                    <li>lorem 4</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 class="general_title">Transaction Objective</h3>
+
+						<div class="input_box">
+							<input type="text">
+                        </div>
+                        
+                        <div class="input_box">
+							<input type="text">
+                        </div>
+                        
+                        <div class="input_box">
+							<input type="text">
+						</div>
+
+						<div class="input_box">
+							<input type="text">
+						</div>
+						
+						<div class="flex flex-row flex-sb flex-sd-end flex-vertical-top">
+
+							<button class="general_btn add">Add
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+
+                            <button class="general_btn remove">Remove
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+						</div>
+						
+
+						<button class="general_btn">Next
+							<span></span>
+							<span></span>
+							<span></span>
+							<span></span>
+						</button>
+
+					</form>
+
+				</div>
+
+			</section>
+
+		</main>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="{% static 'js/script.js' %}"></script>

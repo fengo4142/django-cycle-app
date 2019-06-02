@@ -1,0 +1,144 @@
+{% load static %}
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+		<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+		<style>
+      .general_form select {
+          display: block;
+          color: #000;
+          width: 100%;          
+          bottom: 0;
+          left: 0;
+          padding: 10px 20px;
+          background: transparent;
+      }
+    </style>
+		<main class="transaction-page">
+      <section class="inner-wrap">
+        <div class="video">
+            <video autoplay loop src="video/video.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="overlay"></div>
+          <div class="nav-icon">
+            <span class="nav-icon_box">
+                <i class="nav-icon_line"></i>
+                <i class="nav-icon_line"></i>
+                <i class="nav-icon_line"></i>
+            </span>
+          </div>
+          <div class="account-bar">
+            <article class="user_info">
+                <div class="user_photo">
+
+                </div>
+                <h3 class="user_name">User Name</h3>
+            </article>
+            <ul class="account-bar_list">
+                <li><a href="#">Build Process</a></li>
+                <li><a href="#">Risk Matrix</a></li>
+                <li><a href="#">Text of Controls</a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+            <article class="general_social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter-square"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+            </article>
+          </div>
+				  <div class="general_form">
+            <div class="btn-box flex flex-column flex-vertical-bottom flex-sd-row flex-end">
+                <button class="general_btn">New Client
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <button class="general_btn">New Cycle
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+           
+					<form action="">   
+                   
+            <h3 class="general_title">Transaction Objective</h3>
+					
+                {% csrf_token %}
+                <div class="dropdown-box flex flex-sb flex-vertical-top">
+                {% for field in form.visible_fields %}
+                  <div class="general_dropdown-list">
+                      {{ field }}
+                  </div>
+                {% endfor %}
+                </div>
+
+                <table class="table">
+                    {{ titles.management_form }}
+                    {% for form in titles.forms %}
+                    <tr class="{% cycle row1 row2 %} formset_row">
+                    {% for field in form.visible_fields %}
+                    <td>       {# Include the hidden fields in the form #}
+                                {% if forloop.first %}
+                                {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {{ field.errors.as_ul }}
+                                    <div class="input_box">
+                                        {{ field }}
+                                    </div>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    
+                </table>
+                <input type="submit" value="Save"/>
+				</div>
+			</section>
+		</main>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+	  <script src="{% static 'js/script.js' %}"></script>
+    <script type="text/javascript">
+        $('.formset_row').formset({
+            addText: 'add objectives',
+            deleteText: 'remove',
+            prefix: 'has_objectives',
+        });
+    </script>
+
+  <script>
+    $("#id_cycle_type").change(function () {
+      var objectives_trans = $(this).val();
+      $.ajax({
+        url: '{% url "CycleTransactionGet" %}',
+        type: "get",
+        data: {
+          'objectives_trans' : objectives_trans
+        },
+      
+        success: function(data, status) {
+          console.log(data);
+            // var items = data['objectives_trans']
+            //  $.each(items, function(key, value) {
+            //             console.log(value.objectives_trans);
+            $("#id_has_objectives-0-transaction_objective").replaceWith(data);
+          
+          // $("#id_has_objectives-1-transaction_objective").replaceWith(data);
+          // $("#form-1-Suggested_Sample_Size").replaceWith(data);
+          // $("#form-2-Suggested_Sample_Size").replaceWith(data);
+          // result = data;
+          console.log(data);
+        }
+      });
+    });
+
+ 
+  </script>
