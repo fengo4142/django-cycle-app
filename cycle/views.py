@@ -44,6 +44,8 @@ class CycleTransactionCreate(CreateView):
 					# print(title.prefix)
 				# print(titles)
 		return super(CycleTransactionCreate, self).form_valid(form)
+def saveData(request):
+	return render(request, 'cycle_form.html')
 
     
 def CycleTransactionGet(request):
