@@ -816,6 +816,9 @@ tbody > .dynamic-form-add > td:first-child > a {
   font-family: "Lato", sans-serif;
   font-weight: 400;
 }
+.general_btn.next {
+  float: right;
+}
 /* remove button row's td width for managing gap between remove btn and input box */
 @media (min-width: 1801px) {
   tbody > .formset_row > td:first-child {
