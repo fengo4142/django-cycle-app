@@ -809,18 +809,51 @@ tbody > .formset_row > td:last-child > a {
   font-weight: 400;
   margin: auto !important;
 }
-tbody > .dynamic-form-add > td:first-child {
-  display: inline-flex;
-  width: 55%
-}
+
 tbody > .dynamic-form-add > td:first-child > a {
   text-align: center;
   font-size: 22px;
   font-family: "Lato", sans-serif;
   font-weight: 400;
 }
-tbody > .formset_row > td:first-child {
-  width: 80%;
+/* remove button row's td width for managing gap between remove btn and input box */
+@media (min-width: 1801px) {
+  tbody > .formset_row > td:first-child {
+    width: 80%;
+  }  
+  tbody > .dynamic-form-add > td:first-child {
+    display: inline-flex;
+    width: 55%
+  }
+}
+@media (min-width: 1184px) and (max-width: 1800px) {
+  tbody > .formset_row > td:first-child {
+    width: 60%;
+  }
+  tbody > .dynamic-form-add > td:first-child {
+    display: inline-flex;
+    width: 90%
+  }
+}
+
+@media (max-width: 1183px) {
+  tbody > .formset_row > td:first-child {
+    width: 60%;
+  }
+  tbody > .dynamic-form-add > td:first-child {
+    display: table-cell;
+    width: 100%;
+  }
+  tbody > .dynamic-form-add > td:first-child > a {
+    display: inline-block;
+  }
+
+  .inner-wrap .dropdown-box {
+    width: 100%;
+  }
+  .general_dropdown-list {
+    max-width: initial;
+  }
 }
 .transaction-page .general_form .general_dropdown-list, 
 .cycle-page .general_form .general_dropdown-list {
@@ -843,7 +876,7 @@ tbody > .formset_row > td:first-child {
   border: none;
 }
 
-
+/* select dropdown customized */
 .select-hidden {
   display: none;
   visibility: hidden;

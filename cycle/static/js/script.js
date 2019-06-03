@@ -40,12 +40,17 @@ $(document).ready(function() {
 	})
 
 	//input focus function
-	$('body').on('focus', '.input_box input', function(){
+	$('body').on('focus', '.input_box input', function () {
 		$(this).parent().addClass('focus')
-	}).on('blur', '.input_box input', function(){
+	}).on('blur', '.input_box input', function () {
 		if($(this).val() === ''){
 			$(this).parent().removeClass('focus')
 		}
+	})
+	$('body').on('click', '.next', function(){
+		console.log('sdf');
+		$('form').attr('method', 'post');
+		$('form').submit();
 	})
 
    $('select').each(function(){

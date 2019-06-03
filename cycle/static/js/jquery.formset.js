@@ -179,7 +179,7 @@
                 var numCols = $$.eq(0).children().length,   // This is a bit of an assumption :|
                     buttonRow = $('<tr><td colspan="' + numCols + '">'+
                                     '<a class="' + options.addCssClass + ' general_btn add" href="javascript:void(0)">' + options.addText + '<span></span><span></span><span></span><span></span></a>'+
-                                    '<a class="general_btn add" href="javascript:void(0)">' + options.nextText + '<span></span><span></span><span></span><span></span></a>'+
+                                    '<a class="general_btn add next" href="javascript:void(0)">' + options.nextText + '<span></span><span></span><span></span><span></span></a>'+
                                     '</tr>')
                                 .addClass(options.formCssClass + '-add');
                 $$.parent().append(buttonRow);

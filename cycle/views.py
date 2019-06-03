@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.db import DatabaseError, transaction
 from cycle.models import Cycle_in_obj, Objectives
 from cycle.forms import ObjectivesForm, ObjectivesFormSet
 
@@ -16,7 +17,7 @@ class CycleTransactionCreate(CreateView):
 	def get_context_data(self, **kwargs):
 		data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
-		if self.request.POST:
+		if self.request.POST:			
 			data['titles'] = ObjectivesFormSet(self.request.POST)
 		
 		else:
@@ -29,7 +30,9 @@ class CycleTransactionCreate(CreateView):
 		context = self.get_context_data()
 		titles = context['titles']
 		with transaction.atomic():
+			print('sdfsdf')
 			form.instance.user = self.request.user
+			print(form)
 			self.object = form.save() 
 
 			if titles.is_valid():
