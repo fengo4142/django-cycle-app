@@ -1,105 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from django.http import HttpResponse
-from django.db import DatabaseError, transaction
-from cycle.models import Cycle_in_obj, Objectives
-from cycle.forms import ObjectivesForm, ObjectivesFormSet
-
-class CycleTransactionCreate(CreateView):
-	model = Cycle_in_obj
-	fields = ['cycle_type', 'client_name']
-
-	template_name = 'cycle_form.html'
-	# form_class = CycleForm
-	success_url = reverse_lazy('saveData')
-	# queryset = Objectives.objects.all()
-
-	def get_context_data(self, **kwargs):
-		data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
-
-		if self.request.POST:			
-			data['titles'] = ObjectivesFormSet(self.request.POST)
-		
-		else:
-			data['titles'] = ObjectivesFormSet()
-		return data
-		
-
-	def form_valid(self, form):
-		print('HI')
-		context = self.get_context_data()
-		titles = context['titles']
-		with transaction.atomic():
-			print('sdfsdf')
-			form.instance.user = self.request.user
-			print(form)
-			self.object = form.save() 
-
-			if titles.is_valid():
-				titles.instance.user = self.request.user
-				titles.instance = self.object
-				titles.save()
-
-			# for title in titles:
-					# print(title.prefix)
-				# print(titles)
-		return super(CycleTransactionCreate, self).form_valid(form)
-def saveData(request):
-	return render(request, 'cycle_form.html')
-
-    
-def CycleTransactionGet(request):
-  if request.method == "GET":
-
-    print(request.GET.get('objectives_trans'))
-    cc = request.GET.get('objectives_trans')
-    print(cc)
-    # cycle_id = Cycle.objects.get(cycle_name=cc).id
-
-    objectives_trans = Objectives.objects.filter(cycle__cycle_type_id=cc)
-    print(objectives_trans)
-
-  return HttpResponse(objectives_trans)
-
-class CycleTransactionCreateOld(CreateView):
-	model = Cycle_in_obj
-	fields = ['cycle_type', 'client_name']
-	template_name = 'cycle_form.old.html'
-	# form_class = CycleForm
-	success_url = reverse_lazy('saveData')
-	# queryset = Objectives.objects.all()
-
-	def get_context_data(self, **kwargs):
-		data = super(CycleTransactionCreateOld, self).get_context_data(**kwargs)
-
-		if self.request.POST:
-			data['titles'] = ObjectivesFormSet(self.request.POST)
-		
-		else:
-			data['titles'] = ObjectivesFormSet()
-		return data
-		
-
-	def form_valid(self, form):
-		print('HI')
-		context = self.get_context_data()
-		titles = context['titles']
-		with transaction.atomic():
-			form.instance.user = self.request.user
-			self.object = form.save()
-
-
-			if titles.is_valid():
-				titles.instance.user = self.request.user
-				titles.instance = self.object
-				titles.save()
-
-			# for title in titles:
-					# print(title.prefix)
-				# print(titles)
-		return super(CycleTransactionCreateOld, self).form_valid(form)
-
+from .models import Test_of_Controls
+from .forms import SamplingForm
+from django.shortcuts import redirect
 
 """
 Given Estimate population exception rate, Tolerable exception rate, population size, the function will suggest samples.
@@ -225,7 +127,40 @@ def sugg_samples(request):
 
 
 	return HttpResponse(sample_size)
+
+
+
+def TOC_update(request, id=None):
+	instance = get_object_or_404(DatafileModel, id=id)
+
+	form = TOC_Form(request.POST or None, instance=instance)
+	# the_next = instance.get_next_by_timestamp()
+	newest = DatafileModel.objects.all().first()
+	the_next = next_in_order(newest)
+
+
+	if form.is_valid():
+		print("HI")
+		# form.save()
+
+		# data_id = DatafileModel.objects.get(data=instance).id
+		defecient_selected = form.cleaned_data.get("defecient")
+		remarks_selected = form.cleaned_data.get("remarks")
+		new_object = testing_of_controls.objects.create(defecient=defecient_selected, remarks=remarks_selected, data_id=id)
+
+
+
+	else:
+		print(form.errors)
+		# print(form.non_form_errors())
+
+
+	context = {
+    				
+    			"instance": instance,
+    			"form": form,
+    			"the_next" : the_next,
  
+    	}
 
-
-
+	return render(request, 'sample_form.html', context)

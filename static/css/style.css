@@ -819,6 +819,13 @@ tbody > .dynamic-form-add > td:first-child > a {
 .general_btn.next {
   float: right;
 }
+  tbody > .dynamic-form-add > td:first-child {
+    display: table-cell;
+    width: 100%;
+  }
+  tbody > .dynamic-form-add > td:first-child > a {
+    display: inline-block;
+  }
 /* remove button row's td width for managing gap between remove btn and input box */
 @media (min-width: 1801px) {
   tbody > .formset_row > td:first-child {
@@ -842,13 +849,6 @@ tbody > .dynamic-form-add > td:first-child > a {
 @media (max-width: 1183px) {
   tbody > .formset_row > td:first-child {
     width: 60%;
-  }
-  tbody > .dynamic-form-add > td:first-child {
-    display: table-cell;
-    width: 100%;
-  }
-  tbody > .dynamic-form-add > td:first-child > a {
-    display: inline-block;
   }
 
   .inner-wrap .dropdown-box {
@@ -967,3 +967,64 @@ tbody > .dynamic-form-add > td:first-child > a {
   display: none;
 }
 
+
+/* sampling page */
+
+.sampling_form input {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    border: 1px solid #524b4b;
+}
+
+.sampling_form label {
+    color: #565050;
+    position: relative;
+    z-index: 1;
+    padding: 10px 20px;
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    pointer-events: none;
+}
+.sampling_form form {
+  width: 85%;
+}
+.sampling_form .form-actions {
+  margin: 30px 0px;
+}
+.sampling_form .general_btn {
+  color: #565050;
+  -webkit-box-shadow: 0px 0px 1px 1px #000000;
+  box-shadow: 0px 0px 1px 1px #000000;
+  margin-left: auto;
+}
+.sampling_form .general_btn span {
+  background: #4c3939;
+}
+.sampling_form {
+    position: relative;
+    z-index: 2;
+    min-width: 320px;
+    width: 100%;
+    padding: 20px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-transition: 0.2s 0s;
+    transition: 0.2s 0s;
+}

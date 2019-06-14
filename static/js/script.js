@@ -48,7 +48,7 @@ $(document).ready(function() {
 		}
 	})
 	$('body').on('click', '.next', function(){
-		console.log('sdf');
+		
 		$('form').attr('method', 'post');
 		$('form').submit();
 	})

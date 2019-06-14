@@ -34,9 +34,9 @@ class Objectives(models.Model): #Build
 	high = 'High'
 
 	Med_High_CHOICES = (
-	(medium, 'Med'),
-	(low, 'Low'),
-	(high, 'High'),
+		(medium, 'Med'),
+		(low, 'Low'),
+		(high, 'High'),
 	)
 
 	cycle = models.ForeignKey(Cycle_in_obj, related_name="has_objectives",on_delete=models.CASCADE)

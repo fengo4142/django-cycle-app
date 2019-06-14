@@ -7,7 +7,6 @@ class ObjectivesForm(forms.ModelForm):
 	class Meta:
 		model = Objectives
 		exclude = ('assessed_cr', )
-
 	def __init__(self, *args, **kwargs):
 		super(ObjectivesForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
 		self.fields['transaction_objective'].widget.attrs['style'] = "width:850px"

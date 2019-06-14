@@ -1,0 +1,112 @@
+
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+ 	<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+          <form id="a-good-form-name" method="POST">
+              <!-- {{ formset.management_form }} -->
+              <table class="table table-hover">
+                {% csrf_token %}
+                <!--thead>
+                    <tr>
+                      <th> Description of Attributes</th>
+                      <th> EPER </th>
+                      <th> TER </th>
+                      <th> ARACR </th>
+                      <th> Suggested Sample Size </th>
+                      <th> Actual Sample Size </th>
+                  </tr>
+                  
+              </thead-->
+              <tbody>
+                <form action="" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                        {{ formset.non_field_errors }}
+
+                        {{ formset.Estimated_Population_Exception_Rate.errors }}
+                        {{ formset.Estimated_Population_Exception_Rate|as_crispy_field }}
+                        {{ formset.Tolerable_Exception_Rate.errors }}
+                        {{ formset.Tolerable_Exception_Rate |as_crispy_field }}
+                        {{ formset.Suggested_Sample_Size.errors }}
+                        {{ formset.Suggested_Sample_Size|as_crispy_field }}
+                        {{ formset.Actual_Sample_Size.errors }}
+                        {{ formset.Actual_Sample_Size|as_crispy_field }}
+                        {{ formset.Population_Size.errors }}
+                        {{ formset.Population_Size|as_crispy_field }}
+                </form>
+              </tbody>
+                  {% if formset.errors %}
+                        {% for field in formset.forms %}
+                            {% for error in field.errors %}
+                                  <div class="alert alert-danger">
+                                  <strong>{{ error|escape }}</strong>
+                                  </div>
+                            {% endfor %}
+                          {% endfor %}
+                        {% for error in formset.non_field_errors %}
+                                  <div class="alert alert-danger">
+                                  <strong>{{ error|escape }}</strong>
+                                  </div>
+                      {% endfor %}
+                    {% endif %}
+
+              </table>
+              <div class="form-actions">
+                <button class="general_btn">Submit
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+              </div>
+          </form>
+        </div>
+        <div class='col-sm-6 col-sm-offset-3'>
+          {{ result }}
+        </div>
+    </section>
+  </main>
+
+{% endblock content %}
+
+{% block javascript %}
+  <script>
+    $("#id_Population_Size").change(function () {
+      var sample_size = $(this).val();
+      var AA = $('#id_Population_Size').val();
+      var AB = $('#id_Tolerable_Exception_Rate').val();
+      var AC = $('#id_Estimated_Population_Exception_Rate').val();
+      console.log(AA);
+      console.log(AB);
+      console.log(AC);
+      var Alpha = 1 - AC;
+      var sigma = 0.5;
+      
+
+      // var result="";
+      // console.log( $(this).val() );
+
+      $.ajax({
+        url: '{% url "sugg_samples" %}',
+        type: "get",
+        data: {
+          'sample_size' : sample_size
+        },
+      
+        success: function(data) {
+          
+          $("#id_Suggested_Sample_Size").replaceWith(data);
+          // $("#form-1-Suggested_Sample_Size").replaceWith(data);
+          // $("#form-2-Suggested_Sample_Size").replaceWith(data);
+          // result = data;
+          console.log(data);
+        }
+      });
+    });
+  </script>
+{% endblock %}
