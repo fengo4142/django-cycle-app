@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cycle',
   
     'crispy_forms',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

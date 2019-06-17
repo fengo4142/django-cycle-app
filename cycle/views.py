@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
 from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls
-from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm
+from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form
 import os, pandas as pd
 import numpy as np
 
