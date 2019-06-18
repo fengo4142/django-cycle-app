@@ -72,34 +72,6 @@ class testing_of_controls(models.Model):
 		return str(self.data)
 
 
-class Cycle_in_obj(models.Model):
-	cycle_type = models.ForeignKey(Cycle, on_delete=models.CASCADE)
-	# user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
-	
-	def __str__(self):
-		return str(self.cycle_type)
-
-class Objectives(models.Model): #Build
-
-	medium = 'Med'
-	low = 'Low'
-	high = 'High'
-
-	Med_High_CHOICES = (
-	(medium, 'Med'),
-	(low, 'Low'),
-	(high, 'High'),
-	)
-
-	cycle = models.ForeignKey(Cycle_in_obj, related_name="has_objectives",on_delete=models.CASCADE)
-	transaction_objective = models.CharField(max_length=100)
-	assessed_cr = models.CharField(max_length=20, choices = Med_High_CHOICES)
-	
-
-	def __str__(self):
-		return self.transaction_objective
-
 class Mxcell(models.Model): #Case
 	style = models.CharField(max_length=1000)
 	value = models.CharField(max_length=1000)

@@ -7,42 +7,42 @@
 {% block content %}
 {% load widget_tweaks %}
 
+	<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+            <form id="sampling_method" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title">Select the sampling method and Upload Population file</h4>
+                </div>
+                <!-- {{ form.sampling_method }}
+                {{ form.field_selected }}
+                {{ form.field_selected_value }}
+                {{ form.samples}} -->
+                {% for field in form %}
+                    <div class="form-group{% if field.errors %} has-error{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% render_field field class="form-control" %}
+                    {% for error in field.errors %}
+                    <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                    </div>
+                {% endfor %}
 
-     <form id="sampling_method" method="POST" enctype="multipart/form-data">
-     	{% csrf_token %}
-     	<div class="modal-header">
-     	
-    	<h4 class="modal-title">Select the sampling method and Upload Population file</h4>
-  		</div>
-   <!--      {{ form.sampling_method }}
-        {{ form.field_selected }}
-        {{ form.field_selected_value }}
-        {{ form.samples}} -->
-        {% for field in form %}
+            <!-- 
+            <input type="file" class="btn btn-purple" name="file" >
+                                &nbsp;&nbsp;
+            <button name="upload_populations" id="upload_population" class="btn btn-purple btn-labeled fa dropzone" >Upload Population</button> -->
+        <!--    <div class="form-actions">
+                <input type="submit" />
+                </div> -->
+                <div class="modal-footer">
+                    <input type="file" class="modal-title" name="file" >
+                    <button type="submit" class="btn btn-primary">Select Samples</button>
+                </div>
 
-
-  <div class="form-group{% if field.errors %} has-error{% endif %}">
-    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-    {% render_field field class="form-control" %}
-    {% for error in field.errors %}
-      <p class="help-block">{{ error }}</p>
-    {% endfor %}
-     </div>
-{% endfor %}
-
-<!-- 
-	 <input type="file" class="btn btn-purple" name="file" >
-                        &nbsp;&nbsp;
-    <button name="upload_populations" id="upload_population" class="btn btn-purple btn-labeled fa dropzone" >Upload Population</button> -->
-   <!--    <div class="form-actions">
- 		<input type="submit" />
- 		</div> -->
- 	<div class="modal-footer">
- 	<input type="file" class="modal-title" name="file" >
-    <button type="submit" class="btn btn-primary">Select Samples</button>
-  </div>
-
-        </form>
+            </form>
 
  <!--  <form id = "sample-list" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -66,6 +66,9 @@
         {% endfor %}
       {% endif %}
   </form>
+  </div>
+  </section>
+</main>
 
   
 
