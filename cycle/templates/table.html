@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% load crispy_forms_tags %}
 
 
@@ -25,11 +26,11 @@
     {{ form.non_field_errors }}
 
         {{ form.defecient.errors }}
-       <b> {{ form.defecient|as_crispy_field }}</b>
+       <b> {{ form.defecient }}</b>
         {{ form.attachment.errors }}
-        {{ form.attachment|as_crispy_field }}
+        {{ form.attachment }}
         {{ form.remarks.errors }}
-        {{ form.remarks|as_crispy_field }}
+        {{ form.remarks }}
 
      <input type="submit" value="Save">
          
@@ -66,4 +67,4 @@
 This is the last film!
 {% endif %} -->
 
-{% endblock %}
+{% endblock content %}

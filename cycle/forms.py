@@ -35,8 +35,11 @@ class SamplingForm(forms.Form):
 		# kwargs['auto_id'] = "%s".format(self.control_procedures)
 		# print(kwargs)
 		super(SamplingForm, self).__init__(*args, **kwargs)
-		# self.fields['Population_Size'] = forms.IntegerField()
-		# self.fields['Population_Size'].required = False
+		self.fields['Year'] = forms.IntegerField()
+		self.fields['Year'].required = False
+		self.fields['Cycle'] = forms.ModelChoiceField(queryset=Cycle.objects.all())
+		self.fields['Client'] = forms.ModelChoiceField(queryset=Client.objects.all())
+
 		self.fields['Estimated_Population_Exception_Rate'] = forms.IntegerField()
 		self.fields['Estimated_Population_Exception_Rate'].required = False
 		self.fields['Tolerable_Exception_Rate'] = forms.IntegerField()

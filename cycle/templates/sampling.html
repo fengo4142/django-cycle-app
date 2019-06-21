@@ -28,6 +28,12 @@
                   {% csrf_token %}
                         {{ formset.non_field_errors }}
 
+                        {{ formset.Cycle.errors }}
+                        {{ formset.Cycle|as_crispy_field }}
+                        {{ formset.Client.errors }}
+                        {{ formset.Client|as_crispy_field }}
+                        {{ formset.Year.errors }}
+                        {{ formset.Year|as_crispy_field }}
                         {{ formset.Estimated_Population_Exception_Rate.errors }}
                         {{ formset.Estimated_Population_Exception_Rate|as_crispy_field }}
                         {{ formset.Tolerable_Exception_Rate.errors }}
@@ -54,7 +60,6 @@
                                   </div>
                       {% endfor %}
                     {% endif %}
-
               </table>
               <div class="form-actions">
                 <button class="general_btn">Next
