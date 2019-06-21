@@ -1028,3 +1028,12 @@ tbody > .dynamic-form-add > td:first-child > a {
     -webkit-transition: 0.2s 0s;
     transition: 0.2s 0s;
 }
+
+.sampling_data {
+  margin: 20px 0px;
+  padding: 20px 0px;
+}
+.sampling_data > span {
+  width: 30%;
+  float: left;  
+}

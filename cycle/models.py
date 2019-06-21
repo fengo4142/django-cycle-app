@@ -93,7 +93,6 @@ class Test_of_Controls(models.Model):
 		return 
 
 class sampling(models.Model):
-	control_procedures = models.ForeignKey(Test_of_Controls, on_delete=models.CASCADE)
 	Estimated_Population_Exception_Rate = models.IntegerField()
 	#EPER - Exception Rate that the auditor expects to find in the population 
 	Tolerable_Exception_Rate = models.IntegerField() 
@@ -102,15 +101,17 @@ class sampling(models.Model):
 	Population_Size = models.IntegerField()
 	Suggested_Sample_Size = models.IntegerField()
 	Actual_Sample_Size = models.IntegerField() #page-525
-	Number_of_Exceptions = models.IntegerField()
-	Sample_Exception_Rate = models.IntegerField()
+	Number_of_Exceptions = models.IntegerField(null=True)
+	Sample_Exception_Rate = models.IntegerField(null=True)
 	#Number of exceptions in sample divided by the sample size
-	Computed_Upper_Exception_Rate = models.IntegerField()
+	Computed_Upper_Exception_Rate = models.IntegerField(null=True)
 	#The higest estimated exception rate in the population at a given ARACR
+	Client = models.ForeignKey(Client, on_delete=models.CASCADE)
+	Cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+	Year = models.IntegerField(null=True)
 
 class samples(models.Model):
 
-	control_procedures = models.ForeignKey(Test_of_Controls, on_delete=models.CASCADE)
 	samples = models.FileField(null=True, blank=True)
 	Actual_Sample_Size = models.ForeignKey(Test_of_Controls, related_name="Actual_Sample_Size", on_delete=models.CASCADE)
 
@@ -119,14 +120,11 @@ class samples(models.Model):
 	Weights = 'Weights'
 
 	Sampling_CHOICES = (
-	(Random, 'Random'),
-	(Condition, 'Condition'),
-	(Weights, 'Weights'),
+		(Random, 'Random'),
+		(Condition, 'Condition'),
+		(Weights, 'Weights'),
 	)
 	sampling_method = models.CharField(max_length=20, choices = Sampling_CHOICES)
-	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
-	cycle_type = models.ForeignKey(Cycle, on_delete=models.CASCADE)
-
 
 
 	def __str__(self):

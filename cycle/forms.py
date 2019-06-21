@@ -382,6 +382,8 @@ BaseICProcFormset= inlineformset_factory(Mxcell, Test_of_Controls, form=TOCForm,
 # # print(BaseFormSet)
 
 class samples_form(forms.Form):
+
+	
 	Random = 'Random'
 	Condition = 'Condition'
 	Weights = 'Weights'
@@ -393,10 +395,12 @@ class samples_form(forms.Form):
 	(Weights, 'Weights'),
 	)
 
-	sampling_method = forms.ChoiceField(choices = Sampling_CHOICES, required=False)
-	field_selected = forms.CharField(max_length=20, required=False)
-	field_selected_value = forms.IntegerField(required=False)
+	sampling_method = forms.ChoiceField(choices = Sampling_CHOICES, initial={'sampling_method': 'Random'}, required = False)
+	sampling_size = forms.IntegerField(required = False)
+	#field_selected = forms.CharField(max_length=20, required=False)
+	#field_selected_value = forms.IntegerField(required=False)
 	# Population = forms.FileField()
+	
 
 
 	def __init__(self, data=None, *args, **kwargs):
@@ -407,7 +411,6 @@ class samples_form(forms.Form):
 		if data and data.get('sampling_method', None) == self.Condition:
 			self.fields['field_selected'].required = True
 			self.fields['field_selected_value'].required = True
-
 
 class TOC_Form(forms.ModelForm):
 		Option_CHOICES = (

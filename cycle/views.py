@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel
+from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form
 import os, pandas as pd
 import numpy as np
@@ -48,6 +48,7 @@ class CycleTransactionCreate(CreateView):
 					# print(title.prefix)
 				# print(titles)
 		return super(CycleTransactionCreate, self).form_valid(form)
+		
 def saveData(request):
 	return render(request, 'cycle_form.html')
 
@@ -122,12 +123,21 @@ def sample_size(request):
 		if formset.is_valid():
 			print('HI')
 
-			data = formset.cleaned_data.get("Estimated_Population_Exception_Rate")
-			data1 = formset.cleaned_data.get("Tolerable_Exception_Rate")
-			# data1 = form.cleaned_data.get("Actual_Sample_Size")
-			# data1 = form.cleaned_data.get("Population_Size_0")
-			print(data)
-			print(data1)
+			obj = sampling(
+				Estimated_Population_Exception_Rate = formset.cleaned_data.get("Estimated_Population_Exception_Rate"),
+				Tolerable_Exception_Rate = formset.cleaned_data.get("Tolerable_Exception_Rate"),
+				Suggested_Sample_Size = formset.cleaned_data.get("Suggested_Sample_Size"),
+				Actual_Sample_Size = formset.cleaned_data.get("Actual_Sample_Size"),
+				Population_Size = formset.cleaned_data.get("Population_Size"),
+			
+				Cycle = formset.cleaned_data.get("Cycle"),
+				Client = formset.cleaned_data.get("Client"),
+				Year = formset.cleaned_data.get("Year")
+			)
+			obj.save(force_insert=True)
+
+			request.session['sampling_id'] = obj.id
+
 			return redirect ('upload_sample')
 			# new_object = ICmatrix.objects.create(mxcell_id=creator_id, option=s, objectives_id=obj_id)
 
@@ -230,44 +240,6 @@ def sugg_samples(request):
 	return HttpResponse(sample_size)
  
 
-
-
-
-def sample_size(request):
-
-	control_proceduress = Test_of_Controls.objects.all()
-
-	if request.method == 'POST':
-		
-		# formset = BaseSamplingDatasheetFormset(control_proceduress=control_proceduress, data=request.POST)
-		formset = SamplingForm(data=request.POST)
-	
-		# print(formset)
-		if formset.is_valid():
-			print('HI')
-
-			data = formset.cleaned_data.get("Estimated_Population_Exception_Rate")
-			data1 = formset.cleaned_data.get("Tolerable_Exception_Rate")
-			# data1 = form.cleaned_data.get("Actual_Sample_Size")
-			# data1 = form.cleaned_data.get("Population_Size_0")
-			print(data)
-			print(data1)
-			return redirect ('upload_sample')
-			# new_object = ICmatrix.objects.create(mxcell_id=creator_id, option=s, objectives_id=obj_id)
-
-		else:
-			print(formset.errors)
-			print(formset.non_form_errors())
-
-
-	else:
-		control_proceduress = Test_of_Controls.objects.all()
-		formset = SamplingForm()
-	
-
-	context = { 'formset' : formset }
-
-	return render(request, 'sampling.html', context)
 
 
 
@@ -373,15 +345,13 @@ def TOC_update(request, id=None):
 		remarks_selected = form.cleaned_data.get("remarks")
 		new_object = testing_of_controls.objects.create(defecient=defecient_selected, remarks=remarks_selected, data_id=id)
 
-
-
 	else:
 		print(form.errors)
 		# print(form.non_form_errors())
 
 
 	context = {
-    				
+    			
     			"instance": instance,
     			"form": form,
     			"the_next" : the_next,
@@ -398,6 +368,8 @@ def upload_sample(request):
     		print('HI')
     		filehandle = pd.read_csv(request.FILES['file'])
     		sampling_mtd_selected = form.cleaned_data.get("sampling_method")
+    		sampling_size = form.cleaned_data.get("sampling_size")
+    		sampling_id = request.session['sampling_id']
     		print(sampling_mtd_selected)
 
     		if sampling_mtd_selected == "Random":
@@ -430,10 +402,9 @@ def upload_sample(request):
 
     	else:
     		print(form.errors)
-    		# print(form.non_form_errors())
 
     else:
     	form = samples_form()
-
-
-    return render(request, 'select_sample.html', {'form': form})
+    	sampling_id = request.session['sampling_id']
+    	sampling_data = sampling.objects.get(pk=sampling_id)
+    return render(request, 'select_sample.html', { 'form': form, 'sampling': sampling_data })

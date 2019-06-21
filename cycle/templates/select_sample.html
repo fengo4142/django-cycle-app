@@ -13,20 +13,26 @@
         <div class="sampling_form">
             <form id="sampling_method" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="modal-header">
+                <div class="modal-header" style="margin-top: 50px">
                     <h4 class="modal-title">Select the sampling method and Upload Population file</h4>
+                </div>
+                <div class="sampling_data">
+                    <span>Cycle: {{sampling.Cycle}}</span>
+                    <span>Client: {{sampling.Client}}</span>
+                    <span>Year: {{sampling.Year}}</span>
                 </div>
                 <!-- {{ form.sampling_method }}
                 {{ form.field_selected }}
                 {{ form.field_selected_value }}
                 {{ form.samples}} -->
                 {% for field in form %}
-                    <div class="form-group{% if field.errors %} has-error{% endif %}">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {% render_field field class="form-control" %}
-                    {% for error in field.errors %}
-                    <p class="help-block">{{ error }}</p>
-                    {% endfor %}
+                    <div class="control-group{% if field.errors %} has-error{% endif %}">
+                        <div class="controls">
+                            {{ field |as_crispy_field }}
+                        </div>
+                        {% for error in field.errors %}
+                            <p class="help-block">{{ error }}</p>
+                        {% endfor %}
                     </div>
                 {% endfor %}
 
