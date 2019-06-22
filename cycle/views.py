@@ -391,7 +391,7 @@ def upload_sample(request):
     			datafile.save()
     			# print(datafile.data)
     		object_list = DatafileModel.objects.all().first()
-    		
+    		print(object_list)
 
     		context = {
     				"object_list": object_list,

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+
+<table>
+
+ <thead>
+    <tr>
+      <th>{{instance.data }} </td>
+    </tr>
+  </thead>
+
+</table>
+
+
+<tbody>
+    
+
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+    {{ form.non_field_errors }}
+
+        {{ form.defecient.errors }}
+       <b> {{ form.defecient }}</b>
+        {{ form.attachment.errors }}
+        {{ form.attachment }}
+        {{ form.remarks.errors }}
+        {{ form.remarks }}
+
+     <input type="submit" value="Save">
+         
+</form>
+
+             
+</tbody>
+
+
+<div class="modal-footer">
+
+    <button type="submit" class="btn btn-primary"><li><a href="/procedures/{{ the_next.id }}/edit/">Next Sample</a></li></button>
+    <button type="submit" class="btn btn-primary"><li><a href="/procedures/{{ prev_in_order.id }}/edit/">Previous Sample</a></li></button>
+    
+  </div>
+
+
+
+
+<!-- {{the_next}}
+ -->
+
+
+
+<!-- {% with next=instance.get_next_by_data %}
+    {% if next %}
+        <a href="{% url 'TOC_update' id=obj.id %}">next</a>
+    {% endif %}
+{% endwith %} -->
+
+<!-- {% if the_next %}
+<a href="{% url 'TOC_update' the_next.id %}">Next</a>
+{% else %}
+This is the last film!
+{% endif %} -->
+
+{% endblock content %}
