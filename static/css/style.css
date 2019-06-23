@@ -970,7 +970,9 @@ tbody > .dynamic-form-add > td:first-child > a {
 
 /* sampling page */
 
-.sampling_form input {
+.sampling_form input,
+.sampling_form textarea,
+.sampling_form radio {
     display: block;
     width: 100%;
     padding: 10px 20px;

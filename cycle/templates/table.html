@@ -31,6 +31,10 @@
     .selected {
       background: #b1d0fb;
     }
+    .btn-disabled {
+      color: #a4a4a4 !important;
+      box-shadow: 0px 0px 1px 1px #a4a4a4 !important;
+    }
 </style>
 
 <main class="transaction-page">
@@ -60,7 +64,7 @@
           </table>
           <form>
               <div class="form-actions">
-                  <a class="general_btn" style="text-align:center" href="{% url 'TOC_update' id=1 %}">Start Testing
+                  <a class="general_btn" id="startTestingBtn" style="text-align:center" href="#">Start Testing
                     <span></span>
                     <span></span>
                     <span></span>
@@ -68,10 +72,11 @@
                   </a>
               </div>
           </form>
+          {{ object_list.id }}
+
         </div>
     </section>
 </main>
-
 
 
 
@@ -95,12 +100,25 @@
       });
       */
 
-      $("#datatable tr").on('click', function () {
-        console.log('sdfsdf')
-        $("tr").removeClass('selected')
+      var url = "{% url 'TOC_update' id=object_list.id %}";
+
+      $("#startTestingBtn").addClass('btn-disabled');
+      $("#startTestingBtn").on('click', function () {
+        if(!$(this).hasClass('btn-disabled'))
+          document.location.href = url;
+      });
+
+      $("#datatable > tbody > tr").on('click', function () {
+        $("#startTestingBtn").removeClass('btn-disabled');
+
+        //var id = $(this).children('td:first').text();
+
+        $("tr").removeClass('selected');
         $(this).addClass('selected');
       })
     });
+
+
 
 </script>
 {% endblock %}

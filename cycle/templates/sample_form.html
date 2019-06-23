@@ -5,56 +5,62 @@
 
 
 {% block content %}
-
-
-<table>
-
- <thead>
-    <tr>
-      <th>{{instance.data }} </td>
-    </tr>
-  </thead>
-
-</table>
-
-
-<tbody>
-    
-
-<form action="" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-    {{ form.non_field_errors }}
-
-        {{ form.defecient.errors }}
-       <b> {{ form.defecient }}</b>
-        {{ form.attachment.errors }}
-        {{ form.attachment }}
-        {{ form.remarks.errors }}
-        {{ form.remarks }}
-
-     <input type="submit" value="Save">
-         
-</form>
-
+<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+            
+                
+                <form action="" method="post" enctype="multipart/form-data">
+                  <div class="modal-header" style="margin-top: 50px">
+                      <h4 class="modal-title">Test Of Controls</h4>
+                  </div>
+                  <div class="sampling_data">
+                      <span>Cycle: {{sampling_data.Cycle}}</span>
+                      <span>Client: {{samsampling_datapling.Client}}</span>
+                      <span>Year: {{sampling_data.Year}}</span>
+                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                       <th>{{instance.data }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                  {% csrf_token %}
+                    {{ form.non_field_errors }}
+                        {{ form.defecient.errors }}
+                      <b> {{ form.defecient|as_crispy_field }}</b>
+                        {{ form.attachment.errors }}
+                        {{ form.attachment|as_crispy_field }}
+                        {{ form.remarks.errors }}
+                        {{ form.remarks|as_crispy_field }}
+                    <div class="control-group" style="margin: 20px 0px;">
+                        <input type="submit" value="Save">
+                    </div>
+                    <div class="modal-footer" style="display: flex; text-align: center;">                    
+                            <a class="general_btn"  href="/cycle/{{ the_next.id }}/edit/">Next Sample
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </a>
+                            <a class="general_btn" style="margin-left: 25px" href="/cycle/{{ the_prev.id }}/edit/">Previous Sample
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                              <span></span>
+                            </a>                       
+                    </div>
+                </form>     
              
-</tbody>
-
-
-<div class="modal-footer">
-
-    <button type="submit" class="btn btn-primary"><li><a href="/procedures/{{ the_next.id }}/edit/">Next Sample</a></li></button>
-    <button type="submit" class="btn btn-primary"><li><a href="/procedures/{{ prev_in_order.id }}/edit/">Previous Sample</a></li></button>
-    
-  </div>
-
-
-
-
+        </div>
+    </section>
+</main>
 <!-- {{the_next}}
  -->
-
-
-
 <!-- {% with next=instance.get_next_by_data %}
     {% if next %}
         <a href="{% url 'TOC_update' id=obj.id %}">next</a>

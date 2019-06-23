@@ -5,9 +5,10 @@ from django.http import HttpResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
 from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling
-from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form
+from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form
 import os, pandas as pd
 import numpy as np
+from next_prev import next_in_order, prev_in_order
 
 class CycleTransactionCreate(CreateView):
 	model = Cycle_in_obj
@@ -334,7 +335,7 @@ def TOC_update(request, id=None):
 	# the_next = instance.get_next_by_timestamp()
 	newest = DatafileModel.objects.all().first()
 	the_next = next_in_order(newest)
-
+	the_prev = prev_in_order(newest)
 
 	if form.is_valid():
 		print("HI")
@@ -348,14 +349,16 @@ def TOC_update(request, id=None):
 	else:
 		print(form.errors)
 		# print(form.non_form_errors())
+		sampling_id = request.session['sampling_id']
 
+		print(instance._meta.fields)
 
 	context = {
-    			
+    			"sampling_data": sampling.objects.get(pk=sampling_id),
     			"instance": instance,
     			"form": form,
+					"the_prev": the_prev,
     			"the_next" : the_next,
- 
     	}
 
 	return render(request, 'sample_form.html', context)
