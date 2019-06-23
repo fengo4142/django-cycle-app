@@ -972,13 +972,18 @@ tbody > .dynamic-form-add > td:first-child > a {
 
 .sampling_form input,
 .sampling_form textarea,
-.sampling_form radio {
+.sampling_form .radio {
     display: block;
     width: 100%;
     padding: 10px 20px;
     border: 1px solid #524b4b;
 }
-
+.sampling_form .radio {
+    display: flex;
+    width: 100%;
+    padding: 10px 20px;
+    border: 1px solid #524b4b;
+}
 .sampling_form label {
     color: #565050;
     position: relative;

@@ -5,12 +5,21 @@
 
 
 {% block content %}
+<style>
+.defecient label {
+  pointer-events: auto;
+}
+.defecient .controls {
+  display: flex;
+}
+.defecient .radio:first {
+  margin-right: 20px;
+}
+</style>
 <main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
-            
-                
                 <form action="" method="post" enctype="multipart/form-data">
                   <div class="modal-header" style="margin-top: 50px">
                       <h4 class="modal-title">Test Of Controls</h4>
@@ -32,7 +41,9 @@
                   {% csrf_token %}
                     {{ form.non_field_errors }}
                         {{ form.defecient.errors }}
-                      <b> {{ form.defecient|as_crispy_field }}</b>
+                        <div class="defecient"> 
+                          {{ form.defecient|as_crispy_field }}
+                        </div>
                         {{ form.attachment.errors }}
                         {{ form.attachment|as_crispy_field }}
                         {{ form.remarks.errors }}

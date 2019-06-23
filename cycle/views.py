@@ -323,7 +323,6 @@ def sugg_samples(request):
 		sample_size = float(numerator/denom)
 		# print(sample_size)
 
-
 	return HttpResponse(sample_size)
 
 

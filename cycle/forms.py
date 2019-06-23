@@ -412,24 +412,21 @@ class samples_form(forms.Form):
 			self.fields['field_selected_value'].required = True
 
 class TOC_Form(forms.ModelForm):
-		Option_CHOICES = (
-				('defecient','defecient'),
-		)
+		Option_CHOICES = [
+				['1', 'defecient'],['2','indefecient'],
+		]
 		class Meta:
 			model = testing_of_controls
 			fields = [
-	
-			"remarks",
-			"attachment",
-			"defecient",
-		]
-		defecient = forms.ChoiceField(choices=Option_CHOICES, widget=forms.RadioSelect())
-
-		
+				"remarks",
+				"attachment",
+				"defecient",
+			]
 
 		def __init__(self, *args, **kwargs):
 			super(TOC_Form, self).__init__(*args, **kwargs)
-			
+
+			self.fields['defecient'] = forms.ChoiceField(label="Defecient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
 			self.fields['defecient'].required = False
 			self.helper = FormHelper()
 			self.helper.form_tag = True
@@ -437,12 +434,11 @@ class TOC_Form(forms.ModelForm):
 			self.helper.label_class = 'col-lg-2 mb-3'
 			self.helper.field_class = 'form-group col-md-6 mb-0'
 			self.helper.layout = Layout(
-                Fieldset('Procedures against Control Activity', Fieldset('titles')),                    
-
+                Fieldset('Procedures against Control Activity', Fieldset('titles')),
                 #Field('note'),
                 HTML("<br>"),
                 ButtonHolder(Submit('submit', 'save')),
-                )
+			)
 		
 class MyForm(forms.Form):
     original_field = forms.CharField()
