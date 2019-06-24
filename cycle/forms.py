@@ -407,9 +407,9 @@ class samples_form(forms.Form):
 		super(samples_form, self).__init__(data, *args, **kwargs)
 
 
-		if data and data.get('sampling_method', None) == self.Condition:
-			self.fields['field_selected'].required = True
-			self.fields['field_selected_value'].required = True
+		#if data and data.get('sampling_method', None) == self.Condition:
+		#	self.fields['field_selected'].required = True
+		#	self.fields['field_selected_value'].required = True
 
 class TOC_Form(forms.ModelForm):
 		Option_CHOICES = [
