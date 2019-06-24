@@ -92,6 +92,19 @@
 This is the last film!
 {% endif %} -->
 <script>
+  $(function() {
+      var $radios = $('input:radio[name=defecient]');
+      if($radios.is(':checked') === false) {
+          $radios.filter('[value=indefecient]').prop('checked', true);
+      }
+  });
 
+  $("input[type=radio]").on('click', function () {
+    console.log($(this).val())
+    if ($(this).val() == "defecient" && $("button[type=submit]").hasClass('btn-disabled')) 
+        $("button[type=submit]").removeClass('btn-disabled') 
+    else if (!$("button[type=submit]").hasClass('btn-disabled'))
+        $("button[type=submit]").addClass('btn-disabled')
+  });
 </script>
 {% endblock content %}

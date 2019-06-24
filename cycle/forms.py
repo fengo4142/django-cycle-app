@@ -413,7 +413,7 @@ class samples_form(forms.Form):
 
 class TOC_Form(forms.ModelForm):
 		Option_CHOICES = [
-				['1', 'defecient'],['2','indefecient'],
+				['defecient', 'defecient'],['indefecient','indefecient'],
 		]
 		class Meta:
 			model = testing_of_controls
