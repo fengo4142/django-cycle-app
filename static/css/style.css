@@ -1054,3 +1054,32 @@ tbody > .dynamic-form-add > td:first-child > a {
   width: 30%;
   float: left;
 }
+
+
+/** table html style **/
+#datatable td {
+  text-align: center;
+  border: 1px solid #999;   
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#datatable tr:hover {
+  background: #b1d0fb;
+}
+#datatable thead {
+  border: 1px solid #222;
+  background: #ddd;     
+}
+#datatable.no-spacing {
+  border-spacing:0; /* Removes the cell spacing via CSS */
+  border-collapse: collapse;  /* Optional - if you don't want to have double border where cells touch */
+}
+.selected {
+  background: #b1d0fb;
+}
+.btn-disabled {
+  color: #a4a4a4 !important;
+  box-shadow: 0px 0px 1px 1px #a4a4a4 !important;
+}

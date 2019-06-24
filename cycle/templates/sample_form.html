@@ -12,8 +12,12 @@
 .defecient .controls {
   display: flex;
 }
-.defecient .radio:first {
+.defecient .radio:first-of-type {
   margin-right: 20px;
+}
+.submit-btn {
+  margin-right: auto; 
+  margin-left: 0;
 }
 </style>
 <main class="transaction-page">
@@ -48,10 +52,14 @@
                         {{ form.attachment|as_crispy_field }}
                         {{ form.remarks.errors }}
                         {{ form.remarks|as_crispy_field }}
-                    <div class="control-group" style="margin: 20px 0px;">
-                        <input type="submit" value="Save">
-                    </div>
-                    <div class="modal-footer" style="display: flex; text-align: center;">                    
+                    
+                    <div class="modal-footer" style="display: flex; text-align: center;">
+                            <button class="general_btn btn-disabled" type="submit">Save
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>                    
                             <a class="general_btn"  href="/cycle/{{ the_next.id }}/edit/">Next Sample
                                 <span></span>
                                 <span></span>
@@ -83,5 +91,7 @@
 {% else %}
 This is the last film!
 {% endif %} -->
+<script>
 
+</script>
 {% endblock content %}
