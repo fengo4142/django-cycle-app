@@ -1040,7 +1040,17 @@ tbody > .dynamic-form-add > td:first-child > a {
   margin: 20px 0px;
   padding: 20px 0px;
 }
+.sampling_form .control-group {
+  display: flex;  
+  padding: 10px 0px;
+}
+.sampling_form .control-label {
+  width: 25%;
+}
+.sampling_form .controls {
+  width: 75%;
+}
 .sampling_data > span {
   width: 30%;
-  float: left;  
+  float: left;
 }

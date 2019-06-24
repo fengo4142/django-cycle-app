@@ -26,14 +26,13 @@
                 {{ form.field_selected_value }}
                 {{ form.samples}} -->
                 {% for field in form %}
-                    <div class="control-group{% if field.errors %} has-error{% endif %}">
-                        <div class="controls">
-                            {{ field |as_crispy_field }}
-                        </div>
-                        {% for error in field.errors %}
-                            <p class="help-block">{{ error }}</p>
-                        {% endfor %}
-                    </div>
+                    
+                    {{ field |as_crispy_field }}
+                    
+                    {% for error in field.errors %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                   
                 {% endfor %}
 
             <!-- 
