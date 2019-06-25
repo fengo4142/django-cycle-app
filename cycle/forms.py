@@ -428,6 +428,7 @@ class TOC_Form(forms.ModelForm):
 
 			self.fields['defecient'] = forms.ChoiceField(label="Defecient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
 			self.fields['defecient'].required = False
+			self.fields['attachment'] = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),)
 			self.helper = FormHelper()
 			self.helper.form_tag = True
 			self.helper.form_class = 'form-horizontal'

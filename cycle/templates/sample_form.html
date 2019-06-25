@@ -19,12 +19,24 @@
   margin-right: auto; 
   margin-left: 0;
 }
+.support-thumbnails {
+  margin-left: 30%;
+  width: 70%;
+  margin-bottom: 20px;
+}
+.thumb-image {
+    width: 100px;
+    height: 100px;
+    border: 1px dashed #666;
+    padding: 5px;
+    margin: 5px;
+}
 </style>
 <main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
-                <form action="" method="post" enctype="multipart/form-data">
+                <form action="" id="sample_form" method="post" enctype="multipart/form-data">
                   <div class="modal-header" style="margin-top: 50px">
                       <h4 class="modal-title">Test Of Controls</h4>
                   </div>
@@ -44,15 +56,19 @@
                   </table>
                   {% csrf_token %}
                     {{ form.non_field_errors }}
-                        {{ form.defecient.errors }}
-                        <div class="defecient"> 
-                          {{ form.defecient|as_crispy_field }}
-                        </div>
-                        {{ form.attachment.errors }}
-                        {{ form.attachment|as_crispy_field }}
-                        {{ form.remarks.errors }}
-                        {{ form.remarks|as_crispy_field }}
+                    {{ form.defecient.errors }}
+                    <div class="defecient"> 
+                      {{ form.defecient|as_crispy_field }}
+                    </div>
+                    {{ form.attachment.errors }}
+                    {{ form.attachment|as_crispy_field }}
+                    {{ form.remarks.errors }}
+                    {{ form.remarks|as_crispy_field }}
                     
+                    <div class="support-thumbnails">
+                        
+                    </div>
+
                     <div class="modal-footer" style="display: flex; text-align: center;">
                             <button class="general_btn btn-disabled" type="submit">Save
                                 <span></span>
@@ -106,5 +122,23 @@ This is the last film!
     else if (!$("button[type=submit]").hasClass('btn-disabled'))
         $("button[type=submit]").addClass('btn-disabled')
   });
+
+
+  $("#sample_form input[type=file]").on('change', function () {
+    var count = $(this)[0].files.length;
+    var image_holder = $(".support-thumbnails")
+    for (var i = 0; i < count; i++) {
+        var reader = new FileReader();
+        
+        reader.onload = function (e) {
+            $("<img />", {
+                "src": e.target.result,
+                "class": "thumb-image",                
+            }).appendTo(image_holder);
+        };
+        reader.readAsDataURL($(this)[0].files[i]);
+    }
+    
+  })
 </script>
 {% endblock content %}

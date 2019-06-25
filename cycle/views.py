@@ -326,7 +326,6 @@ def sugg_samples(request):
 	return HttpResponse(sample_size)
 
 
-
 def TOC_update(request, id=None):
 	instance = get_object_or_404(DatafileModel, id=id)
 
@@ -349,8 +348,7 @@ def TOC_update(request, id=None):
 		print(form.errors)
 		# print(form.non_form_errors())
 		sampling_id = request.session['sampling_id']
-
-		print(instance._meta.fields)
+		print(instance.data)
 
 	context = {
     			"sampling_data": sampling.objects.get(pk=sampling_id),
