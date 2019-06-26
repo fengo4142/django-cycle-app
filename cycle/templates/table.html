@@ -68,19 +68,20 @@
 
       var url = "{% url 'TOC_update' id=object_list.id %}";
 
-      $("#startTestingBtn").addClass('btn-disabled');
+      //$("#startTestingBtn").addClass('btn-disabled');
       $("#startTestingBtn").on('click', function () {
-        if(!$(this).hasClass('btn-disabled'))
+        //if(!$(this).hasClass('btn-disabled'))
           document.location.href = url;
       });
 
+
       $("#datatable > tbody > tr").on('click', function () {
-        $("#startTestingBtn").removeClass('btn-disabled');
+        //$("#startTestingBtn").removeClass('btn-disabled');
 
         //var id = $(this).children('td:first').text();
 
-        $("tr").removeClass('selected');
-        $(this).addClass('selected');
+        //$("tr").removeClass('selected');
+        //$(this).addClass('selected');
       })
     });
 
