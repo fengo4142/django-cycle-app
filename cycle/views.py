@@ -327,7 +327,7 @@ def sugg_samples(request):
 
 
 def TOC_update(request, id=None):
-	print(id)
+	
 	instance = get_object_or_404(DatafileModel, id=id)
 
 	form = TOC_Form(request.POST or None, instance=instance)
@@ -350,7 +350,10 @@ def TOC_update(request, id=None):
 		# print(form.non_form_errors())
 		sampling_id = request.session['sampling_id']
 		#print(instance.data)
-
+	
+	
+	success_url = request.get_full_path()
+	print(success_url)
 	context = {
     			"sampling_data": sampling.objects.get(pk=sampling_id),
     			"instance": instance,
@@ -374,8 +377,7 @@ def upload_sample(request):
     		print(sampling_mtd_selected)
 
     		if sampling_mtd_selected == "Random":
-    			IC_values = filehandle.sample(n=10)
-    			print(IC_values)
+    			IC_values = filehandle.sample(n=10)    			
 
     		# if sampling_mtd_selected == "Condition":
     		# 	Field_selected = form.cleaned_data.get("field_selected")
@@ -384,16 +386,19 @@ def upload_sample(request):
     		# 	print(Field_selected)
     		# 	print(IC_values)
 
-
+    		obj_id = 0    		
     		IC_values = filehandle.sample(n=10)
     		for row in IC_values.iterrows():
+					
     			datafile = DatafileModel()
     			datafile.data = row
     			datafile.save()
+    			if obj_id == 0:
+    				obj_id = datafile.id				    			
     			# print(datafile.data)
-    		object_list = DatafileModel.objects.all().first()
-    		print(object_list)
 
+    		object_list = DatafileModel.objects.get(id=obj_id)
+    		
     		context = {
     				"object_list": object_list,
     				"IC_values": IC_values
@@ -403,7 +408,6 @@ def upload_sample(request):
 
     	else:
     		print(form.errors)
-
     else:
     	form = samples_form()
     	sampling_id = request.session['sampling_id']

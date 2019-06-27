@@ -8,7 +8,11 @@
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
+          
           <form id="a-good-form-name" method="POST">
+              <div class="modal-header" style="margin: 30px; text-align: right">
+                <h4 class="modal-title">Sample Size</h4>
+              </div>
               <!-- {{ formset.management_form }} -->
               <table class="table table-hover">
                 {% csrf_token %}
