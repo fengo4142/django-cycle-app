@@ -327,13 +327,14 @@ def sugg_samples(request):
 
 
 def TOC_update(request, id=None):
+	print(id)
 	instance = get_object_or_404(DatafileModel, id=id)
 
 	form = TOC_Form(request.POST or None, instance=instance)
 	# the_next = instance.get_next_by_timestamp()
 	newest = DatafileModel.objects.all().first()
-	the_next = next_in_order(newest)
-	the_prev = prev_in_order(newest)
+	the_next = next_in_order(instance)
+	the_prev = prev_in_order(instance)
 
 	if form.is_valid():
 		print("HI")
@@ -348,7 +349,7 @@ def TOC_update(request, id=None):
 		print(form.errors)
 		# print(form.non_form_errors())
 		sampling_id = request.session['sampling_id']
-		print(instance.data)
+		#print(instance.data)
 
 	context = {
     			"sampling_data": sampling.objects.get(pk=sampling_id),

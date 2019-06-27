@@ -978,9 +978,9 @@ tbody > .dynamic-form-add > td:first-child > a {
     padding: 10px 20px;
     border: 1px solid #524b4b;
 }
-.sampling_form .radio {
-    display: flex;
-    width: 100%;
+.sampling_form .radio > input {
+    display: inline-block;
+    width: 10%;
     padding: 10px 20px;
     border: 1px solid #524b4b;
 }

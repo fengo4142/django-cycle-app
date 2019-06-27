@@ -425,7 +425,7 @@ class TOC_Form(forms.ModelForm):
 
 		def __init__(self, *args, **kwargs):
 			super(TOC_Form, self).__init__(*args, **kwargs)
-
+			self.fields['remarks'].widget.attrs['rows'] = 4
 			self.fields['defecient'] = forms.ChoiceField(label="Defecient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
 			self.fields['defecient'].required = False
 			self.fields['attachment'] = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),)

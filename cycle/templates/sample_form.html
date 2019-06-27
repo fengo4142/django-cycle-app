@@ -41,7 +41,7 @@
         {% include 'sidebar.html' %}
         <div class="sampling_form">
                 <form action="" id="sample_form" method="post" enctype="multipart/form-data">
-                  <div class="modal-header" style="margin-top: 50px">
+                  <div class="modal-header" style="margin-top: 50px; text-align: right">
                       <h4 class="modal-title">Test Of Controls</h4>
                   </div>
                   <div class="sampling_data">
@@ -87,18 +87,19 @@
                                 <span></span>
                                 <span></span>
                             </button>                    
-                            <a class="general_btn"  href="/cycle/{{ the_next.id }}/edit/">Next Sample
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </a>
-                            <a class="general_btn" style="margin-left: 25px" href="/cycle/{{ the_prev.id }}/edit/">Previous Sample
+                            
+                            <button class="general_btn" id="prevBtn" data-sample="{{ the_prev.id }}"  style="margin-left: 25px" data-url="/cycle/{{ the_prev.id }}/edit/">Previous Sample
                               <span></span>
                               <span></span>
                               <span></span>
                               <span></span>
-                            </a>                       
+                            </button>    
+                            <button class="general_btn" id="nextBtn" data-sample="{{ the_next.id }}" data-url="/cycle/{{ the_next.id }}/edit/">Next Sample
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>                   
                     </div>
                 </form>     
              
@@ -124,6 +125,22 @@ This is the last film!
       if($radios.is(':checked') === false) {
           $radios.filter('[value=indefecient]').prop('checked', true);
       }
+  });
+
+  var nextId = $("#nextBtn").data("sample")
+  var prevId = $("#prevBtn").data("sample")
+
+  if (nextId.length == 0) {
+    $("#nextBtn").addClass("btn-disabled");
+  }
+  if (prevId.length == 0) {
+    $("#prevBtn").addClass("btn-disabled");
+  }
+
+  $(".general_btn").on('click', function () {
+    if (!$(this).hasClass("btn-disabled")) {
+      document.location.href = $(this).data("url");
+    }
   });
 
   $("input[type=radio]").on('click', function () {
