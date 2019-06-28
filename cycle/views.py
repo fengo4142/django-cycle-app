@@ -4,11 +4,12 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling
-from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form
+from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, Mxcell
+from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures
 import os, pandas as pd
 import numpy as np
 from next_prev import next_in_order, prev_in_order
+from django.views.decorators.csrf import csrf_exempt
 
 class CycleTransactionCreate(CreateView):
 	model = Cycle_in_obj
@@ -50,10 +51,7 @@ class CycleTransactionCreate(CreateView):
 				# print(titles)
 		return super(CycleTransactionCreate, self).form_valid(form)
 		
-def saveData(request):
-	return render(request, 'cycle_form.html')
 
-    
 def CycleTransactionGet(request):
   if request.method == "GET":
 
@@ -413,3 +411,112 @@ def upload_sample(request):
     	sampling_id = request.session['sampling_id']
     	sampling_data = sampling.objects.get(pk=sampling_id)
     return render(request, 'select_sample.html', { 'form': form, 'sampling': sampling_data })
+
+
+#mxgraph
+
+
+def open(request):
+		return render(request, 'index.html')
+@csrf_exempt 
+def savefile(request):
+
+	member_instance = request.user
+	# member_instance = get_object_or_404(Member, user=user)
+	print(member_instance)
+
+	
+	if request.method == "POST":
+# #Get user profile
+		xmlData = request.POST['xml']
+		member, _ = Member.objects.get_or_create(user=member_instance)
+		# member.user = member_instance;
+		# member.save()
+		print(member)
+# #Get XML data once user presses save
+
+def xml_to_table(request):
+ 	member_instance = request.user
+
+ 	result = XMLGraph.objects.all()
+
+ 	for results in result:
+ 		XML_response = BeautifulSoup(results.XMLGraph)
+ 		print(XML_response)
+ 		# print(XML_response.find_all('mxcell'))
+ 		for item in XML_response.find_all('mxcell'):
+ 			# print(item.get('style'))
+ 			# print("{}, {}".format(item.get("style"), item.get("value")))
+
+ 			data = [item.get("style"), item.get("value")]
+
+ 			k = [tuple(xi for xi in data if xi is not None)]
+ 			# print(k)
+ 			t = [yi for yi in k if yi != () ]
+ 			# print(t)
+ 			
+
+ 			for styl,val in t:
+ 				new_object = Mxcell.objects.create(style=styl, value=val)
+ 				# print(new_object)
+
+ 			IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
+ 			print(IC_values)
+
+ 			table = SimpleTable(IC_values)
+
+ 	context = {
+
+		"result": result
+	
+	}
+ 	return render(request, "table.html", {"table": table}, context)
+
+
+
+class internal_control_procedures(CreateView):
+	model = Mxcell
+	template_name = 'internal_control.html'
+	form_class = ICProcedures
+	success_url = None
+	queryset = Mxcell.objects.all()
+
+	def get_context_data(self, **kwargs):
+		
+		data = super(internal_control_procedures, self).get_context_data(**kwargs)
+		objective_query = Mxcell.objects.all()
+		# print(data)
+
+
+		if self.request.POST:
+			print('HI')
+			data['titles'] = BaseICProcFormset(self.request.POST)
+			# print(data)
+		else:
+			data['titles'] = BaseICProcFormset()
+		return data
+		# print(data)
+
+	def form_valid(self, form):
+		print('hello')
+		context = self.get_context_data()
+		titles = context['titles']
+		print(titles)
+		with transaction.atomic():
+			form.instance.created_by = self.request.user
+			self.object = form.save()
+
+			if titles.is_valid():
+				titles.instance = self.object
+				titles.save()
+		return super(internal_control_procedures, self).form_valid(form)
+
+
+	def get_success_url(self):
+		return reverse('sample_size')
+		
+	
+def saveData(request):
+	return render(request, 'index.html')
+
+    

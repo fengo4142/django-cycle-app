@@ -16,4 +16,10 @@ urlpatterns = [
     path('sugg_samples', views.sugg_samples, name='sugg_samples'),
     url(r'^(?P<id>\d+)/edit/$', views.TOC_update, name='TOC_update'),
 
+
+    url(r'^xml_to_table/$', views.xml_to_table, name='xml_to_table'),
+    url(r'^savefile/$', views.savefile, name='savefile'),
+    url(r'^open/$', views.open, name='open'),
+
+
 ]
