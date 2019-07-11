@@ -4,30 +4,63 @@
 
 
 {% block content %}
-
+<style>
+.cell {
+  line-height: 60px;
+}
+</style>
 <main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
+         <form id="sampling_method" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
           <div class="modal-header" style="margin: 30px">
               <h4 class="modal-title">Test Of Controls - Deficiencies</h4>
           </div>
           <div class="sampling_data">
-                    <span>Cycle: {{sampling.Cycle}}</span>
-                    <span>Client: {{sampling.Client}}</span>
-                    <span>Year: {{sampling.Year}}</span>
+                    <span>Cycle: {{sampling_data.Cycle}}</span>
+                    <span>Client: {{sampling_data.Client}}</span>
+                    <span>Year: {{sampling_data.Year}}</span>
           </div>
-          
-          <form>
-              <div class="form-actions">
-                  <a class="general_btn" id="startTestingBtn" style="text-align:center" href="#">Start Testing
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </a>
-              </div>
-          </form>
+          <table id='datatable' class="no-spacing">
+            <thead>
+              <tr>
+                  <th>Number</th>
+                  <th>Cycle</th>
+                  <th>Deficient Remarks</th>
+                  <th>Financial Statements</th>
+                  <th>Suggested Improvements</th>
+                  <th></th>
+              <tr>
+            </thead>
+            <tbody>
+                {% for row in deficiencies %}
+                  <tr class="row">
+                    <td class="cell id">{{row.id}}</td>
+                    <td class="cell cycle">{{row.cycle}}</td>
+                    <td class="cell remarks">{{row.remarks}}</td>
+                    <td class="cell financials">{{row.financials | default_if_none:""}}</td>
+                    <td class="cell suggestions">{{row.suggestions | default_if_none:""}}</td>
+                    <td class="cell datafile">{{row.datafile.id | default_if_none:""}}</td>
+                  </tr>
+                  {% empty %}
+                  <tr class="row">
+                    <td class="cell" colspan="6" style="text-align:center;">Sorry, there is no deficiencies!</td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          <div class="form-actions">
+              <a class="general_btn" id="submit" style="text-align:center" href="#">Submit
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </a>
+          </div>
+          <input type="hidden" name="status" value="">
+         </form>
         </div>
     </section>
 </main>
@@ -38,28 +71,60 @@
 {% block javascript %}
 <script>
     $(function() {
-      /*
-      $('#datatable')({
-        striped: true,
-        pagination: true,
-        showColumns: true,
-        showToggle: true,
-        showExport: true,
-        sortable: true,
-        paginationVAlign: 'both',
-        pageSize: 25,
-        pageList: [10, 25, 50, 100, 'ALL'],
-        columns: {{ IC_values.columns|safe }},  // here is where we use the column content from our Django View
-        data: {{ IC_values.data|safe }}, // here is where we use the data content from our Django View. we escape the content with the safe tag so the raw JSON isn't shown.
-      });
-      */
+      
+      $(".remarks, .suggestions, .financials").on('dblclick', function () {
+        let value = $(this).html();
+        $(this).html("");
+        $("<textarea/>", {
+          class: 'editor',
+          html: value
+        }).appendTo($(this)).focus();
+        
+      })
+      
+      $("body").on('blur', '.editor', function () {
+        let elem = $(this).parent();
+        let old_value = $(this).html()
 
-      var url = "{% url 'TOC_update' id=object_list.id %}";
+        let value = $(this).val();
+        let datafile_id = $(this).closest('.row').find(".datafile").html()
+        let cell = $(this).parent().clone();
+
+        $(this).parent().html(value)
+
+        let item = { datafile_id: datafile_id };
+        let prop = cell.removeClass('cell').attr('class');
+        item[prop] = value;
+        
+        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+      
+        $.ajax({
+          url: '{% url "deficiency" %}',
+          type: 'post',
+          headers: { "X-CSRFToken": csrftoken },
+          data: item,
+          success: function (res) {
+            if (res.message == "failed") {
+                console.log(old_value)
+                console.log(elem)
+                $(elem).html(old_value)
+            }
+          }, error: function (res) {
+            console.log(res)
+          }
+        });
+      })
+
+
+      var url = "";
 
       //$("#startTestingBtn").addClass('btn-disabled');
-      $("#startTestingBtn").on('click', function () {
+      $("#submit").on('click', function () {
         //if(!$(this).hasClass('btn-disabled'))
-          document.location.href = url;
+          $("input[name=status]").val("done")
+          console.log($("input[name=status]").val())
+          $("form").submit();
+          console.log($("form"))
       });
 
 

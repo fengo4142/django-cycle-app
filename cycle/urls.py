@@ -13,6 +13,7 @@ urlpatterns = [
     path('upload_sample', views.upload_sample, name='upload_sample'),
     path('sugg_samples', views.sugg_samples, name='sugg_samples'),
     path('deficiency', views.deficiency, name='deficiency'),
+    path('report_form', views.report_form, name='report_form'),
     url(r'^(?P<id>\d+)/edit/$', views.TOC_update, name='TOC_update'),
 
 ]

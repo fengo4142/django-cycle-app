@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView
+from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
 from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form
 import os, pandas as pd
 import numpy as np
+import json
 from next_prev import next_in_order, prev_in_order
 
 class CycleTransactionCreate(CreateView):
@@ -223,7 +225,7 @@ def upload_sample(request):
     		# 	print(Field_selected)
     		# 	print(IC_values)
 
-    		obj_id = 0    		
+    		obj_id = 0
     		IC_values = filehandle.sample(n=10)
     		for row in IC_values.iterrows():
 					
@@ -269,22 +271,7 @@ def TOC_update(request, id=None):
 		# data_id = DatafileModel.objects.get(data=instance).id
 		defecient_selected = form.cleaned_data.get("defecient")
 		remarks_selected = form.cleaned_data.get("remarks")
-		new_object = testing_of_controls.objects.create(defecient=defecient_selected, remarks=remarks_selected, data_id=id)
-
-		print('----')
-		print(defecient_selected)
-		print(instance)
-		defeciency = Deficiency()
-		defeciency.number = instance.id
-		defeciency.remarks = remarks_selected
-		defeciency.cycle = sampling_data.Cycle
-		print('---000-')
-		print(defeciency)
-		context = {
-			"sampling": sampling_data,
-			"instance": instance
-		}
-	
+		new_object = testing_of_controls.objects.create(defecient=defecient_selected, remarks=remarks_selected, data_id=id)	
 	
 	success_url = request.get_full_path()
 	
@@ -298,16 +285,55 @@ def TOC_update(request, id=None):
 
 	return render(request, 'sample_form.html', context)
 
+
 def deficiency(request):
-	
+
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 
+	url = ""
+
 	if request.method == "POST":
-		deficiency = Deficiency()	
+		params = request.POST
+		if params.get("status") == "done":
+			objects = list(Deficiency.objects.all())
+			for obj in objects:
+				obj.is_active = True
+				obj.save()
+			return redirect ('report_form')
+		datafile = request.POST['datafile_id']
+		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=False).first()
+		try:
+			if not deficiency:
+				Deficiency.objects.create(cycle=sampling_data.Cycle, remarks=params.get('remarks'), datafile_id=datafile)
+			else:
+				deficiency.cycle = sampling_data.Cycle
+				if params.get('remarks'):
+					deficiency.remarks = params.get('remarks')
+				if params.get('suggestions'):
+					deficiency.suggestions = params.get('suggestions')
+				if params.get('financials'):
+					deficiency.financials = params.get('financials')
+				deficiency.save()
+
+			print(params.get('islast'))
+			if params.get('islast') == "true":
+				url = reverse_lazy('deficiency')
+		except Exception as e:
+			print(e)
+			return JsonResponse({'message' : 'failed'})
+		return JsonResponse({'message' : 'success', 'url': url })
 	else:
-		
+		deficiencies = Deficiency.objects.filter(is_active=False)
 		context = {
-			"sampling_data" : sampling_data
+			"sampling_data" : sampling_data,
+			"deficiencies" : deficiencies
 		}
 	return render(request, "deficiency.html", context)
+
+def report_form(request):
+	context = {
+
+	}
+	return render(request, "report_form.html", context)
+

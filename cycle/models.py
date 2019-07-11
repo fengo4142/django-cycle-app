@@ -132,11 +132,12 @@ class samples(models.Model):
 
 
 class Deficiency(models.Model):
-	number = models.IntegerField()
 	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	remarks = models.TextField(null=True)
 	financials = models.TextField(null=True)
 	suggestions = models.TextField(null=True)
-	
+	datafile = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
+	is_active = models.BooleanField(default=False)
+
 	def __str__(self):
-		return str(self.number)
+		return str(self.remarks)
