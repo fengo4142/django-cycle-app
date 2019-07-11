@@ -129,3 +129,14 @@ class samples(models.Model):
 
 	def __str__(self):
 		return str(self.samples)
+
+
+class Deficiency(models.Model):
+	number = models.IntegerField()
+	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+	remarks = models.TextField(null=True)
+	financials = models.TextField(null=True)
+	suggestions = models.TextField(null=True)
+	
+	def __str__(self):
+		return str(self.number)

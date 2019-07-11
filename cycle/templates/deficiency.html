@@ -10,26 +10,14 @@
         {% include 'sidebar.html' %}
         <div class="sampling_form">
           <div class="modal-header" style="margin: 30px">
-              <h4 class="modal-title">Samples Selected</h4>
+              <h4 class="modal-title">Test Of Controls - Deficiencies</h4>
           </div>
-          <table id='datatable' class="no-spacing">
-            <thead>
-              <tr>
-                  {% for th in IC_values.columns %}
-                    <th width="10%">{{ th }}</th>
-                  {% endfor %}
-              <tr>
-            </thead>
-            <tbody>
-              {% for index, row in IC_values.iterrows|slice:":1" %}
-              <tr class="ic_row">
-                {% for td in row %}
-                  <td>{{ td }}</td>
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+          <div class="sampling_data">
+                    <span>Cycle: {{sampling.Cycle}}</span>
+                    <span>Client: {{sampling.Client}}</span>
+                    <span>Year: {{sampling.Year}}</span>
+          </div>
+          
           <form>
               <div class="form-actions">
                   <a class="general_btn" id="startTestingBtn" style="text-align:center" href="#">Start Testing
