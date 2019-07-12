@@ -11,6 +11,7 @@ import numpy as np
 from next_prev import next_in_order, prev_in_order
 from django.views.decorators.csrf import csrf_exempt
 
+
 class CycleTransactionCreate(CreateView):
 	model = Cycle_in_obj
 	fields = ['cycle_type', 'client_name']
@@ -29,7 +30,6 @@ class CycleTransactionCreate(CreateView):
 		else:
 			data['titles'] = ObjectivesFormSet()
 		return data
-		
 
 	def form_valid(self, form):
 		print('HI')
@@ -50,20 +50,19 @@ class CycleTransactionCreate(CreateView):
 					# print(title.prefix)
 				# print(titles)
 		return super(CycleTransactionCreate, self).form_valid(form)
-		
 
-def CycleTransactionGet(request):
-  if request.method == "GET":
+	def CycleTransactionGet(request):
+		if request.method == "GET":
+			print(request.GET.get('objectives_trans'))
+			cc = request.GET.get('objectives_trans')
+			print(cc)
+			# cycle_id = Cycle.objects.get(cycle_name=cc).id
 
-    print(request.GET.get('objectives_trans'))
-    cc = request.GET.get('objectives_trans')
-    print(cc)
-    # cycle_id = Cycle.objects.get(cycle_name=cc).id
+			objectives_trans = Objectives.objects.filter(cycle__cycle_type_id=cc)
+			print(objectives_trans)
 
-    objectives_trans = Objectives.objects.filter(cycle__cycle_type_id=cc)
-    print(objectives_trans)
+		return HttpResponse(objectives_trans)
 
-  return HttpResponse(objectives_trans)
 
 class CycleTransactionCreateOld(CreateView):
 	model = Cycle_in_obj
@@ -82,7 +81,6 @@ class CycleTransactionCreateOld(CreateView):
 		else:
 			data['titles'] = ObjectivesFormSet()
 		return data
-		
 
 	def form_valid(self, form):
 		print('HI')
@@ -91,7 +89,6 @@ class CycleTransactionCreateOld(CreateView):
 		with transaction.atomic():
 			form.instance.user = self.request.user
 			self.object = form.save()
-
 
 			if titles.is_valid():
 				titles.instance.user = self.request.user
