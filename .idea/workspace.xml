@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5fd4b4f2-2432-4e04-94f1-8e5420a0a5d9" name="Default Changelist" comment="" />
+    <list default="true" id="5fd4b4f2-2432-4e04-94f1-8e5420a0a5d9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/cycle/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/cycle/models.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +18,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/cycle/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
+            <state relative-caret-position="458">
+              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
@@ -28,17 +30,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Django-pedrag-source/mxgraph/mxgraph/mxgraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="19" column="23" selection-start-line="2" selection-end-line="19" selection-end-column="23" />
+            <state relative-caret-position="44">
+              <caret line="10" column="13" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cycle/templates/index.html">
+        <entry file="file://$PROJECT_DIR$/cycle/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3036">
-              <caret line="18" column="38" lean-forward="true" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
+            <state relative-caret-position="286">
+              <caret line="56" column="37" lean-forward="true" selection-start-line="56" selection-start-column="37" selection-end-line="56" selection-end-column="37" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -55,6 +60,10 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>savefile</find>
+      <find>edrag-source/mxgraph/mxg</find>
+      <find>views.saveData</find>
+      <find>XMLGraph</find>
+      <find>Mxcell</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -64,6 +73,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/cycle/mxgraph.py" />
+        <option value="$PROJECT_DIR$/cycle/templates/index.html" />
+        <option value="$PROJECT_DIR$/cycle/urls.py" />
+        <option value="$PROJECT_DIR$/../Django-pedrag-source/mxgraph/mxgraph/mxgraph.py" />
+        <option value="$PROJECT_DIR$/cycle/models.py" />
       </list>
     </option>
   </component>
@@ -169,12 +182,12 @@
       <updated>1562823843097</updated>
       <workItem from="1562823845896" duration="2481000" />
       <workItem from="1562830273000" duration="602000" />
-      <workItem from="1562918254947" duration="4555000" />
+      <workItem from="1562918254947" duration="6691000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7638000" />
+    <option name="totallyTimeSpent" value="9774000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
@@ -221,10 +234,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/cycle/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/cycle/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="28" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="28" />
+        <state relative-caret-position="458">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
           </folding>
@@ -233,15 +253,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../Django-pedrag-source/mxgraph/mxgraph/mxgraph.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="19" column="23" selection-start-line="2" selection-end-line="19" selection-end-column="23" />
+        <state relative-caret-position="44">
+          <caret line="10" column="13" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cycle/templates/index.html">
+    <entry file="file://$PROJECT_DIR$/cycle/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3036">
-          <caret line="18" column="38" lean-forward="true" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
+        <state relative-caret-position="286">
+          <caret line="56" column="37" lean-forward="true" selection-start-line="56" selection-start-column="37" selection-end-line="56" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

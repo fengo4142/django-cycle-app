@@ -5,9 +5,9 @@ import numpy
 
 class Client(models.Model):
 	client_name = models.CharField(max_length=20)
+
 	def __str__(self):
 		return self.client_name
-
 
 
 class Cycle(models.Model):
@@ -15,21 +15,22 @@ class Cycle(models.Model):
 	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
 	# def __str__(self):
 	# 	return str(self.cycle_name)
+
 	def __str__(self):
 		return str(self.cycle_type)
 
 
 class Cycle_in_obj(models.Model):
 	cycle_type = models.ForeignKey(Cycle, on_delete=models.CASCADE)
-	#user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+	#  user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
 	
 	def __str__(self):
 		return str(self.cycle_type)
 
 
-
-class Objectives(models.Model): #Build
+#  Build
+class Objectives(models.Model):
 
 	medium = 'Med'
 	low = 'Low'
@@ -46,18 +47,18 @@ class Objectives(models.Model): #Build
 	assessed_cr = models.CharField(max_length=20, choices = Med_High_CHOICES)
 
 
-
-
 class DatafileModel(models.Model):
 
     data = PickledObjectField()
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+
     class Meta:
         ordering = ["updated", "pk" ]
 
     def __str__(self):
     	return str(self.data)
+
 
 class testing_of_controls(models.Model):
 	Option_CHOICES = (
@@ -84,19 +85,21 @@ class Mxcell(models.Model): #Case
 
 	def __str__(self):
 		return self.value
+
 	
 class Test_of_Controls(models.Model):
 	mxcell = models.ForeignKey(Mxcell, on_delete=models.CASCADE)
 	control_procedures = models.CharField(max_length=150)
 
 	def __str__(self):
-		return 
+		return
+
 
 class sampling(models.Model):
 	Estimated_Population_Exception_Rate = models.IntegerField()
-	#EPER - Exception Rate that the auditor expects to find in the population 
+	#  EPER - Exception Rate that the auditor expects to find in the population
 	Tolerable_Exception_Rate = models.IntegerField() 
-	#TPER - Exception Rate that the auditor will permit in the population and still be willing to conclude that -
+	#  TPER - Exception Rate that the auditor will permit in the population and still be willing to conclude that -
 	# - controls are operating effectively
 	Population_Size = models.IntegerField()
 	Suggested_Sample_Size = models.IntegerField()
@@ -109,6 +112,7 @@ class sampling(models.Model):
 	Client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	Cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	Year = models.IntegerField(null=True)
+
 
 class samples(models.Model):
 
@@ -129,15 +133,16 @@ class samples(models.Model):
 	def __str__(self):
 		return str(self.samples)
 
- 
+
 class Title(models.Model):
-    title = models.TextField(null=True)
-    def __str__(self):
-        return self.title
- 
- 
+	title = models.TextField(null=True)
+
+	def __str__(self):
+		return self.title
+
+
 class XMLGraph(models.Model):
-    #only one title per graph
+	#  only one title per graph
     title = models.OneToOneField(
         to=Title,
         blank=True,
@@ -162,7 +167,8 @@ class Member(models.Model):
  
     def __str__(self):
         return self.user.username
- 
+
+
 class Profile(models.Model):
     user = models.OneToOneField(
         to=Member,
