@@ -51,15 +51,16 @@ class CycleTransactionCreate(CreateView):
 				# print(titles)
 		return super(CycleTransactionCreate, self).form_valid(form)
 
-	def CycleTransactionGet(request):
-		if request.method == "GET":
-			print(request.GET.get('objectives_trans'))
-			cc = request.GET.get('objectives_trans')
-			print(cc)
-			# cycle_id = Cycle.objects.get(cycle_name=cc).id
 
-			objectives_trans = Objectives.objects.filter(cycle__cycle_type_id=cc)
-			print(objectives_trans)
+def CycleTransactionGet(request):
+	if request.method == "GET":
+		print(request.GET.get('objectives_trans'))
+		cc = request.GET.get('objectives_trans')
+		print(cc)
+		# cycle_id = Cycle.objects.get(cycle_name=cc).id
+
+		objectives_trans = Objectives.objects.filter(cycle__cycle_type_id=cc)
+		print(objectives_trans)
 
 		return HttpResponse(objectives_trans)
 
