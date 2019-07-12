@@ -73,7 +73,8 @@ class testing_of_controls(models.Model):
 		return str(self.data)
 
 
-class Mxcell(models.Model): #Case
+#  Case
+class Mxcell(models.Model):
 	style = models.CharField(max_length=1000)
 	value = models.CharField(max_length=1000)
 	# objectives = models.ManyToManyField(Objectives)
@@ -106,9 +107,9 @@ class sampling(models.Model):
 	Actual_Sample_Size = models.IntegerField() #page-525
 	Number_of_Exceptions = models.IntegerField(null=True)
 	Sample_Exception_Rate = models.IntegerField(null=True)
-	#Number of exceptions in sample divided by the sample size
+	#  Number of exceptions in sample divided by the sample size
 	Computed_Upper_Exception_Rate = models.IntegerField(null=True)
-	#The higest estimated exception rate in the population at a given ARACR
+	#  The highest estimated exception rate in the population at a given ARACR
 	Client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	Cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	Year = models.IntegerField(null=True)
