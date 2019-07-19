@@ -141,3 +141,22 @@ class Deficiency(models.Model):
 
 	def __str__(self):
 		return str(self.remarks)
+
+
+class Report(models.Model):
+	client = models.ForeignKey(Client, on_delete=models.CASCADE)
+	year = models.IntegerField()
+	intro_paragraph = models.TextField(null=True)
+	audit_objective = models.TextField(null=True)
+	scope_paragraph = models.TextField(null=True)
+	deficiency = models.TextField(null=True)
+	financials = models.TextField(null=True)
+	suggestions = models.TextField(null=True)
+	opinion_paragraph = models.TextField(null=True)
+
+	def __str__(self):
+		return str(self.intro_paragraph)
+
+		
+
+	

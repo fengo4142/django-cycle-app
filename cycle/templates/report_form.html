@@ -14,7 +14,50 @@
               <div class="modal-header" style="margin: 30px; text-align: right">
                 <h4 class="modal-title">Report Form</h4>
               </div>
-              
+              <div class="sampling_data">
+                  <span>Cycle: {{sampling_data.Cycle}}</span>
+                  <span>Client: {{sampling_data.Client}}</span>
+                  <span>Year: {{sampling_data.Year}}</span>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Introductory Paragraph</label>
+                <div class="controls">
+                  <textarea name="intro_paragraph" cols="40" rows="4" class="textarea" required="" id="intro_paragraph"></textarea>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Audit Objective</label>
+                <div class="controls">
+                  <textarea name="audit_objective" cols="40" rows="4" class="textarea" required="" id="audit_objective"></textarea>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Scope Paragraph</label>
+                <div class="controls">
+                  <textarea name="scope_paragraph" cols="40" rows="4" class="textarea" required="" id="scope_paragraph"></textarea>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">Findings and Recommendations</div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Findings and Recommendations from previous page</label>
+                <div class="controls">
+                  <div class="col-4 report-recommendation">
+                    <label>Deficiency</label>
+                    <textarea name="deficiency" id="deficiency"></textarea>
+                  </div>
+                  <div class="col-4 report-recommendation">
+                    <label>Deficiency</label>
+                    <textarea name="deficiency" id="deficiency"></textarea>
+                  </div>
+                  <div class="col-4 report-recommendation">
+                    <label>Deficiency</label>
+                    <textarea name="deficiency" id="deficiency"></textarea>
+                  </div>
+                </div>
+              </div>
               <div class="form-actions">
                 <button class="general_btn">Next
                     <span></span>
