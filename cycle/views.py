@@ -290,7 +290,6 @@ def deficiency(request):
 
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
-
 	url = ""
 
 	if request.method == "POST":
@@ -301,12 +300,17 @@ def deficiency(request):
 				obj.is_active = True
 				obj.save()
 			return redirect ('report_form')
+		
+		print(params)
 		datafile = request.POST['datafile_id']
 		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=False).first()
 		try:
+			print(deficiency)
+			print("ififififif")
 			if not deficiency:
 				Deficiency.objects.create(cycle=sampling_data.Cycle, remarks=params.get('remarks'), datafile_id=datafile)
 			else:
+				print("-----")
 				deficiency.cycle = sampling_data.Cycle
 				if params.get('remarks'):
 					deficiency.remarks = params.get('remarks')

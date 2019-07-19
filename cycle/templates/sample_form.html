@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="modal-footer" style="display: flex; text-align: center;">
-                            <button class="general_btn btn-disabled" id="saveBtn">Save
+                            <button class="general_btn" id="saveBtn">Save
                                 <span></span>
                                 <span></span>
                                 <span></span>
@@ -123,7 +123,7 @@ This is the last film!
   $(function() {
       var $radios = $('input:radio[name=defecient]');
       if($radios.is(':checked') === false) {
-          $radios.filter('[value=indefecient]').prop('checked', true);
+          $radios.filter('[value=defecient]').prop('checked', true);
       }
   });
 
@@ -137,42 +137,53 @@ This is the last film!
     $("#prevBtn").addClass("btn-disabled");
   }
 
+  const saveSample = function () {
+    const params = {
+      datafile_id: '{{instance.id}}',
+      remarks: $("#id_remarks").val(),
+      islast: $("#nextBtn").hasClass("btn-disabled") ? true : false
+    }
+    const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    
+    $.ajax({
+      url: '{% url "deficiency" %}',
+      type: 'post',
+      headers: { "X-CSRFToken": csrftoken },
+      data: params,
+      success: function (res) {
+        if(res.message == "success"){
+          res.url != "" ? $(location).attr("href", res.url) : console.log("saved");
+        }
+      }, error: function (res) {
+        console.log(res)
+      }
+    })
+  }
   $(".general_btn").on('click', function (event) {
     event.preventDefault();
     
     if ($(this).attr("id") == "saveBtn" && !$(this).hasClass("btn-disabled")) {
-      const params = {
-        datafile_id: '{{instance.id}}',
-        remarks: $("#id_remarks").val(),
-        islast: $("#nextBtn").hasClass("btn-disabled") ? true : false
-      }
-      const csrftoken = $("[name=csrfmiddlewaretoken]").val();
       
-      $.ajax({
-        url: '{% url "deficiency" %}',
-        type: 'post',
-        headers: { "X-CSRFToken": csrftoken },
-        data: params,
-        success: function (res) {
-          if(res.message == "success"){
-            res.url != "" ? $(location).attr("href", res.url) : $("#nextBtn").click();
-          }
-        }, error: function (res) {
-          console.log(res)
-        }
-      })
+      if($("input[name=defecient]:checked").val() == "defecient") {
+        $("#nextBtn").click();
+        if($("#nextBtn").hasClass("btn-disabled")) {
+          $(location).attr('href', '{% url "deficiency" %}')
+        }       
+      }
+             
     }
     else if (!$(this).hasClass("btn-disabled")) {
+      saveSample();
       document.location.href = $(this).data("url");
     }
   });
 
   $("input[type=radio]").on('click', function () {
     console.log($(this).val())
-    if ($(this).val() == "defecient" && $("#saveBtn").hasClass('btn-disabled')) 
-        $("#saveBtn").removeClass('btn-disabled') 
-    else if (!$("#saveBtn").hasClass('btn-disabled'))
-        $("#saveBtn").addClass('btn-disabled')
+    //if ($(this).val() == "defecient" && $("#saveBtn").hasClass('btn-disabled')) 
+    //    $("#saveBtn").removeClass('btn-disabled') 
+    //else if (!$("#saveBtn").hasClass('btn-disabled'))
+    //    $("#saveBtn").addClass('btn-disabled')
   });
 
 
