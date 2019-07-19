@@ -1086,5 +1086,6 @@ tbody > .dynamic-form-add > td:first-child > a {
 
 
 .report-recommendation {
-  padding: 0 15px; float: left;
+  padding: 0 5px; 
+  float: left;
 }

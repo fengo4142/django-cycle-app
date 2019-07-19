@@ -4,12 +4,15 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+
+</style>
  	<main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
           
-          <form method="POST">
+          <form method="POST" action="{% url 'report_form' %}">
                 {% csrf_token %}
               <div class="modal-header" style="margin: 30px; text-align: right">
                 <h4 class="modal-title">Report Form</h4>
@@ -44,22 +47,28 @@
               <div class="control-group">
                 <label class="control-label">Findings and Recommendations from previous page</label>
                 <div class="controls">
-                  <div class="col-4 report-recommendation">
+                  <div class="col-4 report-recommendation" style="padding-left: 0;">
                     <label>Deficiency</label>
-                    <textarea name="deficiency" id="deficiency"></textarea>
+                    <textarea name="deficiency" row="4" class="textarea" id="deficiency"></textarea>
                   </div>
                   <div class="col-4 report-recommendation">
-                    <label>Deficiency</label>
-                    <textarea name="deficiency" id="deficiency"></textarea>
+                    <label>Financial Statements</label>
+                    <textarea name="financials" row="4" class="textarea" id="deficiency"></textarea>
                   </div>
-                  <div class="col-4 report-recommendation">
-                    <label>Deficiency</label>
-                    <textarea name="deficiency" id="deficiency"></textarea>
+                  <div class="col-4 report-recommendation" style="padding-right: 0;">
+                    <label>Suggested Improvements</label>
+                    <textarea name="suggestions" row="4" class="textarea" id="deficiency"></textarea>
                   </div>
                 </div>
               </div>
+              <div class="control-group">
+                <label class="control-label">Opinion Paragraph</label>
+                <div class="controls">
+                  <textarea name="opinion_paragraph" cols="40" rows="4" class="textarea" required="" id="opinion_paragraph"></textarea>
+                </div>
+              </div>
               <div class="form-actions">
-                <button class="general_btn">Next
+                <button type="submit" class="general_btn">Next
                     <span></span>
                     <span></span>
                     <span></span>

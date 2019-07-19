@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency
+from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form
 import os, pandas as pd
 import numpy as np
@@ -333,8 +333,27 @@ def deficiency(request):
 def report_form(request):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
+
+	if request.method == "POST":
+		params = request.POST
+		print(params)
+
+
+		X = Report()
+		X.year = sampling_data.Year
+		X.client = sampling_data.Client
+		X.intro_paragraph = params.get('intro_paragraph')
+		X.audit_objective = params.get('audit_objective')
+		X.scope_paragraph = params.get('scope_paragraph')
+		X.deficiency = params.get('deficiency')
+		X.financials = params.get('financials')
+		X.suggestions = params.get('suggestions')
+		X.opinion_paragraph = params.get('opinion_paragraph')
+		X.save()
+
 	context = {
 		"sampling_data" : sampling_data,
 	}
+
 	return render(request, "report_form.html", context)
 
