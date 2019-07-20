@@ -218,7 +218,7 @@ def upload_sample(request):
     		print(sampling_mtd_selected)
 
     		if sampling_mtd_selected == "Random":
-    			IC_values = filehandle.sample(n=10)    			
+    			IC_values = filehandle.sample(n=10)		
 
     		# if sampling_mtd_selected == "Condition":
     		# 	Field_selected = form.cleaned_data.get("field_selected")
@@ -278,7 +278,7 @@ def TOC_update(request, id=None):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 
-	if form.is_valid():
+	if form.is_valid() and request.method == "POST":
 		
 		# data_id = DatafileModel.objects.get(data=instance).id
 		new_object = testing_of_controls.objects.get(data_id=id)
