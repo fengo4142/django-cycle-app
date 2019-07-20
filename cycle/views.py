@@ -205,6 +205,8 @@ def sugg_samples(request):
  
 
 def upload_sample(request):
+    sampling_id = request.session['sampling_id']
+    sampling_data = sampling.objects.get(pk=sampling_id)
     if request.method == 'POST':
     	form = samples_form(request.POST, request.FILES)
     	if form.is_valid():
@@ -228,13 +230,20 @@ def upload_sample(request):
     		obj_id = 0
     		IC_values = filehandle.sample(n=10)
     		for row in IC_values.iterrows():
-					
+					 
     			datafile = DatafileModel()
     			datafile.data = row
+    			datafile.cycle = sampling_data.Cycle
+    			datafile.client = sampling_data.Client
     			datafile.save()
     			if obj_id == 0:
     				obj_id = datafile.id				    			
-    			# print(datafile.data)
+    			#print(datafile.data)
+    			toc = testing_of_controls()
+    			toc.data = datafile
+    			toc.cycle = sampling_data.Cycle
+    			toc.client = sampling_data.Client
+    			toc.save()
 
     		object_list = DatafileModel.objects.get(id=obj_id)
     		
@@ -249,40 +258,46 @@ def upload_sample(request):
     		print(form.errors)
     else:
     	form = samples_form()
-    	sampling_id = request.session['sampling_id']
-    	sampling_data = sampling.objects.get(pk=sampling_id)
+    	
     return render(request, 'select_sample.html', { 'form': form, 'sampling': sampling_data })
 
 def TOC_update(request, id=None):
-	
+	sampling_id = request.session['sampling_id']
+	sampling_data = sampling.objects.get(pk=sampling_id)
+
 	instance = get_object_or_404(DatafileModel, id=id)
 	form = TOC_Form(request.POST or None, request.FILES, instance=instance)
 	# the_next = instance.get_next_by_timestamp()
-	newest = DatafileModel.objects.all().first()
+	cycle = sampling_data.Cycle
+	client = sampling_data.Client
+	newest = DatafileModel.objects.filter(cycle=cycle).filter(client=client).order_by('-id')[:10].first()
 	the_next = next_in_order(instance)
 	the_prev = prev_in_order(instance)
+	submitted = False
 
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 
 	if form.is_valid():
-		# form.save()
-
+		
 		# data_id = DatafileModel.objects.get(data=instance).id
-		deficient_selected = form.cleaned_data.get("defecient")
-		remarks_selected = form.cleaned_data.get("remarks")
-		new_object = testing_of_controls.objects.create(deficient=deficient_selected, remarks=remarks_selected, data_id=id)	
-	
+		new_object = testing_of_controls.objects.get(data_id=id)
+		new_object.deficient = form.cleaned_data.get("deficient")
+		new_object.remarks = form.cleaned_data.get("remarks") 
+		print(new_object)
+		new_object.save()
+		submitted = True
+
 	success_url = request.get_full_path()
-	
+
 	context = {
     			"sampling_data": sampling_data,
     			"instance": instance,
     			"form": form,
+					"submitted": submitted,
 					"the_prev": the_prev,
     			"the_next" : the_next,
     	}
-
 	return render(request, 'sample_form.html', context)
 
 
@@ -291,25 +306,30 @@ def deficiency(request):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 	url = ""
-
+	
 	if request.method == "POST":
 		params = request.POST
+
+		#deficiency table submit
 		if params.get("status") == "done":
 			objects = list(Deficiency.objects.all())
 			for obj in objects:
 				obj.is_active = True
 				obj.save()
 			return redirect ('report_form')
-		
+
 		datafile = request.POST['datafile_id']
-		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=True).first()
+		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=True).first()		
+
 		if params.get('deficient') == 'deficient':
 			is_active = True
 		else:
 			is_active = False
+		print(is_active)
+		print(datafile)
 		try:
 			if not deficiency:
-				Deficiency.objects.create(cycle=sampling_data.Cycle, remarks=params.get('remarks'), datafile_id=datafile, is_active=is_active)
+				Deficiency.objects.create(cycle=sampling_data.Cycle, client=sampling_data.Client, remarks=params.get('remarks'), datafile_id=datafile, is_active=is_active)
 			else:
 				deficiency.cycle = sampling_data.Cycle
 				if params.get('remarks'):
@@ -320,12 +340,14 @@ def deficiency(request):
 					deficiency.financials = params.get('financials')
 				deficiency.is_active = is_active
 				deficiency.save()
-
-			if params.get('islast') == "true":
-				url = reverse_lazy('deficiency')
+				
+				if params.get('islast') == "true":
+					url = reverse_lazy('deficiency')
+			
 		except Exception as e:
 			print(e)
 			return JsonResponse({'message' : 'failed'})
+	
 		return JsonResponse({'message' : 'success', 'url': url })
 	else:
 		deficiencies = Deficiency.objects.filter(is_active=True)
@@ -342,7 +364,6 @@ def report_form(request):
 	if request.method == "POST":
 		params = request.POST
 		print(params)
-
 
 		X = Report()
 		X.year = sampling_data.Year

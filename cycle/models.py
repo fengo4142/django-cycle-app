@@ -49,7 +49,8 @@ class Objectives(models.Model): #Build
 
 
 class DatafileModel(models.Model):
-
+    cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     data = PickledObjectField()
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -63,6 +64,8 @@ class testing_of_controls(models.Model):
 	Option_CHOICES = (
     ('deficient','deficient'),
 )
+	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+	client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	data = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
 	remarks = models.TextField(null=True)
 	attachment = models.FileField(null=True, blank=True)
@@ -133,11 +136,12 @@ class samples(models.Model):
 
 class Deficiency(models.Model):
 	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+	client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	remarks = models.TextField(null=True)
 	financials = models.TextField(null=True)
 	suggestions = models.TextField(null=True)
 	datafile = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
-	is_active = models.BooleanField(default=False)
+	is_active = models.BooleanField()
 
 	def __str__(self):
 		return str(self.remarks)

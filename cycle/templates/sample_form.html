@@ -40,6 +40,7 @@
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
+                <input id="submitted" type="hidden" value="{{submitted}}" />
                 <form action="" id="sample_form" method="post" enctype="multipart/form-data">
                   <div class="modal-header" style="margin-top: 50px; text-align: right">
                       <h4 class="modal-title">Test Of Controls</h4>
@@ -121,6 +122,11 @@ This is the last film!
 {% endif %} -->
 <script>
   $(function() {
+      
+      if($("#submitted").val() == "True" && !$("#nextBtn").hasClass("btn-disabled")) {
+        $("#submitted").val("False")
+        document.location.href = $("#nextBtn").data("url");
+      }
       var $radios = $('input:radio[name=deficient]');
       if($radios.is(':checked') === false) {
           $radios.filter('[value=deficient]').prop('checked', true);
@@ -152,8 +158,13 @@ This is the last film!
       headers: { "X-CSRFToken": csrftoken },
       data: params,
       success: function (res) {
-        if(res.message == "success"){
-          res.url != "" ? $(location).attr("href", res.url) : console.log("saved");
+        console.log(res)
+        if(res.message == "success"){          
+          if(res.url != ""){
+            document.location.href = res.url;
+            return;
+          }
+          $('form#sample_form').submit()
         }
       }, error: function (res) {
         console.log(res)
@@ -163,16 +174,13 @@ This is the last film!
   $(".general_btn").on('click', function (event) {
     event.preventDefault();
     
-    if ($(this).attr("id") == "saveBtn" && !$(this).hasClass("btn-disabled")) {
+    if (($(this).attr("id") == "saveBtn" && !$(this).hasClass("btn-disabled")) || ($(this).attr("id") == "nextBtn" || !$(this).hasClass("btn-disabled"))) {        
+        console.log($(this).attr('id'))
         
-        $("#nextBtn").click();
-        if($("#nextBtn").hasClass("btn-disabled")) {
-          $(location).attr('href', '{% url "deficiency" %}')
-        }       
-                 
+        saveSample();
+
     }
-    else if (!$(this).hasClass("btn-disabled")) {
-      saveSample();
+    else if ($(this).attr("id") == "prevBtn" && !$(this).hasClass("btn-disabled")) {      
       document.location.href = $(this).data("url");
     }
   });
@@ -195,7 +203,7 @@ This is the last film!
         reader.onload = function (e) {
             $("<img />", {
                 "src": e.target.result,
-                "class": "thumb-image",                
+                "class": "thumb-image",
             }).appendTo(image_holder);
         };
         reader.readAsDataURL($(this)[0].files[i]);

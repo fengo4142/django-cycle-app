@@ -426,9 +426,11 @@ class TOC_Form(forms.ModelForm):
 		def __init__(self, *args, **kwargs):
 			super(TOC_Form, self).__init__(*args, **kwargs)
 			self.fields['remarks'].widget.attrs['rows'] = 4
+			self.fields['remarks'].required = False
 			self.fields['deficient'] = forms.ChoiceField(label="Deficient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
 			self.fields['deficient'].required = False
 			self.fields['attachment'] = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),)
+			self.fields['attachment'].required = False
 			self.helper = FormHelper()
 			self.helper.form_tag = True
 			self.helper.form_class = 'form-horizontal'
