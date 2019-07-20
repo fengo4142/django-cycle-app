@@ -269,9 +269,9 @@ def TOC_update(request, id=None):
 		# form.save()
 
 		# data_id = DatafileModel.objects.get(data=instance).id
-		defecient_selected = form.cleaned_data.get("defecient")
+		deficient_selected = form.cleaned_data.get("defecient")
 		remarks_selected = form.cleaned_data.get("remarks")
-		new_object = testing_of_controls.objects.create(defecient=defecient_selected, remarks=remarks_selected, data_id=id)	
+		new_object = testing_of_controls.objects.create(deficient=deficient_selected, remarks=remarks_selected, data_id=id)	
 	
 	success_url = request.get_full_path()
 	
@@ -300,12 +300,16 @@ def deficiency(request):
 				obj.is_active = True
 				obj.save()
 			return redirect ('report_form')
-
+		
 		datafile = request.POST['datafile_id']
-		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=False).first()
+		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=True).first()
+		if params.get('deficient') == 'deficient':
+			is_active = True
+		else:
+			is_active = False
 		try:
 			if not deficiency:
-				Deficiency.objects.create(cycle=sampling_data.Cycle, remarks=params.get('remarks'), datafile_id=datafile)
+				Deficiency.objects.create(cycle=sampling_data.Cycle, remarks=params.get('remarks'), datafile_id=datafile, is_active=is_active)
 			else:
 				deficiency.cycle = sampling_data.Cycle
 				if params.get('remarks'):
@@ -314,6 +318,7 @@ def deficiency(request):
 					deficiency.suggestions = params.get('suggestions')
 				if params.get('financials'):
 					deficiency.financials = params.get('financials')
+				deficiency.is_active = is_active
 				deficiency.save()
 
 			if params.get('islast') == "true":
@@ -323,7 +328,7 @@ def deficiency(request):
 			return JsonResponse({'message' : 'failed'})
 		return JsonResponse({'message' : 'success', 'url': url })
 	else:
-		deficiencies = Deficiency.objects.filter(is_active=False)
+		deficiencies = Deficiency.objects.filter(is_active=True)
 		context = {
 			"sampling_data" : sampling_data,
 			"deficiencies" : deficiencies

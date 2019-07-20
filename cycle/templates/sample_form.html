@@ -60,9 +60,9 @@
                   </table>
                   {% csrf_token %}
                     {{ form.non_field_errors }}
-                    {{ form.defecient.errors }}
+                    {{ form.deficient.errors }}
                     <div class="defecient"> 
-                      {{ form.defecient|as_crispy_field }}
+                      {{ form.deficient|as_crispy_field }}
                     </div>
                     {{ form.attachment.errors }}
                     {{ form.attachment|as_crispy_field }}
@@ -121,9 +121,9 @@ This is the last film!
 {% endif %} -->
 <script>
   $(function() {
-      var $radios = $('input:radio[name=defecient]');
+      var $radios = $('input:radio[name=deficient]');
       if($radios.is(':checked') === false) {
-          $radios.filter('[value=defecient]').prop('checked', true);
+          $radios.filter('[value=deficient]').prop('checked', true);
       }
   });
 
@@ -139,6 +139,7 @@ This is the last film!
 
   const saveSample = function () {
     const params = {
+      deficient: $("input[name=deficient]:checked").val(),
       datafile_id: '{{instance.id}}',
       remarks: $("#id_remarks").val(),
       islast: $("#nextBtn").hasClass("btn-disabled") ? true : false
@@ -163,14 +164,12 @@ This is the last film!
     event.preventDefault();
     
     if ($(this).attr("id") == "saveBtn" && !$(this).hasClass("btn-disabled")) {
-      
-      if($("input[name=defecient]:checked").val() == "defecient") {
+        
         $("#nextBtn").click();
         if($("#nextBtn").hasClass("btn-disabled")) {
           $(location).attr('href', '{% url "deficiency" %}')
         }       
-      }
-             
+                 
     }
     else if (!$(this).hasClass("btn-disabled")) {
       saveSample();

@@ -61,12 +61,12 @@ class DatafileModel(models.Model):
 
 class testing_of_controls(models.Model):
 	Option_CHOICES = (
-    ('defecient','defecient'),
+    ('deficient','deficient'),
 )
 	data = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
 	remarks = models.TextField(null=True)
 	attachment = models.FileField(null=True, blank=True)
-	defecient = models.CharField(max_length=8, choices=Option_CHOICES)
+	deficient = models.CharField(max_length=8, choices=Option_CHOICES)
 
 	def __str__(self):
 		return str(self.data)
@@ -157,6 +157,6 @@ class Report(models.Model):
 	def __str__(self):
 		return str(self.intro_paragraph)
 
-		
+
 
 	

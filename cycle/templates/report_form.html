@@ -4,14 +4,11 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<style>
 
-</style>
  	<main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
-        <div class="sampling_form">
-          
+        <div class="sampling_form">          
           <form method="POST" action="{% url 'report_form' %}">
                 {% csrf_token %}
               <div class="modal-header" style="margin: 30px; text-align: right">

@@ -413,21 +413,21 @@ class samples_form(forms.Form):
 
 class TOC_Form(forms.ModelForm):
 		Option_CHOICES = [
-				['defecient', 'defecient'],['indefecient','indefecient'],
+				['deficient', 'deficient'],['indeficient','indeficient'],
 		]
 		class Meta:
 			model = testing_of_controls
 			fields = [
 				"remarks",
 				"attachment",
-				"defecient",
+				"deficient",
 			]
 
 		def __init__(self, *args, **kwargs):
 			super(TOC_Form, self).__init__(*args, **kwargs)
 			self.fields['remarks'].widget.attrs['rows'] = 4
-			self.fields['defecient'] = forms.ChoiceField(label="Defecient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
-			self.fields['defecient'].required = False
+			self.fields['deficient'] = forms.ChoiceField(label="Deficient or Not?", widget=forms.RadioSelect(), choices=self.Option_CHOICES)	
+			self.fields['deficient'].required = False
 			self.fields['attachment'] = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),)
 			self.helper = FormHelper()
 			self.helper.form_tag = True
