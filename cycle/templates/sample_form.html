@@ -123,9 +123,13 @@ This is the last film!
 <script>
   $(function() {
       
-      if($("#submitted").val() == "True" && !$("#nextBtn").hasClass("btn-disabled")) {
-        $("#submitted").val("False")
-        document.location.href = $("#nextBtn").data("url");
+      if ($("#submitted").val() == "True") {
+        $("#submitted").val("False")        
+        if (!$("#nextBtn").hasClass("btn-disabled")) {
+            document.location.href = $("#nextBtn").data("url");
+        } else {
+            document.location.href = '{% url "deficiency" %}';            
+        }
       }
       var $radios = $('input:radio[name=deficient]');
       if($radios.is(':checked') === false) {
@@ -161,7 +165,7 @@ This is the last film!
         console.log(res)
         if(res.message == "success"){          
           if(res.url != ""){
-            document.location.href = res.url;
+            document.location.href = '{% url "deficiency" %}';
             return;
           }
           $('form#sample_form').submit()

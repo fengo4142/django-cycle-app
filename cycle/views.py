@@ -239,11 +239,11 @@ def upload_sample(request):
     			if obj_id == 0:
     				obj_id = datafile.id				    			
     			#print(datafile.data)
-    			toc = testing_of_controls()
-    			toc.data = datafile
-    			toc.cycle = sampling_data.Cycle
-    			toc.client = sampling_data.Client
-    			toc.save()
+    			# toc = testing_of_controls()
+    			# toc.data = datafile
+    			# toc.cycle = sampling_data.Cycle
+    			# toc.client = sampling_data.Client
+    			# toc.save()
 
     		object_list = DatafileModel.objects.get(id=obj_id)
     		
@@ -281,10 +281,14 @@ def TOC_update(request, id=None):
 	if form.is_valid() and request.method == "POST":
 		
 		# data_id = DatafileModel.objects.get(data=instance).id
-		new_object = testing_of_controls.objects.get(data_id=id)
+		new_object = testing_of_controls.objects.filter(data=instance).first()
+		if not new_object:
+			new_object = testing_of_controls()
+		new_object.data = instance
+		new_object.cycle = sampling_data.Cycle
+		new_object.client = sampling_data.Client
 		new_object.deficient = form.cleaned_data.get("deficient")
 		new_object.remarks = form.cleaned_data.get("remarks") 
-		print(new_object)
 		new_object.save()
 		submitted = True
 
@@ -319,14 +323,13 @@ def deficiency(request):
 			return redirect ('report_form')
 
 		datafile = request.POST['datafile_id']
-		deficiency = Deficiency.objects.filter(datafile_id=datafile, is_active=True).first()		
+		deficiency = Deficiency.objects.filter(datafile_id=datafile).first()		
 
 		if params.get('deficient') == 'deficient':
 			is_active = True
 		else:
 			is_active = False
-		print(is_active)
-		print(datafile)
+
 		try:
 			if not deficiency:
 				Deficiency.objects.create(cycle=sampling_data.Cycle, client=sampling_data.Client, remarks=params.get('remarks'), datafile_id=datafile, is_active=is_active)
@@ -343,7 +346,6 @@ def deficiency(request):
 				
 				if params.get('islast') == "true":
 					url = reverse_lazy('deficiency')
-			
 		except Exception as e:
 			print(e)
 			return JsonResponse({'message' : 'failed'})
@@ -364,7 +366,6 @@ def report_form(request):
 
 	if request.method == "POST":
 		params = request.POST
-		print(params)
 
 		X = Report()
 		X.year = sampling_data.Year
