@@ -350,7 +350,8 @@ def deficiency(request):
 	
 		return JsonResponse({'message' : 'success', 'url': url })
 	else:
-		deficiencies = Deficiency.objects.filter(is_active=True)
+		sampled_deficiencies = Deficiency.objects.filter(cycle=sampling_data.Cycle).filter(client=sampling_data.Client).order_by('-id')[:10]
+		deficiencies = [d for d in sampled_deficiencies if d.is_active == True]
 		context = {
 			"sampling_data" : sampling_data,
 			"deficiencies" : deficiencies
