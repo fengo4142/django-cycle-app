@@ -74,7 +74,6 @@ class testing_of_controls(models.Model):
 	def __str__(self):
 		return str(self.data)
 
-
 class Mxcell(models.Model): #Case
 	style = models.CharField(max_length=1000)
 	value = models.CharField(max_length=1000)
@@ -164,3 +163,52 @@ class Report(models.Model):
 
 
 	
+
+
+	#mxgraph
+
+
+class Title(models.Model):
+	title = models.TextField(null=True)
+
+	def __str__(self):
+		return self.title
+
+class XMLGraph(models.Model):
+	#  only one title per graph
+    title = models.OneToOneField(
+        to=Title,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE)
+ 
+    XMLGraph = models.TextField(null=True)
+    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.CharField(max_length=20)
+ 
+    def __str__(self):
+        return str(self.XMLGraph)
+ 
+ 
+class Member(models.Model):
+    XMLGraph = models.ForeignKey('XMLGraph',
+        null=True,
+        on_delete=models.CASCADE)
+    # username = models.CharField(max_length=50)
+    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.CharField(max_length=20)
+ 
+    def __str__(self):
+        return self.user.username
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        to=Member,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+ 
+    def __str__(self):
+        return self.name

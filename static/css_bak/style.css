@@ -1083,3 +1083,9 @@ tbody > .dynamic-form-add > td:first-child > a {
   color: #a4a4a4 !important;
   box-shadow: 0px 0px 1px 1px #a4a4a4 !important;
 }
+
+
+.report-recommendation {
+  padding: 0 5px; 
+  float: left;
+}
