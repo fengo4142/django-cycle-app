@@ -229,8 +229,6 @@ class ObjectivesForm(forms.ModelForm):
 		# 	self.fields['assessed_cr_%d' % i] = forms.ChoiceField(choices = Med_High_CHOICES, required=False)
 		# self.fields['cycle'].required = False
 		# self.fields['assessed_cr'].required = False
-      		
-
 
 objective_query = Objectives.objects.all()
 ObjectivesFormSet = inlineformset_factory(Cycle_in_obj, Objectives, form=ObjectivesForm,
@@ -245,13 +243,9 @@ class NewCycleForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(NewCycleForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
-		self.fields['cycle_type'].widget.attrs['style'] = "width:850px"
-	
-      		
+		self.fields['cycle_type'].widget.attrs['style'] = "width:850px"	
 
 #NewCycleFormSet = inlineformset_factory(Client_Create, Cycle,  form=NewCycleForm, extra=1, can_delete=True, )
-
-
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
@@ -333,14 +327,10 @@ class TOCForm(forms.ModelForm):
 		self.fields['value'] = forms.ModelChoiceField(queryset =Mxcell.objects.all())
 		self.fields['value'].label = "Internal Control Activity"
 
-		
 		# self.fields['mxcell'] = forms.CharField(max_length=150)
 		# self.fields['mxcell'].queryset = Test_of_Controls.objects.all().values('mxcell')
-		
-      		
+		      		
 BaseICProcFormset= inlineformset_factory(Mxcell, Test_of_Controls, form=TOCForm, extra=1, can_delete=True)
-
-
 
 # class SamplingForm(forms.ModelForm):
 
