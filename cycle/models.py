@@ -199,7 +199,7 @@ class Member(models.Model):
     user = models.CharField(max_length=20)
  
     def __str__(self):
-        return self.user.username
+        return self.user
 
 
 class Profile(models.Model):

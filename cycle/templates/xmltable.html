@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+ 	<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+        {{result}}
+        {{table}}
+
+        </div>
+    </section>
+  </main>
+     
+
+
+{% endblock content %}
