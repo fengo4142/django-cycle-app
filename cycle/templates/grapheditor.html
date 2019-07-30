@@ -4,10 +4,10 @@
 <html>
 <head>
 
-    <title>Grapheditor</title>
+	<title>Grapheditor</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/grapheditor.css' %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/grapheditor.css' %}"/>
     <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}"/> -->
 
 
@@ -65,38 +65,48 @@
 	<script type="text/javascript" src="{% static 'js/Menus.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/Toolbar.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/Dialogs.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<style type="text/css">
 		.mxgraph-control-buttons {
 			position: absolute;
 			top: 10px;
-			right: 10px;
+			right: 50px;
 			z-index: 100;
 		}
+		.mxgraph-control-buttons > button {
+			width: 80px;
+			border: 1px solid #97ef97;
+			border-radius: 4px;
+			margin: 0 6px; 
+		}
+		.mxgraph-control-buttons > button:focus {
+ 			outline: 3px solid #eeeeee;
+ 		}
+		.mxgraph-control-buttons > #saveGraphButton {
+			background: #97ef97;			
+		}
 	</style>
-	
-
 </head>
  
-
 <body class="geEditor">
+	{% csrf_token %}
 	<div class="mxgraph-control-buttons">
 		<button id="saveGraphButton">Save</button>
 		<button id="backButton">Back</button>
 	</div>
 	<script type="text/javascript">
 		// Extends EditorUi to update I/O action states based on availability of backend
+		let editorUIGlobal;
 		(function()
 		{
 			var editorUiInit = EditorUi.prototype.init;
-
 			
 			EditorUi.prototype.init = function()
 			{
 				editorUiInit.apply(this, arguments);
 				this.actions.get('export').setEnabled(false);
-
+				editorUIGlobal = this;
 				// Updates action states which require a backend
 				// if (!Editor.useLocalStorage)
 				// {
@@ -107,8 +117,7 @@
 				// 		this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
 				// 		this.actions.get('save').setEnabled(enabled);
 				// 		this.actions.get('saveAs').setEnabled(enabled);
-				// 		this.actions.get('export').setEnabled(enabled);
-					
+				// 		this.actions.get('export').setEnabled(enabled);					
 				// 	}));
 				// }
 			};
@@ -129,44 +138,44 @@
 				var themes = new Object();
 				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement(); 
 				
-				
 				// Main
 				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
-
 			}, function() {
 				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-
 			});			
 		})();
 
 		$("#saveGraphButton").on('click', function () {
-			var encoder = new mxCodec();
-                var node = encoder.encode(graph.getModel());
-                var xml = mxUtils.getPrettyXml(node); 
-                var csrftoken = getCookie('csrftoken');
-
-                $.ajax({
-
-                    type: "POST",
-                    url:  "{% url 'savefile' %}" ,
-                    data: { "xml": xml},
-                    headers:{
-                        "X-CSRFToken": csrftoken
-                    },
-                    success: function(data){
-                        console.log("data" + data[0])
-
-                        //functions in mxgraph to decode the xml back to a graph
-                        var xmlDoc = mxUtils.parseXml(data[0]);
-                        var node = xmlDoc.documentElement;
-                        console.log("node " + node)
-                        var dec = new mxCodec(node.ownerDocument);
-                        //console.log("dec " + dec)
-                        //console.log("graph model " + graph.getModel())
-                        dec.decode(node, graph.getModel());
-
-                    }
-                });
+				if (editorUIGlobal.editor.graph.isEditing()) {
+						editorUIGlobal.editor.graph.stopEditing();
+				}
+				var graph = new Graph();
+				var encoder = new mxCodec();
+				var xml = mxUtils.getXml(editorUIGlobal.editor.getGraphXml());
+				var node = encoder.encode(graph.getModel());
+//				var xml = mxUtils.getPrettyXml(node); 
+				const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+				console.log(xml)
+				$.ajax({
+						type: "POST",
+						url:  "{% url 'savefile' %}" ,
+						data: { 'xml': xml},
+						headers:{
+								"X-CSRFToken": csrftoken
+						},
+						success: function(data){
+								console.log(data)
+								//functions in mxgraph to decode the xml back to a graph
+								var xmlDoc = mxUtils.parseXml(data.xml_data);
+								var node = xmlDoc.documentElement;
+								console.log("node " + node)
+								var dec = new mxCodec(node.ownerDocument);
+								console.log("dec ", dec)
+								console.log("graph model ",graph.getModel())
+								dec.decode(node, graph.getModel());
+								document.location.href = "{% url 'xml_to_table' %}";
+						}
+				});
 		});
 		$("#backButton").on('click', function () {
 			window.history.back();

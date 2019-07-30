@@ -18,5 +18,5 @@ urlpatterns = [
 
     url(r'^xml_to_table/$', views.xml_to_table, name='xml_to_table'),
     url(r'^savefile/$', views.savefile, name='savefile'),
-    url(r'^open/$', views.open, name='open'),
+    url(r'^grapheditor/$', views.grapheditor, name='grapheditor'),
 ]

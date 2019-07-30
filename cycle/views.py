@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell
+from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures
 import os, pandas as pd
 import numpy as np
@@ -18,13 +18,13 @@ class CycleTransactionCreate(CreateView):
 
 	template_name = 'cycle_form.html'
 	# form_class = CycleForm
-	success_url = reverse_lazy('saveData')
+	success_url = reverse_lazy('grapheditor')
 	# queryset = Objectives.objects.all()
 
 	def get_context_data(self, **kwargs):
 		data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
-		if self.request.POST:			
+		if self.request.POST:
 			data['titles'] = ObjectivesFormSet(self.request.POST)
 		
 		else:
@@ -40,7 +40,7 @@ class CycleTransactionCreate(CreateView):
 			print('sdfsdf')
 			form.instance.user = self.request.user
 			print(form)
-			self.object = form.save() 
+			self.object = form.save()
 
 			if titles.is_valid():
 				titles.instance.user = self.request.user
@@ -180,7 +180,7 @@ def sugg_samples(request):
 		.98: 2.326,
 		.96: 2.054,
 		.92: 1.751
-			}
+	}
 
 	if EPER in zdict:
 		z = zdict[EPER]
@@ -388,8 +388,9 @@ def report_form(request):
 
 
 #mxgraph
-def open(request):
-		return render(request, 'index.html')
+def grapheditor(request):
+		return render(request, 'grapheditor.html')
+
 @csrf_exempt 
 def savefile(request):
 
@@ -397,24 +398,33 @@ def savefile(request):
 	# member_instance = get_object_or_404(Member, user=user)
 	print(member_instance)
 
-	
-	if request.method == "POST":
-# #Get user profile
-		xmlData = request.POST['xml']
-		member, _ = Member.objects.get_or_create(user=member_instance)
-		# member.user = member_instance;
-		# member.save()
-		print(member)
-# #Get XML data once user presses save
+	try:
+		if request.method == "POST":
+		#Get user profile
+			member, _ = Member.objects.get_or_create(user=member_instance)
+
+			params = request.POST
+			xmlData = params.get('xml')
+			X = XMLGraph()
+			X.XMLGraph = xmlData
+			X.user = member_instance
+			X.save()
+
+			print(member)
+			print(params.get('xml'))
+		#Get XML data once user presses save
+	except Exception as e:
+		print(e)
+		return JsonResponse({'message': str(e) })
+	return JsonResponse({'message' : 'success', 'xml_data': xmlData})
 
 def xml_to_table(request):
  	member_instance = request.user
 
  	result = XMLGraph.objects.all()
-
+ 	from bs4 import BeautifulSoup
  	for results in result:
  		XML_response = BeautifulSoup(results.XMLGraph)
- 		print(XML_response)
  		# print(XML_response.find_all('mxcell'))
  		for item in XML_response.find_all('mxcell'):
  			# print(item.get('style'))
@@ -425,24 +435,21 @@ def xml_to_table(request):
  			k = [tuple(xi for xi in data if xi is not None)]
  			# print(k)
  			t = [yi for yi in k if yi != () ]
- 			# print(t)
+
+ 			if t:
+					for styl, val in t:
+						new_object = Mxcell.objects.create(style=styl, value=val)
+						print(new_object)
+
+						IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
+						print(IC_values)
  			
-
- 			for styl,val in t:
- 				new_object = Mxcell.objects.create(style=styl, value=val)
- 				# print(new_object)
-
- 			IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
- 			print(IC_values)
-
- 			table = SimpleTable(IC_values)
+ 						# table = SimpleTable(IC_values)
 
  	context = {
-
 		"result": result
-	
 	}
- 	return render(request, "table.html", {"table": table}, context)
+ 	return render(request, "xmltable.html", context)
 
 
 
@@ -458,7 +465,6 @@ class internal_control_procedures(CreateView):
 		data = super(internal_control_procedures, self).get_context_data(**kwargs)
 		objective_query = Mxcell.objects.all()
 		# print(data)
-
 
 		if self.request.POST:
 			print('HI')
@@ -488,5 +494,5 @@ class internal_control_procedures(CreateView):
 		return reverse('sample_size')
 		
 	
-def savefile(request):
+def returnSaveFile(request):
 	return render(request, 'index.html')
