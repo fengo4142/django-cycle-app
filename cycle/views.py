@@ -18,13 +18,13 @@ class CycleTransactionCreate(CreateView):
 
 	template_name = 'cycle_form.html'
 	# form_class = CycleForm
-	success_url = reverse_lazy('saveData')
+	success_url = reverse_lazy('grapheditor')
 	# queryset = Objectives.objects.all()
 
 	def get_context_data(self, **kwargs):
 		data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
-		if self.request.POST:			
+		if self.request.POST:
 			data['titles'] = ObjectivesFormSet(self.request.POST)
 		
 		else:
@@ -40,7 +40,7 @@ class CycleTransactionCreate(CreateView):
 			print('sdfsdf')
 			form.instance.user = self.request.user
 			print(form)
-			self.object = form.save() 
+			self.object = form.save()
 
 			if titles.is_valid():
 				titles.instance.user = self.request.user
@@ -180,7 +180,7 @@ def sugg_samples(request):
 		.98: 2.326,
 		.96: 2.054,
 		.92: 1.751
-			}
+	}
 
 	if EPER in zdict:
 		z = zdict[EPER]
@@ -425,7 +425,6 @@ def xml_to_table(request):
  	from bs4 import BeautifulSoup
  	for results in result:
  		XML_response = BeautifulSoup(results.XMLGraph)
- 		print(XML_response)
  		# print(XML_response.find_all('mxcell'))
  		for item in XML_response.find_all('mxcell'):
  			# print(item.get('style'))
@@ -436,24 +435,21 @@ def xml_to_table(request):
  			k = [tuple(xi for xi in data if xi is not None)]
  			# print(k)
  			t = [yi for yi in k if yi != () ]
- 			# print(t)
+
+ 			if t:
+					for styl, val in t:
+						new_object = Mxcell.objects.create(style=styl, value=val)
+						print(new_object)
+
+						IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
+						print(IC_values)
  			
-
- 			for styl,val in t:
- 				new_object = Mxcell.objects.create(style=styl, value=val)
- 				# print(new_object)
-
- 			IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
- 			print(IC_values)
-
- 			table = SimpleTable(IC_values)
+ 						# table = SimpleTable(IC_values)
 
  	context = {
-
 		"result": result
-	
 	}
- 	return render(request, "xmltable.html", {"table": table}, context)
+ 	return render(request, "xmltable.html", context)
 
 
 

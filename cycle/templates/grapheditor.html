@@ -89,7 +89,6 @@
 	</style>
 </head>
  
-
 <body class="geEditor">
 	{% csrf_token %}
 	<div class="mxgraph-control-buttons">
@@ -102,7 +101,6 @@
 		(function()
 		{
 			var editorUiInit = EditorUi.prototype.init;
-
 			
 			EditorUi.prototype.init = function()
 			{
@@ -119,8 +117,7 @@
 				// 		this.actions.get('import').setEnabled(enabled || Graph.fileSupport);
 				// 		this.actions.get('save').setEnabled(enabled);
 				// 		this.actions.get('saveAs').setEnabled(enabled);
-				// 		this.actions.get('export').setEnabled(enabled);
-					
+				// 		this.actions.get('export').setEnabled(enabled);					
 				// 	}));
 				// }
 			};
@@ -141,13 +138,10 @@
 				var themes = new Object();
 				themes[Graph.prototype.defaultThemeName] = xhr[1].getDocumentElement(); 
 				
-				
 				// Main
 				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
-
 			}, function() {
 				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-
 			});			
 		})();
 
@@ -171,7 +165,6 @@
 						},
 						success: function(data){
 								console.log(data)
-
 								//functions in mxgraph to decode the xml back to a graph
 								var xmlDoc = mxUtils.parseXml(data.xml_data);
 								var node = xmlDoc.documentElement;
@@ -180,8 +173,7 @@
 								console.log("dec ", dec)
 								console.log("graph model ",graph.getModel())
 								dec.decode(node, graph.getModel());
-								//document.location.href = "{% url 'xml_to_table' %}";
-
+								document.location.href = "{% url 'xml_to_table' %}";
 						}
 				});
 		});
