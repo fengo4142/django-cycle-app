@@ -8,8 +8,51 @@
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">
-        {{result}}
-        {{table}}
+            <form id="xml_form" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-header" style="margin-top: 50px; text-align: left">
+                      <h4 class="modal-title">Control Procedures</h4>
+                  </div>
+                  <div class="sampling_data" style="text-align: center">
+                      <span>Cycle: {{cycle_typee}}</span>
+                      <span>Client: {{client_name}}</span>
+                      <span>Year: 2019</span>
+                  </div>
+                  <table style="padding: 30px; border: 1px solid #afafaf;">
+                    <thead>
+                      <tr>
+                        <th>Control Activity</th>
+                        <th>Transaction Objective</th>
+                        <th>Control Procedures</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for value in IC_values %}
+                        <tr>
+                          <td>{{value}}</td>
+                          <td>
+                            <div class="general_dropdown-list"  style="max-width: none;">
+                              <select class="select">
+                                {% for obj in objectives %}
+                                  <option value="{{obj.id}}">{{obj.transaction_objective}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </td>
+                          <td><input type="text" /></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="form-actions">
+                <button class="general_btn">Submit
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+              </div>
+            </form>
         </div>
     </section>
   </main>

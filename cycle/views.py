@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
+from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures
 import os, pandas as pd
 import numpy as np
@@ -31,13 +31,11 @@ class CycleTransactionCreate(CreateView):
 			data['titles'] = ObjectivesFormSet()
 		return data
 		
-
 	def form_valid(self, form):
 		print('HI')
 		context = self.get_context_data()
 		titles = context['titles']
 		with transaction.atomic():
-			print('sdfsdf')
 			form.instance.user = self.request.user
 			print(form)
 			self.object = form.save()
@@ -46,10 +44,12 @@ class CycleTransactionCreate(CreateView):
 				titles.instance.user = self.request.user
 				titles.instance = self.object
 				titles.save()
-
+			
 			# for title in titles:
 					# print(title.prefix)
 				# print(titles)
+		self.request.session['cycle_in_obj'] = self.object.id
+
 		return super(CycleTransactionCreate, self).form_valid(form)
 		
 def saveData(request):
@@ -410,8 +410,16 @@ def savefile(request):
 			X.user = member_instance
 			X.save()
 
-			print(member)
-			print(params.get('xml'))
+			from bs4 import BeautifulSoup
+			XML_response = BeautifulSoup(X.XMLGraph)
+			for item in XML_response.find_all('mxcell'):
+				data = [item.get("style"), item.get("value")]
+				k = [tuple(xi for xi in data if xi is not None)]
+				t = [yi for yi in k if yi != () ]
+
+				if len(t) and len(t[0]) > 1:
+						for styl, val in t:
+							new_object = Mxcell.objects.create(style=styl, value=val)
 		#Get XML data once user presses save
 	except Exception as e:
 		print(e)
@@ -419,35 +427,23 @@ def savefile(request):
 	return JsonResponse({'message' : 'success', 'xml_data': xmlData})
 
 def xml_to_table(request):
- 	member_instance = request.user
+ 	member_instance = request.user 	
 
- 	result = XMLGraph.objects.all()
- 	from bs4 import BeautifulSoup
- 	for results in result:
- 		XML_response = BeautifulSoup(results.XMLGraph)
- 		# print(XML_response.find_all('mxcell'))
- 		for item in XML_response.find_all('mxcell'):
- 			# print(item.get('style'))
- 			# print("{}, {}".format(item.get("style"), item.get("value")))
-
- 			data = [item.get("style"), item.get("value")]
-
- 			k = [tuple(xi for xi in data if xi is not None)]
- 			# print(k)
- 			t = [yi for yi in k if yi != () ]
-
- 			if t:
-					for styl, val in t:
-						new_object = Mxcell.objects.create(style=styl, value=val)
-						print(new_object)
-
-						IC_values = Mxcell.objects.filter(style="whiteSpace=wrap;html=1;aspect=fixed;").values('value')
-						print(IC_values)
+ 	IC_values = Mxcell.objects.filter(style__contains="whiteSpace=wrap;html=1;aspect=fixed;")
+ 	print(IC_values)
  			
- 						# table = SimpleTable(IC_values)
+	# table = SimpleTable(IC_values)
+
+ 	cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
+ 	client = Client.objects.get(id=cycle_in_obj.client_name_id)
+ 	cycle = Cycle.objects.get(id=cycle_in_obj.cycle_type_id)
+ 	objectives = Objectives.objects.filter(cycle_id=cycle_in_obj.id)
 
  	context = {
-		"result": result
+		"IC_values": IC_values,
+		"cycle_type": cycle.cycle_type,
+		"client_name": client.client_name,
+		"objectives": objectives
 	}
  	return render(request, "xmltable.html", context)
 
