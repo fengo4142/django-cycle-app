@@ -14,7 +14,7 @@ from next_prev import next_in_order, prev_in_order
 
 class CycleTransactionCreate(CreateView):
 	model = Cycle_in_obj
-	fields = ['cycle_type', 'client_name']
+	fields = ['cycle_type', 'client_name', 'year']
 
 	template_name = 'cycle_form.html'
 	# form_class = CycleForm
@@ -391,8 +391,25 @@ def report_form(request):
 def grapheditor(request):
 		return render(request, 'grapheditor.html')
 
+def loadgraph(request):
+
+	try:
+		params = request.POST
+		cycle = params.get('cycle')
+		client = params.get('client')
+		year = params.get('year')
+
+		from django.db.models import Q
+		ci_obj = Cycle_in_obj.objects.get(Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
+		xml_graph = XMLGraph.objects.filter(Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
+
+	except Exception as e:
+		print(e)
+		return JsonResponse({'message': str(e) })
+	return JsonResponse({'message' : 'success', 'xml_graph': xml_graph })
+
 @csrf_exempt 
-def savefile(request):
+def savegraph(request):
 
 	member_instance = request.user
 	# member_instance = get_object_or_404(Member, user=user)
@@ -408,6 +425,7 @@ def savefile(request):
 			X = XMLGraph()
 			X.XMLGraph = xmlData
 			X.user = member_instance
+			X.cycle_in_obj = request.session["cycle_in_obj"]
 			X.save()
 
 			from bs4 import BeautifulSoup
@@ -424,7 +442,7 @@ def savefile(request):
 	except Exception as e:
 		print(e)
 		return JsonResponse({'message': str(e) })
-	return JsonResponse({'message' : 'success', 'xml_data': xmlData})
+	return JsonResponse({'message' : 'success', 'xml_graph': xmlData})
 
 def xml_to_table(request):
  	member_instance = request.user 	

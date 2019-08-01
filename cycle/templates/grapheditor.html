@@ -83,8 +83,15 @@
 		.mxgraph-control-buttons > button:focus {
  			outline: 3px solid #eeeeee;
  		}
-		.mxgraph-control-buttons > #saveGraphButton {
-			background: #97ef97;			
+		.mxgraph-control-buttons > #saveGraphButton,
+		.mxgraph-control-buttons > #openGraphButton {
+			background: #afeeee;			
+		}
+		.mxgraph-control-buttons > #backButton {
+			margin-left: 50px;
+		}
+		.geMenubar > .geItem:first-child {
+			display: none;
 		}
 	</style>
 </head>
@@ -92,6 +99,7 @@
 <body class="geEditor">
 	{% csrf_token %}
 	<div class="mxgraph-control-buttons">
+		<button id="openGraphButton">Open</button>
 		<button id="saveGraphButton">Save</button>
 		<button id="backButton">Back</button>
 	</div>
@@ -145,6 +153,36 @@
 			});			
 		})();
 
+		$("#openGraphButton").on('click', function () {
+				if (editorUIGlobal.editor.graph.isEditing()) {
+						editorUIGlobal.editor.graph.stopEditing();
+				}
+				var graph = editorUIGlobal.editor.graph;
+				var encoder = new mxCodec();
+				var node = encoder.encode(graph.getModel());
+				var xml = mxUtils.getPrettyXml(node); 
+				const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+				const params = {
+					cycle: 1,
+					client: 1,
+					year: 2019
+				}
+				$.ajax({
+						type: "POST",
+						url:  "{% url 'loadgraph' %}" ,
+						data: params,
+						headers:{
+								"X-CSRFToken": csrftoken
+						},
+						success: function(data){
+							var xmlDoc = mxUtils.parseXml(data.xml_graph);
+							var node = xmlDoc.documentElement;
+							var dec = new mxCodec(node.ownerDocument);
+							dec.decode(node, graph.getModel());
+						}
+				})
+		});
+
 		$("#saveGraphButton").on('click', function () {
 				if (editorUIGlobal.editor.graph.isEditing()) {
 						editorUIGlobal.editor.graph.stopEditing();
@@ -158,15 +196,15 @@
 				console.log(xml)
 				$.ajax({
 						type: "POST",
-						url:  "{% url 'savefile' %}" ,
+						url:  "{% url 'savegraph' %}" ,
 						data: { 'xml': xml},
 						headers:{
 								"X-CSRFToken": csrftoken
 						},
-						success: function(data){
+						success: function (data) {
 								console.log(data)
 								//functions in mxgraph to decode the xml back to a graph
-								var xmlDoc = mxUtils.parseXml(data.xml_data);
+								var xmlDoc = mxUtils.parseXml(data.xml_graph);
 								var node = xmlDoc.documentElement;
 								console.log("node " + node)
 								var dec = new mxCodec(node.ownerDocument);

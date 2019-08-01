@@ -20,10 +20,14 @@ class Cycle(models.Model):
 
 
 class Cycle_in_obj(models.Model):
+	Option_CHOICES = (
+    ( 2019, 2019 ),
+    ( 2020, 2020 ),
+	)
 	cycle_type = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	#user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
-	
+	year = models.IntegerField(choices=Option_CHOICES)
 	def __str__(self):
 		return str(self.cycle_type)
 
@@ -63,7 +67,7 @@ class DatafileModel(models.Model):
 class testing_of_controls(models.Model):
 	Option_CHOICES = (
     ('deficient','deficient'),
-)
+	)
 	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	data = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
@@ -185,6 +189,7 @@ class XMLGraph(models.Model):
     XMLGraph = models.TextField(null=True)
     # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     user = models.CharField(max_length=20)
+    cycle_in_obj = models.ForeignKey(Cycle_in_obj, on_delete=models.CASCADE)
  
     def __str__(self):
         return str(self.XMLGraph)

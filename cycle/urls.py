@@ -14,9 +14,10 @@ urlpatterns = [
     path('sugg_samples', views.sugg_samples, name='sugg_samples'),
     path('deficiency', views.deficiency, name='deficiency'),
     path('report_form', views.report_form, name='report_form'),
-    url(r'^(?P<id>\d+)/edit/$', views.TOC_update, name='TOC_update'),
 
+    url(r'^(?P<id>\d+)/edit/$', views.TOC_update, name='TOC_update'),
     url(r'^xml_to_table/$', views.xml_to_table, name='xml_to_table'),
-    url(r'^savefile/$', views.savefile, name='savefile'),
+    url(r'^savegraph/$', views.savegraph, name='savegraph'),
+    url(r'^loadgraph/$', views.loadgraph, name="loadgraph"),
     url(r'^grapheditor/$', views.grapheditor, name='grapheditor'),
 ]
