@@ -26,6 +26,13 @@ def __str__(self):
 objective_query = Objectives.objects.all()
 ObjectivesFormSet = inlineformset_factory(Cycle_in_obj, Objectives, form=ObjectivesForm, extra=1, can_delete=True, )
 
+class CycleInObjForm(forms.ModelForm):
+	class Meta:
+		model = Cycle_in_obj
+		exclude = ()
+	def __init__(self, *args, **kwargs):
+		super(CycleInObjForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
+
 
 class SamplingForm(forms.Form):
 	# Population_Size = forms.IntegerField(required=False)

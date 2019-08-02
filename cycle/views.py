@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
 from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
-from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures
+from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures, CycleInObjForm
 import os, pandas as pd
 import numpy as np
 import json
@@ -278,8 +278,7 @@ def TOC_update(request, id=None):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 
-	if form.is_valid() and request.method == "POST":
-		
+	if form.is_valid() and request.method == "POST":		
 		# data_id = DatafileModel.objects.get(data=instance).id
 		new_object = testing_of_controls.objects.filter(data=instance).first()
 		if not new_object:
@@ -360,6 +359,7 @@ def deficiency(request):
 		}
 	return render(request, "deficiency.html", context)
 
+
 def report_form(request):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
@@ -389,7 +389,11 @@ def report_form(request):
 
 #mxgraph
 def grapheditor(request):
-		return render(request, 'grapheditor.html')
+		form = CycleInObjForm()
+		context = {
+			"form": form
+		}
+		return render(request, 'grapheditor.html', context)
 
 def loadgraph(request):
 
@@ -438,7 +442,7 @@ def savegraph(request):
 				if len(t) and len(t[0]) > 1:
 						for styl, val in t:
 							new_object = Mxcell.objects.create(style=styl, value=val)
-		#Get XML data once user presses save
+	#Get XML data once user presses save
 	except Exception as e:
 		print(e)
 		return JsonResponse({'message': str(e) })
