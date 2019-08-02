@@ -40,7 +40,7 @@
                       {{ field }}
                   </div>
                 {% endfor %}
-                  
+                
                 </div>
 
                 <table class="table">
@@ -85,9 +85,8 @@
         data: {
           'objectives_trans' : objectives_trans
         },
-      
         success: function(data, status) {
-          console.log(data);
+            console.log(data);
             // var items = data['objectives_trans']
             //  $.each(items, function(key, value) {
             //             console.log(value.objectives_trans);
@@ -101,8 +100,6 @@
         }
       });
     });
-
- 
   </script>
 
   {% endblock content %}

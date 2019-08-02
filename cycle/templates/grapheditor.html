@@ -66,7 +66,8 @@
 	<script type="text/javascript" src="{% static 'js/Toolbar.js' %}"></script>
 	<script type="text/javascript" src="{% static 'js/Dialogs.js' %}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+	<link  href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" rel="stylesheet" />
 	<style type="text/css">
 		.mxgraph-control-buttons {
 			position: absolute;
@@ -93,6 +94,89 @@
 		.geMenubar > .geItem:first-child {
 			display: none;
 		}
+		
+		.select {
+			cursor: pointer;
+			display: inline-block;
+			position: relative;
+			font-size: 16px;
+			color: #333;
+			width: 100%;
+			height: 40px;
+		}
+		.select-styled {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			background-color: #fff;
+			padding: 8px 15px;
+			border: 1px solid #555;
+
+			-moz-transition: all 0.2s ease-in;
+			-o-transition: all 0.2s ease-in;
+			-webkit-transition: all 0.2s ease-in;
+			transition: all 0.2s ease-in;
+		}
+		.select-styled:after {
+			content: "";
+			width: 0;
+			height: 0;
+			border: 7px solid transparent;
+			border-color: #333 transparent transparent transparent;
+			position: absolute;
+			top: 16px;
+			right: 10px;
+			
+		}
+		.select-styled:hover {
+			background-color: #ffffff;
+		}
+		.select-styled:active, .select-styled.active {
+			background-color: #fff;
+			border-bottom: none;
+		}
+		.select-styled:active:after, .select-styled.active:after {
+			top: 9px;
+			border-color: transparent transparent #333 transparent;
+		}
+		.select-options {
+			display: none;
+			position: absolute;
+			top: 100%;
+			right: 0;
+			left: 0;
+			z-index: 999;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+			background-color: #fff;
+			border: 1px solid #555;
+			border-top: none;
+			border-top-right-radius: 0;
+			border-top-left-radius: 0;
+		}
+		.select-options li {
+			margin: 0;
+			padding: 12px 0;
+			text-indent: 15px;
+			border-top: 1px solid #ddd;
+			-moz-transition: all 0.15s ease-in;
+			-o-transition: all 0.15s ease-in;
+			-webkit-transition: all 0.15s ease-in;
+			transition: all 0.15s ease-in;
+		}
+		.select-options li:hover {
+			color: #333;
+			background: #ccc;
+		}
+		.select-options li[rel="hide"] {
+			display: none;
+		}
+		.form-group-general {
+			padding: 20px;
+		}
 	</style>
 </head>
  
@@ -103,6 +187,21 @@
 		<button id="saveGraphButton">Save</button>
 		<button id="backButton">Back</button>
 	</div>
+	<div id="openGraphModal" class="modal">
+		<p class="modal-notice">Please select relevant cycle, client and year.</p>
+		{% for field in form.visible_fields %}
+			<div class="form-group-general">
+				<div class="general_dropdown-list">
+						{{ field }}
+				</div>
+			</div>
+		{% endfor %}
+		<div class="form-group-general">
+			<button id="loadButton">Load</button>
+			<button id="closeButton">Close</button>
+		</div>
+	</div>
+	<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 	<script type="text/javascript">
 		// Extends EditorUi to update I/O action states based on availability of backend
 		let editorUIGlobal;
@@ -154,33 +253,7 @@
 		})();
 
 		$("#openGraphButton").on('click', function () {
-				if (editorUIGlobal.editor.graph.isEditing()) {
-						editorUIGlobal.editor.graph.stopEditing();
-				}
-				var graph = editorUIGlobal.editor.graph;
-				var encoder = new mxCodec();
-				var node = encoder.encode(graph.getModel());
-				var xml = mxUtils.getPrettyXml(node); 
-				const csrftoken = $("[name=csrfmiddlewaretoken]").val();
-				const params = {
-					cycle: 1,
-					client: 1,
-					year: 2019
-				}
-				$.ajax({
-						type: "POST",
-						url:  "{% url 'loadgraph' %}" ,
-						data: params,
-						headers:{
-								"X-CSRFToken": csrftoken
-						},
-						success: function(data){
-							var xmlDoc = mxUtils.parseXml(data.xml_graph);
-							var node = xmlDoc.documentElement;
-							var dec = new mxCodec(node.ownerDocument);
-							dec.decode(node, graph.getModel());
-						}
-				})
+				$("#openGraphModal").modal();				
 		});
 
 		$("#saveGraphButton").on('click', function () {
@@ -217,10 +290,46 @@
 		});
 		$("#backButton").on('click', function () {
 			window.history.back();
-		})
-		
+		});
+		$("#loadButton").on('click', function () {
+					if (editorUIGlobal.editor.graph.isEditing()) {
+							editorUIGlobal.editor.graph.stopEditing();
+					}
+					var graph = editorUIGlobal.editor.graph;
+					var encoder = new mxCodec();
+					var node = encoder.encode(graph.getModel());
+					var xml = mxUtils.getPrettyXml(node); 
+					const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+					const params = {
+						cycle: $("select[name=cycle_type]").val(),
+						client: $("select[name=client_name]").val(),
+						year: $("select[name=year]").val()
+					}
+					$.ajax({
+							type: "POST",
+							url:  "{% url 'loadgraph' %}" ,
+							data: params,
+							headers:{
+									"X-CSRFToken": csrftoken
+							},
+							success: function(data){
+								if (data.xml_graph) {									
+									var xmlDoc = mxUtils.parseXml(data.xml_graph);
+									var node = xmlDoc.documentElement;
+									var dec = new mxCodec(node.ownerDocument);
+									dec.decode(node, graph.getModel());
+									$(".close-modal").click();
+								} else {
+									$(".modal-notice").text("Matched graph doesn't existed!")
+								}
+								
+							}
+					})
+		});
+		$("#closeButton").on('click', function () {
+			$(".close-modal").click();
+		});
 
-	
 		</script>
 
 
