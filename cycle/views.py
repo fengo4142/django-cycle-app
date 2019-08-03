@@ -78,6 +78,11 @@ def sample_size(request):
 
 	control_proceduress = Test_of_Controls.objects.all()
 
+	cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
+
+	client_name = Client.objects.get(id=cycle_in_obj.client_name_id)
+	cycle_type = Cycle.objects.get(id=cycle_in_obj.cycle_type_id)
+	year = cycle_in_obj.year
 	if request.method == 'POST':
 		
 		# formset = BaseSamplingDatasheetFormset(control_proceduress=control_proceduress, data=request.POST)
@@ -86,7 +91,7 @@ def sample_size(request):
 		# print(formset)
 		if formset.is_valid():
 			print('HI')
-
+			
 			obj = sampling(
 				Estimated_Population_Exception_Rate = formset.cleaned_data.get("Estimated_Population_Exception_Rate"),
 				Tolerable_Exception_Rate = formset.cleaned_data.get("Tolerable_Exception_Rate"),
@@ -94,9 +99,9 @@ def sample_size(request):
 				Actual_Sample_Size = formset.cleaned_data.get("Actual_Sample_Size"),
 				Population_Size = formset.cleaned_data.get("Population_Size"),
 			
-				Cycle = formset.cleaned_data.get("Cycle"),
-				Client = formset.cleaned_data.get("Client"),
-				Year = formset.cleaned_data.get("Year")
+				Cycle = cycle_type,
+				Client = client_name,
+				Year = cycle_in_obj.year
 			)
 			obj.save(force_insert=True)
 
@@ -107,7 +112,6 @@ def sample_size(request):
 
 		else:
 			print(formset.errors)
-			print(formset.non_form_errors())
 
 
 	else:
@@ -115,7 +119,12 @@ def sample_size(request):
 		formset = SamplingForm()
 	
 
-	context = { 'formset' : formset }
+	context = { 
+		'formset' : formset,
+		'cycle_type': cycle_type,
+		'client_name': client_name,
+		'year': year
+  }
 
 	return render(request, 'sampling.html', context)
 
@@ -449,8 +458,21 @@ def savegraph(request):
 	return JsonResponse({'message' : 'success', 'xml_graph': xmlData})
 
 def xml_to_table(request):
- 	member_instance = request.user 	
-
+ 	member_instance = request.user
+	
+ 	if request.method == "POST":
+			try:
+				procedures = json.loads(request.POST.get("procedures"))
+				for p in procedures:
+					X = Test_of_Controls()
+					X.control_procedures = p['value']
+					X.mxcell_id = p['id']
+					X.save()
+			except Exception as e:
+				print(e)
+				return JsonResponse({'message': str(e) })
+			return JsonResponse({'message' : 'success'})
+ 	
  	IC_values = Mxcell.objects.filter(style__contains="whiteSpace=wrap;html=1;aspect=fixed;")
  	print(IC_values)
  			
@@ -465,6 +487,7 @@ def xml_to_table(request):
 		"IC_values": IC_values,
 		"cycle_type": cycle.cycle_type,
 		"client_name": client.client_name,
+		"year": cycle_in_obj.year,
 		"objectives": objectives
 	}
  	return render(request, "xmltable.html", context)

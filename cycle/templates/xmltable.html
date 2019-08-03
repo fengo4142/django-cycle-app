@@ -16,7 +16,7 @@
                   <div class="sampling_data" style="text-align: center">
                       <span>Cycle: {{cycle_type}}</span>
                       <span>Client: {{client_name}}</span>
-                      <span>Year: 2019</span>
+                      <span>Year: {{year}}</span>
                   </div>
                   <table style="padding: 30px; border: 1px solid #afafaf;">
                     <thead>
@@ -27,9 +27,9 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for value in IC_values %}
+                      {% for mxcell in IC_values %}
                         <tr>
-                          <td>{{value}}</td>
+                          <td>{{mxcell}}</td>
                           <td>
                             <div class="general_dropdown-list"  style="max-width: none;">
                               <select class="select">
@@ -39,13 +39,13 @@
                               </select>
                             </div>
                           </td>
-                          <td><input type="text" /></td>
+                          <td><input class="mxcell" data-id="{{mxcell.id}}" type="text" name="procedures" /></td>
                         </tr>
                       {% endfor %}
                     </tbody>
                   </table>
                   <div class="form-actions">
-                <button class="general_btn">Submit
+                <button class="general_btn" id="submit">Submit
                     <span></span>
                     <span></span>
                     <span></span>
@@ -56,7 +56,36 @@
         </div>
     </section>
   </main>
-     
+<script>
+    $("#submit").on('click', function (event) {
+        event.preventDefault();
+        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    
+        const params = [];
+        $(".mxcell").map(function () {
+          const cell = {
+            id: $(this).data("id"),
+            value: $(this).val()
+          }
+          params.push(cell)
+        })
+        console.log(params)
 
+        $.ajax({
+          url: '{% url "xml_to_table" %}',
+          type: 'POST',
+          headers: { "X-CSRFToken": csrftoken },
+          data: { "procedures": JSON.stringify(params) },
+          success: function (res) {
+            if(res.message == "success")
+               document.location.href = "/cycle/sample_size"
+            console.log(res)
+          }, error: function (res) {
+            console.log(res)
+          }
+        })
+
+    });
+</script>
 
 {% endblock content %}
