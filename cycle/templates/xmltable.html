@@ -1,0 +1,91 @@
+
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+ 	<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+            <form id="xml_form" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-header" style="margin-top: 50px; text-align: left">
+                      <h4 class="modal-title">Control Procedures</h4>
+                  </div>
+                  <div class="sampling_data" style="text-align: center">
+                      <span>Cycle: {{cycle_type}}</span>
+                      <span>Client: {{client_name}}</span>
+                      <span>Year: {{year}}</span>
+                  </div>
+                  <table style="padding: 30px; border: 1px solid #afafaf;">
+                    <thead>
+                      <tr>
+                        <th>Control Activity</th>
+                        <th>Transaction Objective</th>
+                        <th>Control Procedures</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for mxcell in IC_values %}
+                        <tr>
+                          <td>{{mxcell}}</td>
+                          <td>
+                            <div class="general_dropdown-list"  style="max-width: none;">
+                              <select class="select">
+                                {% for obj in objectives %}
+                                  <option value="{{obj.id}}">{{obj.transaction_objective}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </td>
+                          <td><input class="mxcell" data-id="{{mxcell.id}}" type="text" name="procedures" /></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="form-actions">
+                <button class="general_btn" id="submit">Submit
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+              </div>
+            </form>
+        </div>
+    </section>
+  </main>
+<script>
+    $("#submit").on('click', function (event) {
+        event.preventDefault();
+        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    
+        const params = [];
+        $(".mxcell").map(function () {
+          const cell = {
+            id: $(this).data("id"),
+            value: $(this).val()
+          }
+          params.push(cell)
+        })
+        console.log(params)
+
+        $.ajax({
+          url: '{% url "xml_to_table" %}',
+          type: 'POST',
+          headers: { "X-CSRFToken": csrftoken },
+          data: { "procedures": JSON.stringify(params) },
+          success: function (res) {
+            if(res.message == "success")
+               document.location.href = "/cycle/sample_size"
+            console.log(res)
+          }, error: function (res) {
+            console.log(res)
+          }
+        })
+
+    });
+</script>
+
+{% endblock content %}

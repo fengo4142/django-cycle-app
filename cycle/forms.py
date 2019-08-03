@@ -26,6 +26,13 @@ def __str__(self):
 objective_query = Objectives.objects.all()
 ObjectivesFormSet = inlineformset_factory(Cycle_in_obj, Objectives, form=ObjectivesForm, extra=1, can_delete=True, )
 
+class CycleInObjForm(forms.ModelForm):
+	class Meta:
+		model = Cycle_in_obj
+		exclude = ()
+	def __init__(self, *args, **kwargs):
+		super(CycleInObjForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
+
 
 class SamplingForm(forms.Form):
 	# Population_Size = forms.IntegerField(required=False)
@@ -35,10 +42,6 @@ class SamplingForm(forms.Form):
 		# kwargs['auto_id'] = "%s".format(self.control_procedures)
 		# print(kwargs)
 		super(SamplingForm, self).__init__(*args, **kwargs)
-		self.fields['Year'] = forms.IntegerField()
-		self.fields['Year'].required = False
-		self.fields['Cycle'] = forms.ModelChoiceField(queryset=Cycle.objects.all())
-		self.fields['Client'] = forms.ModelChoiceField(queryset=Client.objects.all())
 
 		self.fields['Estimated_Population_Exception_Rate'] = forms.IntegerField()
 		self.fields['Estimated_Population_Exception_Rate'].required = False
@@ -229,8 +232,6 @@ class ObjectivesForm(forms.ModelForm):
 		# 	self.fields['assessed_cr_%d' % i] = forms.ChoiceField(choices = Med_High_CHOICES, required=False)
 		# self.fields['cycle'].required = False
 		# self.fields['assessed_cr'].required = False
-      		
-
 
 objective_query = Objectives.objects.all()
 ObjectivesFormSet = inlineformset_factory(Cycle_in_obj, Objectives, form=ObjectivesForm,
@@ -245,13 +246,9 @@ class NewCycleForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(NewCycleForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
-		self.fields['cycle_type'].widget.attrs['style'] = "width:850px"
-	
-      		
+		self.fields['cycle_type'].widget.attrs['style'] = "width:850px"	
 
 #NewCycleFormSet = inlineformset_factory(Client_Create, Cycle,  form=NewCycleForm, extra=1, can_delete=True, )
-
-
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
@@ -333,14 +330,10 @@ class TOCForm(forms.ModelForm):
 		self.fields['value'] = forms.ModelChoiceField(queryset =Mxcell.objects.all())
 		self.fields['value'].label = "Internal Control Activity"
 
-		
 		# self.fields['mxcell'] = forms.CharField(max_length=150)
 		# self.fields['mxcell'].queryset = Test_of_Controls.objects.all().values('mxcell')
-		
-      		
+		      		
 BaseICProcFormset= inlineformset_factory(Mxcell, Test_of_Controls, form=TOCForm, extra=1, can_delete=True)
-
-
 
 # class SamplingForm(forms.ModelForm):
 
@@ -389,9 +382,7 @@ class samples_form(forms.Form):
 
 
 	Sampling_CHOICES = (
-	(Random, 'Random'),
-	(Condition, 'Condition'),
-	(Weights, 'Weights'),
+		(Random, 'Random'),
 	)
 
 	sampling_method = forms.ChoiceField(choices = Sampling_CHOICES, initial={'sampling_method': 'Random'}, required = False)

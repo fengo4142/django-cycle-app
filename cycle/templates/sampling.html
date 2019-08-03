@@ -13,6 +13,11 @@
               <div class="modal-header" style="margin: 30px; text-align: right">
                 <h4 class="modal-title">Sample Size</h4>
               </div>
+              <div class="sampling_data" style="text-align: center">
+                      <span>Cycle: {{cycle_type}}</span>
+                      <span>Client: {{client_name}}</span>
+                      <span>Year: {{year}}</span>
+              </div>
               <!-- {{ formset.management_form }} -->
               <table class="table table-hover">
                 {% csrf_token %}
@@ -31,13 +36,6 @@
                 <form action="" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                         {{ formset.non_field_errors }}
-
-                        {{ formset.Cycle.errors }}
-                        {{ formset.Cycle|as_crispy_field }}
-                        {{ formset.Client.errors }}
-                        {{ formset.Client|as_crispy_field }}
-                        {{ formset.Year.errors }}
-                        {{ formset.Year|as_crispy_field }}
                         {{ formset.Estimated_Population_Exception_Rate.errors }}
                         {{ formset.Estimated_Population_Exception_Rate|as_crispy_field }}
                         {{ formset.Tolerable_Exception_Rate.errors }}

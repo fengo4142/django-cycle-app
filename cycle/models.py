@@ -20,10 +20,14 @@ class Cycle(models.Model):
 
 
 class Cycle_in_obj(models.Model):
+	Option_CHOICES = (
+    ( 2019, 2019 ),
+    ( 2020, 2020 ),
+	)
 	cycle_type = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	#user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
-	
+	year = models.IntegerField(choices=Option_CHOICES)
 	def __str__(self):
 		return str(self.cycle_type)
 
@@ -63,7 +67,7 @@ class DatafileModel(models.Model):
 class testing_of_controls(models.Model):
 	Option_CHOICES = (
     ('deficient','deficient'),
-)
+	)
 	cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
 	client = models.ForeignKey(Client, on_delete=models.CASCADE)
 	data = models.ForeignKey(DatafileModel, on_delete=models.CASCADE)
@@ -73,7 +77,6 @@ class testing_of_controls(models.Model):
 
 	def __str__(self):
 		return str(self.data)
-
 
 class Mxcell(models.Model): #Case
 	style = models.CharField(max_length=1000)
@@ -124,8 +127,6 @@ class samples(models.Model):
 
 	Sampling_CHOICES = (
 		(Random, 'Random'),
-		(Condition, 'Condition'),
-		(Weights, 'Weights'),
 	)
 	sampling_method = models.CharField(max_length=20, choices = Sampling_CHOICES)
 
@@ -164,3 +165,53 @@ class Report(models.Model):
 
 
 	
+
+
+	#mxgraph
+
+
+class Title(models.Model):
+	title = models.TextField(null=True)
+
+	def __str__(self):
+		return self.title
+
+class XMLGraph(models.Model):
+	#  only one title per graph
+    title = models.OneToOneField(
+        to=Title,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE)
+ 
+    XMLGraph = models.TextField(null=True)
+    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.CharField(max_length=20)
+    cycle_in_obj = models.ForeignKey(Cycle_in_obj, on_delete=models.CASCADE)
+ 
+    def __str__(self):
+        return str(self.XMLGraph)
+ 
+ 
+class Member(models.Model):
+    XMLGraph = models.ForeignKey('XMLGraph',
+        null=True,
+        on_delete=models.CASCADE)
+    # username = models.CharField(max_length=50)
+    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.CharField(max_length=20)
+ 
+    def __str__(self):
+        return self.user
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        to=Member,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+ 
+    def __str__(self):
+        return self.name

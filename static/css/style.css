@@ -313,7 +313,7 @@
 .general_dropdown-list {
   border: 1px solid #ffffff;
   border-radius: 10px;
-  max-width: 280px;
+  max-width: 30%; /*280px*/
   width: 100%;
   padding: 12px 20px;
   color: #ffffff;
@@ -880,6 +880,7 @@ tbody > .dynamic-form-add > td:first-child > a {
 }
 
 /* select dropdown customized */
+
 .select-hidden {
   display: none;
   visibility: hidden;
@@ -1082,10 +1083,4 @@ tbody > .dynamic-form-add > td:first-child > a {
 .btn-disabled {
   color: #a4a4a4 !important;
   box-shadow: 0px 0px 1px 1px #a4a4a4 !important;
-}
-
-
-.report-recommendation {
-  padding: 0 5px; 
-  float: left;
 }

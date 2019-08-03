@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
-from cycle.models import Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report
-from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form
+from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
+from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures, CycleInObjForm
 import os, pandas as pd
 import numpy as np
 import json
@@ -14,42 +14,42 @@ from next_prev import next_in_order, prev_in_order
 
 class CycleTransactionCreate(CreateView):
 	model = Cycle_in_obj
-	fields = ['cycle_type', 'client_name']
+	fields = ['cycle_type', 'client_name', 'year']
 
 	template_name = 'cycle_form.html'
 	# form_class = CycleForm
-	success_url = reverse_lazy('saveData')
+	success_url = reverse_lazy('grapheditor')
 	# queryset = Objectives.objects.all()
 
 	def get_context_data(self, **kwargs):
 		data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
-		if self.request.POST:			
+		if self.request.POST:
 			data['titles'] = ObjectivesFormSet(self.request.POST)
 		
 		else:
 			data['titles'] = ObjectivesFormSet()
 		return data
 		
-
 	def form_valid(self, form):
 		print('HI')
 		context = self.get_context_data()
 		titles = context['titles']
 		with transaction.atomic():
-			print('sdfsdf')
 			form.instance.user = self.request.user
 			print(form)
-			self.object = form.save() 
+			self.object = form.save()
 
 			if titles.is_valid():
 				titles.instance.user = self.request.user
 				titles.instance = self.object
 				titles.save()
-
+			
 			# for title in titles:
 					# print(title.prefix)
 				# print(titles)
+		self.request.session['cycle_in_obj'] = self.object.id
+
 		return super(CycleTransactionCreate, self).form_valid(form)
 		
 def saveData(request):
@@ -78,6 +78,11 @@ def sample_size(request):
 
 	control_proceduress = Test_of_Controls.objects.all()
 
+	cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
+
+	client_name = Client.objects.get(id=cycle_in_obj.client_name_id)
+	cycle_type = Cycle.objects.get(id=cycle_in_obj.cycle_type_id)
+	year = cycle_in_obj.year
 	if request.method == 'POST':
 		
 		# formset = BaseSamplingDatasheetFormset(control_proceduress=control_proceduress, data=request.POST)
@@ -86,7 +91,7 @@ def sample_size(request):
 		# print(formset)
 		if formset.is_valid():
 			print('HI')
-
+			
 			obj = sampling(
 				Estimated_Population_Exception_Rate = formset.cleaned_data.get("Estimated_Population_Exception_Rate"),
 				Tolerable_Exception_Rate = formset.cleaned_data.get("Tolerable_Exception_Rate"),
@@ -94,9 +99,9 @@ def sample_size(request):
 				Actual_Sample_Size = formset.cleaned_data.get("Actual_Sample_Size"),
 				Population_Size = formset.cleaned_data.get("Population_Size"),
 			
-				Cycle = formset.cleaned_data.get("Cycle"),
-				Client = formset.cleaned_data.get("Client"),
-				Year = formset.cleaned_data.get("Year")
+				Cycle = cycle_type,
+				Client = client_name,
+				Year = cycle_in_obj.year
 			)
 			obj.save(force_insert=True)
 
@@ -107,7 +112,6 @@ def sample_size(request):
 
 		else:
 			print(formset.errors)
-			print(formset.non_form_errors())
 
 
 	else:
@@ -115,7 +119,12 @@ def sample_size(request):
 		formset = SamplingForm()
 	
 
-	context = { 'formset' : formset }
+	context = { 
+		'formset' : formset,
+		'cycle_type': cycle_type,
+		'client_name': client_name,
+		'year': year
+  }
 
 	return render(request, 'sampling.html', context)
 
@@ -180,7 +189,7 @@ def sugg_samples(request):
 		.98: 2.326,
 		.96: 2.054,
 		.92: 1.751
-			}
+	}
 
 	if EPER in zdict:
 		z = zdict[EPER]
@@ -278,8 +287,7 @@ def TOC_update(request, id=None):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
 
-	if form.is_valid() and request.method == "POST":
-		
+	if form.is_valid() and request.method == "POST":		
 		# data_id = DatafileModel.objects.get(data=instance).id
 		new_object = testing_of_controls.objects.filter(data=instance).first()
 		if not new_object:
@@ -360,6 +368,7 @@ def deficiency(request):
 		}
 	return render(request, "deficiency.html", context)
 
+
 def report_form(request):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
@@ -385,3 +394,146 @@ def report_form(request):
 
 	return render(request, "report_form.html", context)
 
+
+
+#mxgraph
+def grapheditor(request):
+		form = CycleInObjForm()
+		context = {
+			"form": form
+		}
+		return render(request, 'grapheditor.html', context)
+
+def loadgraph(request):
+
+	try:
+		params = request.POST
+		cycle = params.get('cycle')
+		client = params.get('client')
+		year = params.get('year')
+
+		from django.db.models import Q
+		ci_obj = Cycle_in_obj.objects.get(Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
+		xml_graph = XMLGraph.objects.filter(Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
+
+	except Exception as e:
+		print(e)
+		return JsonResponse({'message': str(e) })
+	return JsonResponse({'message' : 'success', 'xml_graph': xml_graph })
+
+@csrf_exempt 
+def savegraph(request):
+
+	member_instance = request.user
+	# member_instance = get_object_or_404(Member, user=user)
+	print(member_instance)
+
+	try:
+		if request.method == "POST":
+		#Get user profile
+			member, _ = Member.objects.get_or_create(user=member_instance)
+
+			params = request.POST
+			xmlData = params.get('xml')
+			X = XMLGraph()
+			X.XMLGraph = xmlData
+			X.user = member_instance
+			X.cycle_in_obj = request.session["cycle_in_obj"]
+			X.save()
+
+			from bs4 import BeautifulSoup
+			XML_response = BeautifulSoup(X.XMLGraph)
+			for item in XML_response.find_all('mxcell'):
+				data = [item.get("style"), item.get("value")]
+				k = [tuple(xi for xi in data if xi is not None)]
+				t = [yi for yi in k if yi != () ]
+
+				if len(t) and len(t[0]) > 1:
+						for styl, val in t:
+							new_object = Mxcell.objects.create(style=styl, value=val)
+	#Get XML data once user presses save
+	except Exception as e:
+		print(e)
+		return JsonResponse({'message': str(e) })
+	return JsonResponse({'message' : 'success', 'xml_graph': xmlData})
+
+def xml_to_table(request):
+ 	member_instance = request.user
+	
+ 	if request.method == "POST":
+			try:
+				procedures = json.loads(request.POST.get("procedures"))
+				for p in procedures:
+					X = Test_of_Controls()
+					X.control_procedures = p['value']
+					X.mxcell_id = p['id']
+					X.save()
+			except Exception as e:
+				print(e)
+				return JsonResponse({'message': str(e) })
+			return JsonResponse({'message' : 'success'})
+ 	
+ 	IC_values = Mxcell.objects.filter(style__contains="whiteSpace=wrap;html=1;aspect=fixed;")
+ 	print(IC_values)
+ 			
+	# table = SimpleTable(IC_values)
+
+ 	cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
+ 	client = Client.objects.get(id=cycle_in_obj.client_name_id)
+ 	cycle = Cycle.objects.get(id=cycle_in_obj.cycle_type_id)
+ 	objectives = Objectives.objects.filter(cycle_id=cycle_in_obj.id)
+
+ 	context = {
+		"IC_values": IC_values,
+		"cycle_type": cycle.cycle_type,
+		"client_name": client.client_name,
+		"year": cycle_in_obj.year,
+		"objectives": objectives
+	}
+ 	return render(request, "xmltable.html", context)
+
+
+
+class internal_control_procedures(CreateView):
+	model = Mxcell
+	template_name = 'internal_control.html'
+	form_class = ICProcedures
+	success_url = None
+	queryset = Mxcell.objects.all()
+
+	def get_context_data(self, **kwargs):
+		
+		data = super(internal_control_procedures, self).get_context_data(**kwargs)
+		objective_query = Mxcell.objects.all()
+		# print(data)
+
+		if self.request.POST:
+			print('HI')
+			data['titles'] = BaseICProcFormset(self.request.POST)
+			# print(data)
+		else:
+			data['titles'] = BaseICProcFormset()
+		return data
+		# print(data)
+
+	def form_valid(self, form):
+		print('hello')
+		context = self.get_context_data()
+		titles = context['titles']
+		print(titles)
+		with transaction.atomic():
+			form.instance.created_by = self.request.user
+			self.object = form.save()
+
+			if titles.is_valid():
+				titles.instance = self.object
+				titles.save()
+		return super(internal_control_procedures, self).form_valid(form)
+
+
+	def get_success_url(self):
+		return reverse('sample_size')
+		
+	
+def returnSaveFile(request):
+	return render(request, 'index.html')
