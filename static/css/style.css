@@ -313,7 +313,7 @@
 .general_dropdown-list {
   border: 1px solid #ffffff;
   border-radius: 10px;
-  max-width: 280px;
+  max-width: 30%; /*280px*/
   width: 100%;
   padding: 12px 20px;
   color: #ffffff;
@@ -880,6 +880,7 @@ tbody > .dynamic-form-add > td:first-child > a {
 }
 
 /* select dropdown customized */
+
 .select-hidden {
   display: none;
   visibility: hidden;
