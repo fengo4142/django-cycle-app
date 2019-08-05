@@ -70,12 +70,13 @@
                     {{ form.remarks.errors }}
                     {{ form.remarks|as_crispy_field }}
                     <div class="control-procedures">
-                      <p>Control Procedures-1</p>
-                      <p>Check whether blah blah has been in line with blkah blah-2</p>
-                      <p>Control Procedures-2</p>
-                      <p>Check whether blah blah has been in line with blkah blah-2</p>
-                      <p>Control Procedures-3</p>
-                      <p>Check whether blah blah has been in line with blkah blah-2</p>
+                      {% for p in procedures %}
+                        <p>Control Procedures-{{ forloop.counter }}</p>
+                        <p>{{p.control_procedures}}</p>
+                        {% empty %}
+                        <p>No Control Procedures</p>
+                      {% endfor %}
+                      
                     </div>
                     <div class="support-thumbnails">
                         
@@ -179,10 +180,7 @@ This is the last film!
     event.preventDefault();
     
     if (($(this).attr("id") == "saveBtn" && !$(this).hasClass("btn-disabled")) || ($(this).attr("id") == "nextBtn" || !$(this).hasClass("btn-disabled"))) {        
-        console.log($(this).attr('id'))
-        
         saveSample();
-
     }
     else if ($(this).attr("id") == "prevBtn" && !$(this).hasClass("btn-disabled")) {      
       document.location.href = $(this).data("url");

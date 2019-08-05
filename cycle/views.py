@@ -302,11 +302,13 @@ def TOC_update(request, id=None):
 
 	success_url = request.get_full_path()
 
+	procedures = Test_of_Controls.objects.all()[:5]
 	context = {
     			"sampling_data": sampling_data,
     			"instance": instance,
     			"form": form,
 					"submitted": submitted,
+					"procedures": procedures,
 					"the_prev": the_prev,
     			"the_next" : the_next,
     	}
@@ -372,7 +374,10 @@ def deficiency(request):
 def report_form(request):
 	sampling_id = request.session['sampling_id']
 	sampling_data = sampling.objects.get(pk=sampling_id)
-
+	remarks = " ".join(filter(None, Deficiency.objects.filter(is_active=True).values_list("remarks",  flat=True)))
+	financials = " ".join(filter(None, Deficiency.objects.filter(is_active=True).values_list("financials",  flat=True)))
+	suggestions = " ".join(filter(None, Deficiency.objects.filter(is_active=True).values_list("suggestions",  flat=True)))
+	print(remarks)
 	if request.method == "POST":
 		params = request.POST
 
@@ -390,6 +395,9 @@ def report_form(request):
 
 	context = {
 		"sampling_data" : sampling_data,
+		"remarks": remarks,
+		"financials": financials,
+		"suggestions": suggestions
 	}
 
 	return render(request, "report_form.html", context)

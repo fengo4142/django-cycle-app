@@ -4,14 +4,18 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-
+<style>
+textarea {
+   min-height: 100px;
+}
+</style>
  	<main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
         <div class="sampling_form">          
           <form method="POST" action="{% url 'report_form' %}">
                 {% csrf_token %}
-              <div class="modal-header" style="margin: 30px; text-align: right">
+              <div class="modal-header" style="margin: 5px; text-align: right">
                 <h4 class="modal-title">Report Form</h4>
               </div>
               <div class="sampling_data">
@@ -22,19 +26,19 @@
               <div class="control-group">
                 <label class="control-label">Introductory Paragraph</label>
                 <div class="controls">
-                  <textarea name="intro_paragraph" cols="40" rows="4" class="textarea" required="" id="intro_paragraph"></textarea>
+                  <textarea name="intro_paragraph" cols="40" rows="3" class="textarea" required="" id="intro_paragraph"></textarea>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Audit Objective</label>
                 <div class="controls">
-                  <textarea name="audit_objective" cols="40" rows="4" class="textarea" required="" id="audit_objective"></textarea>
+                  <textarea name="audit_objective" cols="40" rows="3" class="textarea" required="" id="audit_objective"></textarea>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Scope Paragraph</label>
                 <div class="controls">
-                  <textarea name="scope_paragraph" cols="40" rows="4" class="textarea" required="" id="scope_paragraph"></textarea>
+                  <textarea name="scope_paragraph" cols="40" rows="3" class="textarea" required="" id="scope_paragraph"></textarea>
                 </div>
               </div>
               <div class="control-group">
@@ -44,17 +48,17 @@
               <div class="control-group">
                 <label class="control-label">Findings and Recommendations from previous page</label>
                 <div class="controls">
-                  <div class="col-4 report-recommendation" style="float: left; padding-left: 0; padding-right:  5px;">
-                    <label>Deficiency</label>
-                    <textarea name="deficiency" row="4" class="textarea" id="deficiency"></textarea>
+                  <div class="col-4 report-recommendation" style="float: left; padding-left: 0; padding-right:  5px; ">
+                    <label>Remarks</label>
+                    <textarea name="remarks" row="4" class="textarea" id="remarks">{{remarks}}</textarea>
                   </div>
                   <div class="col-4 report-recommendation" style="float: left; padding-left: 0; padding-right:  5px;">
                     <label>Financial Statements</label>
-                    <textarea name="financials" row="4" class="textarea" id="deficiency"></textarea>
+                    <textarea name="financials" row="4" class="textarea" id="financials">{{financials}}</textarea>
                   </div>
                   <div class="col-4 report-recommendation" style="float: left; padding-right:  0px;">
                     <label>Suggested Improvements</label>
-                    <textarea name="suggestions" row="4" class="textarea" id="deficiency"></textarea>
+                    <textarea name="suggestions" row="4" class="textarea" id="suggestions">{{suggestions}}</textarea>
                   </div>
                 </div>
               </div>
