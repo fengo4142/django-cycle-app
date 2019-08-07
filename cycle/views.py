@@ -227,7 +227,7 @@ def upload_sample(request):
     		print(sampling_mtd_selected)
 
     		if sampling_mtd_selected == "Random":
-    			IC_values = filehandle.sample(n=10)		
+    			IC_values = filehandle.sample(n=10)
 
     		# if sampling_mtd_selected == "Condition":
     		# 	Field_selected = form.cleaned_data.get("field_selected")
@@ -387,11 +387,29 @@ def report_form(request):
 		X.intro_paragraph = params.get('intro_paragraph')
 		X.audit_objective = params.get('audit_objective')
 		X.scope_paragraph = params.get('scope_paragraph')
-		X.deficiency = params.get('deficiency')
+		X.deficiency = params.get('remarks')
 		X.financials = params.get('financials')
 		X.suggestions = params.get('suggestions')
 		X.opinion_paragraph = params.get('opinion_paragraph')
 		X.save()
+
+		from django.http import HttpResponse
+		from django.views.generic import View
+
+		from cycle.utils import render_to_pdf 
+		data = {
+						'year': X.year, 
+						'client': X.client,
+            'intro_paragraph': X.intro_paragraph,
+            'audit_objective': X.audit_objective,
+            'scope_paragraph': X.scope_paragraph,
+            'remarks': X.deficiency,
+            'financials': X.financials,
+            'suggestions': X.suggestions,
+            'opinion_paragraph': X.opinion_paragraph,
+		}
+		pdf = render_to_pdf('pdf.html', data)
+		return HttpResponse(pdf, content_type='application/pdf')
 
 	context = {
 		"sampling_data" : sampling_data,

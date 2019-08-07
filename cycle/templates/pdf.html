@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Title</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }
+            .header {
+                font-size: 20px;
+                font-weight: 100;
+                text-align: center;
+                color: #007cae;
+            }
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+               /* text-align: right;*/
+                padding: 25px 20px 0px 20px;  
+            }
+            .sub-title {
+              font-size: 16px;
+              font-weight: 200;
+              color: #999;
+              text-align: right;
+              margin-bottom: 0px;
+              padding-bottom: 0;
+            }
+            .title span {
+                color: #007cae;
+            }
+            .details {
+                padding: 10px 20px 0px 20px;
+                text-align: left !important;
+                /*margin-left: 40%;*/
+            }
+            .hrItem {
+                border: none;
+                height: 1px;
+                /* Set the hr color */
+                color: #333; /* old IE */
+                background-color: #fff; /* Modern Browsers */
+            }
+        </style>
+    </head>
+    <body>
+        <div class='wrapper'>
+            <div class='header'>
+                <p class='title'>Audit of Internal Controls over Financial Reporting</p>
+                <p class="sub-title">{{year}} by {{client}}</p>
+            </div>
+        <div>
+        <div class='details'>
+            <hr class='hrItem' />
+            <h4>Introduction</h4>
+            <p>{{intro_paragraph}}</p>
+            <h4>Audit Objective</h4>
+            <p>{{audit_objective}}</p>
+            <h4>Scope</h4>
+            <p>{{scope_paragraph}}</p>
+            <hr class='hrItem' />
+            <h3>Findings and Recommendations</h3>
+            <h5>Remarks</h5>
+            <p>{{remarks}}</p>
+            <h5>Financial Statements</h5>
+            <p>{{financials}}</p>
+            <h5>Suggested Improvements</h5>
+            <p>{{suggestions}}</p>
+            <hr class='hrItem' />
+            <h4>Opinion</h4>
+            <p>{{opinion_paragraph}}</p>
+            
+           
+        </div>
+    </div>
+    </body>
+</html>
