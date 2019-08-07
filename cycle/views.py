@@ -493,6 +493,7 @@ def xml_to_table(request):
 					X = Test_of_Controls()
 					X.control_procedures = p['value']
 					X.mxcell_id = p['id']
+					X.cycle_in_obj =  Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
 					X.save()
 			except Exception as e:
 				print(e)

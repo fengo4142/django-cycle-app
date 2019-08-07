@@ -94,9 +94,10 @@ class Mxcell(models.Model): #Case
 class Test_of_Controls(models.Model):
 	mxcell = models.ForeignKey(Mxcell, on_delete=models.CASCADE)
 	control_procedures = models.CharField(max_length=150)
+	cycle_in_obj = models.ForeignKey(Cycle_in_obj, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return 
+		return self.control_procedures
 
 class sampling(models.Model):
 	Estimated_Population_Exception_Rate = models.IntegerField()
@@ -162,9 +163,6 @@ class Report(models.Model):
 	def __str__(self):
 		return str(self.intro_paragraph)
 
-
-
-	
 
 
 	#mxgraph
