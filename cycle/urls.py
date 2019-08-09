@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^loadgraph/$', views.loadgraph, name="loadgraph"),
     url(r'^grapheditor/$', views.grapheditor, name='grapheditor'),
     url(r'^blog/$', views.blog, name='blog'),
+    url(r'^contact/$', views.contact, name='contact'),
 ]

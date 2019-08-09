@@ -1,0 +1,129 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .container {
+    width: 100%;
+    height: 100%;    
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;    
+  }
+  .sampling_form {
+    padding: 0 !important;
+  }
+  .hero-content {
+    position: relative;
+    top: 0px;
+    height: 400px;
+  }
+  .modal-header {
+    position: absolute;
+    top: 50%;
+    color: #eee;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+  }
+  .hero-content__img {
+    background-image: url('{% static "imgs/Web-Hero-ContactUs-101.jpg" %}');
+    background-size: contain;
+    width: inherit;
+    height: inherit;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: cover;
+  }
+  .main-content {
+    position: absolute;
+    top: 425px;
+    padding: 0 25px !important;
+  }
+  .main-content > h3 {
+    margin: 10px;
+  }
+  hr {
+    margin: 20px;
+  }
+  .controls {
+    margin: 0 20px;
+    width: 100% !important;
+  }
+  .address-info {
+    padding: 20px;
+    margin: 10px 20px;
+    border: 1px solid #ccc;
+    height: 95%;
+  }
+  .address-info > div {
+    padding: 20px;
+    color: #777;
+  }
+  .address-info__head {
+    color: #000 !important;
+  }
+</style>
+<main class="transaction-page">
+    <section class="inner-wrap">
+        {% include 'sidebar.html' %}
+        <div class="sampling_form">
+          
+          <div class="container hero-content">
+              <div class="modal-header">
+                  <h2 class="modal-title">We'd love to hear from you.</h2>
+                  <p>Experience everything a successful global expansion has to offer—from start to finish and everything in between.</p>
+              </div>
+              <div class="hero-content__img"></div>
+          </div>
+          <div class="container main-content">
+              <h3>Take your business to new heights today.</h3>
+              <hr>
+              <div class="row" style="display: flex">
+                <div class="col-6">
+                  <div class="control-group">
+                      <div class="controls">
+                          <input type="text" name="first_name" placeholder="First Name*">
+                      </div>
+                      <div class="controls">
+                          <input type="text" name="second_name" placeholder="Second Name*" >
+                      </div>
+                  </div>
+                  <div class="control-group">                   
+                      <div class="controls">
+                          <input type="text" name="email" placeholder="Business Email*" >
+                      </div>
+                  </div>
+                  <div class="control-group">                   
+                      <div class="controls">
+                          <input type="text" name="phone" placeholder="Phone Number" >
+                      </div>
+                  </div>
+                  <div class="control-group">                   
+                      <div class="controls">
+                          <input type="text" name="company_name" placeholder="Company Name*">
+                      </div>
+                  </div>
+                  <div class="control-group">                   
+                      <div class="controls">
+                          <textarea type="text" name="help" rows="4" placeholder="How can we help you?"></textarea>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="address-info">
+                    <div class="address-info__head">OFFICE HEADQUARTERS</div>
+                    <div>VRLA Tech, LLC</div>
+                    <div>6731 Variel Ave, Canoga Park, CA 91303</div>
+                    <div>Email: Hello@VelocityGlobal.com</div>
+                    <div>Phone: +910492384923</div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
