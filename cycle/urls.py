@@ -5,7 +5,7 @@ from cycle.views import CycleTransactionCreate
 from cycle import views
 
 urlpatterns = [
-    path('', CycleTransactionCreate.as_view()),
+    path('', CycleTransactionCreate.as_view(), name=''),
     path('CycleTransactionGet', views.CycleTransactionGet, name='CycleTransactionGet'),
     path('saveData', views.saveData, name='saveData'),
 
@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^savegraph/$', views.savegraph, name='savegraph'),
     url(r'^loadgraph/$', views.loadgraph, name="loadgraph"),
     url(r'^grapheditor/$', views.grapheditor, name='grapheditor'),
+    url(r'^blog/$', views.blog, name='blog'),
 ]

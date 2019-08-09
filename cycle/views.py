@@ -77,7 +77,8 @@ Still to include in the function where the form data is saved in sampling model 
 def sample_size(request):
 
 	control_proceduress = Test_of_Controls.objects.all()
-
+	if 'cycle_in_obj' not in request.session:
+		return redirect('') 
 	cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
 
 	client_name = Client.objects.get(id=cycle_in_obj.client_name_id)
@@ -564,3 +565,8 @@ class internal_control_procedures(CreateView):
 	
 def returnSaveFile(request):
 	return render(request, 'index.html')
+
+
+def blog(request):
+
+	return render(request, "blog.html")
