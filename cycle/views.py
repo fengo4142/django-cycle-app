@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
+from django.urls import reverse
 from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures, CycleInObjForm
 import os, pandas as pd
@@ -567,8 +568,3 @@ def returnSaveFile(request):
 	return render(request, 'index.html')
 
 
-def blog(request):
-	return render(request, "blog.html")
-
-def contact(request):
-	return render(request, "contact.html")

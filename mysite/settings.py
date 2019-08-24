@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,7 +24,7 @@ SECRET_KEY = 'hzuu9r_2yo#1t4bl_0_1l2kr$@z52lcnwhmh^f1w*c(q9&_@cw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['herokudjangoapp-cycle.herokuapp.com']
+ALLOWED_HOSTS = ['herokudjangoapp-cycle.herokuapp.com', '*']
 
 # Application definition
 
@@ -38,13 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'cycle',
-  
+    'blog',
+
     'crispy_forms',
     'widget_tweaks',
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -118,12 +118,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_DIRS = [ os.path.join(BASE_DIR, "static"),'/static/',]
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
-django_heroku.settings(locals())
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+  os.path.join(BASE_DIR, 'static/'),
+)

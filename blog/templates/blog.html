@@ -1,0 +1,135 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .container {
+    width: 100%;
+    height: 100%;    
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;    
+  }
+  .hero-content {
+    position: absolute;
+    top: 0px;
+    height: 400px;
+  }
+  .hero-content__img {
+    background-image: url('{% static "imgs/Web-Hero-Blog-1.jpg" %}');
+    background-size: contain;
+    width: inherit;
+    height: inherit;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: cover;
+  }
+  .main-content {
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    top: 425px;
+    justify-content: space-between;
+    padding: 0 25px !important;
+  }
+  .main-content__article {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    float: left; 
+    max-height: 450px;
+    overflow: hidden; 
+  }
+
+  .article-inner {
+    padding: 5px 10px;
+  }
+  .article-inner > p {
+    color: #666 !important;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 14px !important;
+    font-weight: 300 !important;
+    flex: 1;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+  }
+  .article-inner__header {
+    color: #333 !important;
+    margin-bottom: 12px;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+  }
+  .article-bottom {
+    position: absolute;
+    bottom: 10px;
+    padding: 0 10px;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 14px !important;
+  }
+  @media only screen and (min-width: 1201px) {
+    .main-content__article {
+      width: 31.8%;
+      display: inline-block;
+    }   
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .main-content__article {
+      width: 49%;
+    }   
+  }
+  @media only screen and (max-width: 767px) {
+    .main-content__article {
+      width: 100%;
+    }
+  }
+</style>
+<main class="transaction-page">
+    <section class="inner-wrap">
+        <div class="sampling_form">
+          <div class="modal-header" style="margin: 30px">
+              <h4 class="modal-title"></h4>
+          </div>
+          <div class="container hero-content">
+              <div class="hero-content__img"></div>
+          </div>
+          <div class="container main-content">
+              <div class="main-content__article">
+                <img src="{% static '/imgs/Blog-Images-Avoiding-Independent-Contractor-Risk-The-Netherlands-600x403.jpg' %}" />
+                <div class="article-inner">
+                  <h5 class="article-inner__header">Avoiding Independent Contractor Risks in the Netherlands</h5>
+                  <p>Working with independent contractors rather than traditional employees is a decision 
+                  that always brings with it a certain degree of risk. But this is especially true 
+                  if an organization is in the process of expanding into new international markets.</p>
+                </div>
+                <div class="article-bottom">velocityglobal 1</div>
+              </div>
+              <div class="main-content__article">
+                <img src="{% static '/imgs/Blog-Images-How-AI-Has-Changed-3-Major-Industries—and-What-That-Means-for-Global-Expansion-600x403.jpg' %}" />
+                <div class="article-inner">
+                  <h5 class="article-inner__header">Avoiding Independent Contractor Risks in the Netherlands</h5>
+                  <p>Working with independent contractors rather than traditional employees is a decision 
+                  that always brings with it a certain degree of risk. But this is especially true 
+                  if an organization is in the process of expanding into new international markets.</p>                  
+                </div>
+                 <div class="article-bottom">velocityglobal 1</div>
+              </div>
+              <div class="main-content__article">
+                <img src="{% static '/imgs/Blog-Images-What-Employers-Need-to-Know-about-Canadas-Workplace-Violence-Harassment-Legislation-600x403.jpg' %}" />
+                <div class="article-inner">
+                  <h5 class="article-inner__header">Avoiding Independent Contractor Risks in the Netherlands</h5>
+                  <p>Working with independent contractors rather than traditional employees is a decision 
+                  that always brings with it a certain degree of risk. But this is especially .</p>
+                </div>
+                <div class="article-bottom">velocityglobal 1</div>
+              </div> 
+          </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}

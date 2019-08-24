@@ -4,7 +4,7 @@
 *.pyc
 *.py[cod]
 __pycache__/
-/cycle/__pycache__/*
-/mysite/__pycache__/*
+cycle/__pycache__/*
+mysite/__pycache__/*
 local_settings.py
 *.cpython-37.pyc
