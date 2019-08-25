@@ -15,6 +15,9 @@ class Blog(models.Model):
 	timestamp = models.DateTimeField(auto_now=True, auto_now_add=False)
 	author = models.CharField(max_length=255)
 	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	visit = models.IntegerField()
+	favorite = models.IntegerField()
+	pic = models.ImageField(upload_to = 'static/upload_folder/', default = 'static/upload_folder/None/no-img.jpg', max_length=250)
 	is_active = models.BooleanField()
   
 	def __str__(self):

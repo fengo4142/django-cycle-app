@@ -1,0 +1,130 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  @media only screen and (min-width: 1440px) {
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 20px;
+      background: #fff;
+    }
+  }
+  .inner-wrap {
+    background: #eee;
+  }
+  .container {
+    width: 100%;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .hero-content {
+    top: 0px;
+    height: 400px;
+  }
+  .hero-content__img {
+    background-image: url('{% static "imgs/Web-Hero-Blog-1.jpg" %}');
+    background-size: contain;
+    width: inherit;
+    height: inherit;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: cover;
+  }
+  .main-content {
+    display: flex;
+    flex-wrap: wrap;
+    top: 425px;
+    justify-content: space-between;
+    padding: 20px 0px !important;
+  }
+  .main-content__article {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    float: left; 
+    max-height: 500px;
+    min-height: 500px;
+    overflow: hidden; 
+    margin: 10px 0;
+  }
+
+  .article-inner {
+    padding: 5px 10px;
+  }
+  .article-inner > p {
+    color: #666 !important;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 14px !important;
+    font-weight: 300 !important;
+    flex: 1;
+    overflow: hidden; 
+    
+    text-overflow: ellipsis;
+  }
+  .article-inner__header {
+    color: #333 !important;
+    margin-bottom: 12px;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 16px !important;
+    font-weight: 300 !important;
+  }
+  .article-bottom {
+    position: absolute;
+    bottom: 10px;
+    padding: 0 10px;
+    font-family: 'Open Sans';
+    letter-spacing: -.15px !important;
+    font-size: 14px !important;
+  }
+  @media only screen and (min-width: 1201px) {
+    .main-content__article {
+      width: 31.8%;
+      display: inline-block;
+    }   
+  }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .main-content__article {
+      width: 49%;
+    }   
+  }
+  @media only screen and (max-width: 767px) {
+    .main-content__article {
+      width: 100%;
+    }
+  }
+</style>
+<main class="transaction-page">
+    <section class="inner-wrap">
+        <div class="page-container">
+          <div class="container hero-content">
+              <div class="hero-content__img"></div>
+          </div>
+          <div class="container main-content">
+              {% for blog in blogs %}
+                <div class="main-content__article" id="{{blog.id}}">
+                  <img src="/{{blog.pic}}" />
+                  <div class="article-inner">
+                    <h5 class="article-inner__header">{{blog.title}}</h5>
+                    <p>{{blog.content}}</p>
+                  </div>
+                  <div class="article-bottom">{{blog.author}}</div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+    </section>
+</main>
+<script>
+  $('.article-inner > p').truncateTeasers({height: 50});
+  $('.main-content__article').on('click', function () {
+    document.location.href = "/blog/" + $(this).attr("id")
+  })
+</script>
+{% endblock content %}

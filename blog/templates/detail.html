@@ -1,0 +1,76 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  @media only screen and (min-width: 1440px) {
+    .page-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 20px;
+      background: #fff;
+    }
+  }
+  .container {
+    width: 80%;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: auto !important;
+  }
+
+  .main-content {
+    display: flex;
+    flex-wrap: wrap;
+    top: 425px;
+    justify-content: space-between;
+    padding: 20px 0px !important;
+  }
+  .main-content > h3 {
+    padding: 20px 0px;
+    font-size: 32px;
+    line-height: 1.2;
+  }
+  .main-content > .blog-info {
+    display: flex;
+    width: 100%;
+    padding: 10px 0px !important;
+  }
+  .main-content > .blog-info > span {
+     color: #7d7d7d;
+  }
+  .main-content > .content {
+    padding: 20px 0px !important;
+    color: #3d3d3d;
+  }
+  .main-content__article {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    float: left; 
+    max-height: 500px;
+    min-height: 500px;
+    overflow: hidden; 
+    margin: 10px 0;
+  }
+
+</style>
+<main class="transaction-page">
+    <section class="inner-wrap">
+        <div class="page-container">          
+          <div class="container main-content">
+            <h3>{{blog.title}}</h3>
+            <div class="blog-info">
+              <span style="margin-right: auto">{{blog.timestamp}}</span>
+              <span style="margin-right: 10px;">by {{blog.author}}</span>
+            </div>
+            <img src="/{{blog.pic}}"/>
+            <div class="content">{{blog.content}}</div>
+          </div>
+        </div>
+    </section>
+</main>
+<script>
+  $('.article-inner > p').truncateTeasers({height: 50});
+</script>
+{% endblock content %}
