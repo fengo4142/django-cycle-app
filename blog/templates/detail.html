@@ -22,9 +22,9 @@
   .main-content {
     display: flex;
     flex-wrap: wrap;
-    top: 425px;
+    height: 100%;
     justify-content: space-between;
-    padding: 20px 0px !important;
+    padding: 50px 0px !important;
   }
   .main-content > h3 {
     padding: 20px 0px;
@@ -37,11 +37,11 @@
     padding: 10px 0px !important;
   }
   .main-content > .blog-info > span {
-     color: #7d7d7d;
+     color: #6b7d8e;
   }
   .main-content > .content {
     padding: 20px 0px !important;
-    color: #3d3d3d;
+    color: #6b7d8e;
   }
   .main-content__article {
     position: relative;
@@ -56,6 +56,7 @@
 
 </style>
 <main class="transaction-page">
+    {% include 'menu.html' %}
     <section class="inner-wrap">
         <div class="page-container">          
           <div class="container main-content">

@@ -42,6 +42,7 @@
     padding: 20px 0px !important;
   }
   .main-content__article {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     position: relative;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -51,12 +52,11 @@
     overflow: hidden; 
     margin: 10px 0;
   }
-
   .article-inner {
     padding: 5px 10px;
   }
   .article-inner > p {
-    color: #666 !important;
+    color: #6b7d8e !important;
     font-family: 'Open Sans';
     letter-spacing: -.15px !important;
     font-size: 14px !important;
@@ -79,8 +79,12 @@
     bottom: 10px;
     padding: 0 10px;
     font-family: 'Open Sans';
+    font-size: 12px;
     letter-spacing: -.15px !important;
-    font-size: 14px !important;
+    width: 100%;
+    border-top: 1px solid #aaa;
+    padding-top: 7px;
+    display: flex;
   }
   @media only screen and (min-width: 1201px) {
     .main-content__article {
@@ -100,6 +104,7 @@
   }
 </style>
 <main class="transaction-page">
+    {% include 'menu.html' %}
     <section class="inner-wrap">
         <div class="page-container">
           <div class="container hero-content">
@@ -113,7 +118,10 @@
                     <h5 class="article-inner__header">{{blog.title}}</h5>
                     <p>{{blog.content}}</p>
                   </div>
-                  <div class="article-bottom">{{blog.author}}</div>
+                  <div class="article-bottom">
+                    <span style="margin-right: auto">{{blog.author}}</span>
+                    <span style="margin: 0 5px">&#9825;&nbsp;{{blog.visit}}</span>
+                  </div>
                 </div>
               {% endfor %}
             </div>
