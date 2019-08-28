@@ -27,14 +27,15 @@
     padding: 50px 0px !important;
   }
   .main-content > h3 {
-    padding: 20px 0px;
+    padding-top: 20px;
     font-size: 32px;
     line-height: 1.2;
   }
   .main-content > .blog-info {
-    display: flex;
     width: 100%;
-    padding: 10px 0px !important;
+    height: 20px;
+    margin: 0;
+    margin: 10px 0px !important;
   }
   .main-content > .blog-info > span {
      color: #6b7d8e;
@@ -62,11 +63,14 @@
           <div class="container main-content">
             <h3>{{blog.title}}</h3>
             <div class="blog-info">
-              <span style="margin-right: auto">{{blog.timestamp}}</span>
-              <span style="margin-right: 10px;">by {{blog.author}}</span>
+              <span style="font-size: 12px;">{{blog.timestamp}}</span>
+              <span style="margin: 0 10px; font-size: 14px; color: #58add0;"> {{blog.author}}</span>
             </div>
+            <hr style="width: 100%; border-color: rgba(239, 239, 239, 0.3);">
             <img src="/{{blog.pic}}"/>
+            <hr style="width: 100%; margin-top: 20px; border-color: rgba(239, 239, 239, 0.3);">
             <div class="content">{{blog.content}}</div>
+            <hr style="width: 100%; border-color: rgba(239, 239, 239, 0.3);">
           </div>
         </div>
     </section>
