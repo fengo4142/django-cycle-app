@@ -16,7 +16,13 @@ def contact(request):
 
 def detail(request, id=None):
   blog = get_object_or_404(Blog, id=id)
+  from difflib import SequenceMatcher
+  
+  vec = [ [b.id, SequenceMatcher(None, blog.title, b.title).ratio(), b.title] for b in Blog.objects.all() if blog.id != b.id ]
+  related_blogs = sorted(vec, key=lambda x: x[0])[-3:]
+  print(related_blogs)
   context= {
     'blog': blog,
+    'related_blogs': related_blogs
   }
   return render(request, 'detail.html', context)

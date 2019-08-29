@@ -38,11 +38,12 @@
     margin: 10px 0px !important;
   }
   .main-content > .blog-info > span {
-     color: #6b7d8e;
+     color: #5d6e73;
   }
   .main-content > .content {
     padding: 20px 0px !important;
-    color: #6b7d8e;
+    color: #5d6e73;
+    line-height: 1.5;
   }
   .main-content__article {
     position: relative;
@@ -54,7 +55,35 @@
     overflow: hidden; 
     margin: 10px 0;
   }
-
+  .social {
+    width: 100%;
+    font-size: 2.2rem;
+  }
+  .divider {
+    width: 100%; 
+    border-color: rgba(239, 239, 239, 0.3);
+  }
+  .related {
+    margin: 10px 0;
+    display: flex;    
+  }
+  .related > .related-blog {
+    margin: 0 10px;
+    color: #58add0;
+  }
+  .related > .related-blog > a:hover {
+    text-decoration: underline;
+  }
+  .like-btn {
+    float: right; 
+    position: relative;
+    top: 8px;
+    font-size: 14px;
+    color: #58add0;
+    border: 1px solid #58add0;
+    padding: 7px;
+    border-radius: 50%;
+  }
 </style>
 <main class="transaction-page">
     {% include 'menu.html' %}
@@ -66,16 +95,37 @@
               <span style="font-size: 12px;">{{blog.timestamp}}</span>
               <span style="margin: 0 10px; font-size: 14px; color: #58add0;"> {{blog.author}}</span>
             </div>
-            <hr style="width: 100%; border-color: rgba(239, 239, 239, 0.3);">
-            <img src="/{{blog.pic}}"/>
-            <hr style="width: 100%; margin-top: 20px; border-color: rgba(239, 239, 239, 0.3);">
+            <hr class="divider">
+            <div style="margin: 20px auto; width: 75%; max-height: 400px; overflow: hidden">
+              <img src="/{{blog.pic}}"/>
+            </div>
             <div class="content">{{blog.content}}</div>
-            <hr style="width: 100%; border-color: rgba(239, 239, 239, 0.3);">
+            <div class="social">
+              <a href=""><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+              <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+              <a href=""><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
+              <a href="" class="like-btn">Like <i class="fa fa-heart" aria-hidden="true"></i></a>
+            </div>    
+            <hr class="divider">
+            <h5 style="margin-top: 20px;">Relanted Blogs</h5>
+            <div class="related">                
+                {% for rb in related_blogs %}
+                  <div class="col-4 related-blog">
+                    <a href="/blog/{{rb.0}}" title="{{rb.2}}">{{rb.2}}</a>
+                  </div>
+                {% endfor %}
+            </div>
+            <hr class="divider" style="margin-top: 50px;">
+            <div>
+              <a href="/blog/category/{{blog.category}}">{{blog.category}}</a>
+            </div>
           </div>
         </div>
     </section>
 </main>
 <script>
-  $('.article-inner > p').truncateTeasers({height: 50});
+  $('.related a').truncateTeasers({height: 70});
+
+  
 </script>
 {% endblock content %}
