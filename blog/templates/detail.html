@@ -87,8 +87,9 @@
 </style>
 <main class="transaction-page">
     {% include 'menu.html' %}
+    {% csrf_token %}
     <section class="inner-wrap">
-        <div class="page-container">          
+        <div class="page-container">
           <div class="container main-content">
             <h3>{{blog.title}}</h3>
             <div class="blog-info">
@@ -104,11 +105,11 @@
               <a href=""><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
               <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
               <a href=""><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
-              <a href="" class="like-btn">Like <i class="fa fa-heart" aria-hidden="true"></i></a>
-            </div>    
+              <a href="#" data-id='{{blog.id}}' class="like-btn unlike">Like <i class="fa fa-heart-o" aria-hidden="true"></i></a>
+            </div>
             <hr class="divider">
             <h5 style="margin-top: 20px;">Relanted Blogs</h5>
-            <div class="related">                
+            <div class="related">
                 {% for rb in related_blogs %}
                   <div class="col-4 related-blog">
                     <a href="/blog/{{rb.0}}" title="{{rb.2}}">{{rb.2}}</a>
@@ -125,7 +126,25 @@
 </main>
 <script>
   $('.related a').truncateTeasers({height: 70});
+  $('.like-btn').on('click', function () {
+    $('.like-btn > i').hasClass('fa-heart') ? 
+    $('.like-btn > i').addClass('fa-heart-o').removeClass('fa-heart') : 
+    $('.like-btn > i').removeClass('fa-heart-o').addClass('fa-heart')
 
+    const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+          
+    $.ajax({
+      url: '/blog/',
+      type: 'post',
+      headers: { "X-CSRFToken": csrftoken },
+      data: { id: $(this).data('id'), like: $('.like-btn > i').hasClass('fa-heart') ? true : false },
+      success: function (res) {
+        console.log(res)
+      }, error: function (res) {
+        console.log(res)
+      }
+    })
+  })
   
 </script>
 {% endblock content %}

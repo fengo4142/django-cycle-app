@@ -2,7 +2,7 @@
 #cssmenu {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, Sans-Serif;
     font-size: 10px;
-    line-height: 15px;
+    line-height: 33px;
     text-transform: uppercase;
     text-align: left;
     z-index: 9999;
@@ -19,7 +19,6 @@
     margin: 0;
     background: #ffffff;
     border: 1px solid #ece6e8;
-    border-bottom: 3px solid #d9ced2;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     -o-border-radius: 2px;
@@ -28,11 +27,13 @@
 #cssmenu > ul li#header-tab {
     float: left;
     font-size: 1.2rem;
+    margin-left: 100px;
 }
 #cssmenu > ul li {
     display: inline-block;
     *display: inline;
     zoom: 1;
+    font-size: 0.7rem;
 }
 #cssmenu > ul li a {
     display: block;
@@ -44,9 +45,8 @@
 </style>
 <div id="cssmenu">
   <ul>
-    <li id="header-tab"><a href="#">Velocity Blog</a></li>
-    <li class="active"><a href="#"><span><i class="fa fa-fw fa-home"></i> Home</span></a></li>
-    <li><a href="/blog"><span><i class="fa fa-fw fa-newspaper-o"></i> Posts</span></a></li>
+    <li id="header-tab"><a href="/blog">Velocity Blog</a></li>
+    <li class="active"><a href="/blog"><span><i class="fa fa-fw fa-home"></i> Home</span></a></li>
     <li><a href="/blog/contact"><span><i class="fa fa-fw fa-phone"></i> Contact</span></a></li>
   </ul>
 </div>
