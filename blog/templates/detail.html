@@ -4,6 +4,13 @@
 
 {% block content %}
 <style>
+  .page-container {
+    display: flex;
+  }
+  .inner-wrap {
+    width: 92%;
+    margin: auto
+  }
   @media only screen and (min-width: 1440px) {
     .page-container {
       max-width: 1440px;
@@ -13,7 +20,6 @@
     }
   }
   .container {
-    width: 80%;
     max-width: 100% !important;
     padding: 0 !important;
     margin: auto !important;
@@ -23,8 +29,14 @@
     display: flex;
     flex-wrap: wrap;
     height: 100%;
+    width: 75%;
     justify-content: space-between;
     padding: 50px 0px !important;
+  }
+  .side-content {
+    width: 25%;
+    margin-top: 70px !important;
+    padding: 20px !important;
   }
   .main-content > h3 {
     padding-top: 20px;
@@ -49,10 +61,10 @@
     position: relative;
     border: 1px solid #ccc;
     border-radius: 4px;
-    float: left; 
+    float: left;
     max-height: 500px;
     min-height: 500px;
-    overflow: hidden; 
+    overflow: hidden;
     margin: 10px 0;
   }
   .social {
@@ -65,15 +77,12 @@
   }
   .related {
     margin: 10px 0;
-    display: flex;    
+    display: flex;
   }
   .related > .related-blog {
     margin: 0 10px;
-    color: #58add0;
   }
-  .related > .related-blog > a:hover {
-    text-decoration: underline;
-  }
+
   .like-btn {
     float: right; 
     position: relative;
@@ -84,10 +93,16 @@
     padding: 7px;
     border-radius: 50%;
   }
+  .link {
+    color: #58add0;
+  }
+  .link:hover {
+    text-decoration: underline;
+  }
 </style>
 <main class="transaction-page">
     {% include 'menu.html' %}
-    {% csrf_token %}
+    
     <section class="inner-wrap">
         <div class="page-container">
           <div class="container main-content">
@@ -112,29 +127,51 @@
             <div class="related">
                 {% for rb in related_blogs %}
                   <div class="col-4 related-blog">
-                    <a href="/blog/{{rb.0}}" title="{{rb.2}}">{{rb.2}}</a>
+                    <a class="link" href="/blog/{{rb.0}}" title="{{rb.2}}">{{rb.2}}</a>
                   </div>
                 {% endfor %}
             </div>
             <hr class="divider" style="margin-top: 50px;">
-            <div>
-              <a href="/blog/category/{{blog.category}}">{{blog.category}}</a>
+          </div>
+          <div class="container side-content">
+            <div class="search-field">
+              <form action="{% url 'blogs' %}" method="post" class="sampling_form" style="padding: 20px 0; min-width: auto;">
+                {% csrf_token %}
+                <div class="control-group" style="width: 100%;">
+                    <div class="controls" style="width: 100%;">
+                        <input type="text" name="searchKey" placeholder="Search...">
+                    </div>
+                </div>
+              </form>
             </div>
+            <div class="categories">
+              <h5>Categories</h5>
+              <hr  class="divider" style="margin: 10px 0;"/>
+              <ul>
+                {% for category in categories %}
+                  <li><a class="link" href="/blog/category/{{category.id}}">{{ category.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <div class="writings">
+
           </div>
         </div>
     </section>
 </main>
 <script>
+  const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+  
   $('.related a').truncateTeasers({height: 70});
   $('.like-btn').on('click', function () {
+
     $('.like-btn > i').hasClass('fa-heart') ? 
     $('.like-btn > i').addClass('fa-heart-o').removeClass('fa-heart') : 
     $('.like-btn > i').removeClass('fa-heart-o').addClass('fa-heart')
-
-    const csrftoken = $("[name=csrfmiddlewaretoken]").val();
           
     $.ajax({
-      url: '/blog/',
+      url: '{% url "blogs" %}',
       type: 'post',
       headers: { "X-CSRFToken": csrftoken },
       data: { id: $(this).data('id'), like: $('.like-btn > i').hasClass('fa-heart') ? true : false },
@@ -145,6 +182,9 @@
       }
     })
   })
+
+  
   
 </script>
 {% endblock content %}
+ fwefwef
