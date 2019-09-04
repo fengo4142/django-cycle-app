@@ -4,19 +4,23 @@
 
 {% block content %}
 <style>
+  main {
+     background: #eee;
+  }
   .page-container {
     display: flex;
+    background: #fff;
+    padding: 0 30px;
+    margin: 0 auto;
   }
   .inner-wrap {
     width: 92%;
-    margin: auto
+    margin: auto;
+    background: #eee;
   }
   @media only screen and (min-width: 1440px) {
     .page-container {
       max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background: #fff;
     }
   }
   .container {
@@ -97,7 +101,26 @@
     color: #58add0;
   }
   .link:hover {
+    cursor: pointer;
     text-decoration: underline;
+  }
+  .timestamp {
+    font-size: 12px;
+    color: #aaa;
+  }
+  .categories {
+    min-height: 250px;
+    max-height: 400px;
+    overflow: hidden;
+  }
+  .categories li {
+    margin: 10px 0;
+  }
+  .latest-blog-item {
+    margin: 15px 0;
+  }
+  .latest-blog-item > .link {
+    margin: 5px 0;
   }
 </style>
 <main class="transaction-page">
@@ -108,7 +131,7 @@
           <div class="container main-content">
             <h3>{{blog.title}}</h3>
             <div class="blog-info">
-              <span style="font-size: 12px;">{{blog.timestamp}}</span>
+              <span class="timestamp">{{blog.timestamp}}</span>
               <span style="margin: 0 10px; font-size: 14px; color: #58add0;"> {{blog.author}}</span>
             </div>
             <hr class="divider">
@@ -153,9 +176,17 @@
                 {% endfor %}
               </ul>
             </div>
-          </div>
-          <div class="writings">
-
+            <div class="writings">
+              <h5>What we're writing</h5>
+              <hr  class="divider" style="margin: 10px 0;"/>
+              <div class="latest-blogs">
+                {% for blog in latest_blogs %}
+                  <div class="latest-blog-item">
+                    <p href="/blog/{{blog.id}}" id="{{blog.id}}" class="link">{{blog.title}}</p>
+                    <p class="timestamp">{{blog.timestamp}}</p>
+                  </div>
+                {% endfor %}
+              </div>
           </div>
         </div>
     </section>
@@ -163,7 +194,9 @@
 <script>
   const csrftoken = $("[name=csrfmiddlewaretoken]").val();
   
-  $('.related a').truncateTeasers({height: 70});
+  $('.related a').truncateTeasers({ height: 70 });
+  $('.latest-blog-item > .link').truncateTeasers({ height: 50 })
+
   $('.like-btn').on('click', function () {
 
     $('.like-btn > i').hasClass('fa-heart') ? 

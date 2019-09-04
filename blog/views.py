@@ -36,12 +36,15 @@ def detail(request, id=None):
     vec = [[b.id, SequenceMatcher(None, blog.title, b.title).ratio(
     ), b.title] for b in Blog.objects.all() if blog.id != b.id]
     related_blogs = sorted(vec, key=lambda x: x[0])[-3:]
+    latest_blogs = Blog.objects.order_by('-timestamp')[:5]
+    print(latest_blogs)
     categories = Category.objects.all()
 
     context = {
         'blog': blog,
         'categories': categories,
-        'related_blogs': related_blogs
+        'related_blogs': related_blogs,
+        'latest_blogs': latest_blogs
     }
     return render(request, 'detail.html', context)
 
