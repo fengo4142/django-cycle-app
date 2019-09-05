@@ -69,6 +69,8 @@
 </main>
 <script>
   $('.article-inner > p').truncateTeasers({height: 50});
+  $('.latest-blog-item > .link').truncateTeasers({ height: 50 })
+  
   $('.main-content__article').on('click', function () {
     document.location.href = "/blog/" + $(this).attr("id")
   })

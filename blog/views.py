@@ -7,8 +7,13 @@ from django.http import HttpResponse, JsonResponse
 def index(request):
     template_name = "index.html"
     blogs = Blog.objects.all()
+    latest_blogs = Blog.objects.order_by('-timestamp')[:5]
+    categories = Category.objects.all()
+
     context = {
-        "blogs": blogs
+        'categories': categories,
+        'blogs': blogs,
+        'latest_blogs': latest_blogs
     }
     return render(request, template_name, context)
 
@@ -37,7 +42,6 @@ def detail(request, id=None):
     ), b.title] for b in Blog.objects.all() if blog.id != b.id]
     related_blogs = sorted(vec, key=lambda x: x[0])[-3:]
     latest_blogs = Blog.objects.order_by('-timestamp')[:5]
-    print(latest_blogs)
     categories = Category.objects.all()
 
     context = {
@@ -56,7 +60,11 @@ def blogs(request, id=None):
     if request.method == "POST":
         search_key = request.POST.get('searchKey')
         blogs = Blog.objects.filter(title__icontains=search_key)
+    latest_blogs = Blog.objects.order_by('-timestamp')[:5]
+    categories = Category.objects.all()
     context = {
-        'blogs': blogs
+        'blogs': blogs,
+        'categories': categories,
+        'latest_blogs': latest_blogs
     }
     return render(request, "blogs.html", context)
