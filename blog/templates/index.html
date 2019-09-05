@@ -3,131 +3,66 @@
 {% load static %}
 
 {% block content %}
-<style>
-  @media only screen and (min-width: 1440px) {
-    .page-container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background: #fff;
-    }
-  }
-  .inner-wrap {
-    background: #eee;
-  }
-  .container {
-    width: 100%;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-  .hero-content {
-    top: 0px;
-    height: 400px;
-  }
-  .hero-content__img {
-    background-image: url('{% static "imgs/Web-Hero-Blog-1.jpg" %}');
-    background-size: contain;
-    width: inherit;
-    height: inherit;
-    background-position-x: center;
-    background-position-y: center;
-    background-size: cover;
-  }
-  .main-content {
-    display: flex;
-    flex-wrap: wrap;
-    top: 425px;
-    justify-content: space-between;
-    padding: 20px 0px !important;
-  }
-  .main-content__article {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-    position: relative;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    float: left; 
-    max-height: 500px;
-    min-height: 500px;
-    overflow: hidden; 
-    margin: 10px 0;
-  }
-  .article-inner {
-    padding: 5px 10px;
-  }
-  .article-inner > p {
-    color: #6b7d8e !important;
-    font-family: 'Open Sans';
-    letter-spacing: -.15px !important;
-    font-size: 14px !important;
-    font-weight: 300 !important;
-    flex: 1;
-    overflow: hidden; 
-    
-    text-overflow: ellipsis;
-  }
-  .article-inner__header {
-    color: #333 !important;
-    margin-bottom: 12px;
-    font-family: 'Open Sans';
-    letter-spacing: -.15px !important;
-    font-size: 16px !important;
-    font-weight: 300 !important;
-  }
-  .article-bottom {
-    position: absolute;
-    bottom: 10px;
-    padding: 0 10px;
-    font-family: 'Open Sans';
-    font-size: 12px;
-    letter-spacing: -.15px !important;
-    width: 100%;
-    border-top: 1px solid #aaa;
-    padding-top: 7px;
-    display: flex;
-  }
-  @media only screen and (min-width: 1201px) {
-    .main-content__article {
-      width: 31.8%;
-      display: inline-block;
-    }   
-  }
-  @media (min-width: 768px) and (max-width: 1200px) {
-    .main-content__article {
-      width: 49%;
-    }   
-  }
-  @media only screen and (max-width: 767px) {
-    .main-content__article {
-      width: 100%;
-    }
-  }
-</style>
+<link rel="stylesheet" href="{% static 'blog/index.css' %}"/>
+
 <main class="transaction-page">
     {% include 'menu.html' %}
     <section class="inner-wrap">
         <div class="page-container">
           <div class="container hero-content">
-              <div class="hero-content__img"></div>
+              <div class="hero-content__img" style="background-image: url({% static 'imgs/Web-Hero-Blog-1.jpg' %});"></div>
           </div>
-          <div class="container main-content">
-              {% for blog in blogs %}
-                <div class="main-content__article" id="{{blog.id}}">
-                  <img src="/{{blog.pic}}" />
-                  <div class="article-inner">
-                    <h5 class="article-inner__header">{{blog.title}}</h5>
-                    <p>{{blog.content}}</p>
+          <div class="container body-content">
+            <div class="main-content">
+                {% for blog in blogs %}
+                  <div class="main-content__article" id="{{blog.id}}">
+                    <img src="/{{blog.pic}}" />
+                    <div class="article-inner">
+                      <h5 class="article-inner__header">{{blog.title}}</h5>
+                      <p>{{blog.content}}</p>
+                    </div>
+                    <div class="article-bottom">
+                      <span style="margin-right: auto; color: #58add0;">{{blog.author}}</span>
+                      <span style="margin: 0 5px">
+                        <i class="fa fa-heart" style="color: #58add0; margin: 0 5px;"></i>
+                        <span style="color: #888;position: relative; top: -1px;">{{blog.visit}}</span>
+                      </span>
+                    </div>
                   </div>
-                  <div class="article-bottom">
-                    <span style="margin-right: auto; color: #58add0;">{{blog.author}}</span>
-                    <span style="margin: 0 5px">
-                      <i class="fa fa-heart" style="color: #58add0; margin: 0 5px;"></i>
-                      <span style="color: #888;position: relative; top: -1px;">{{blog.visit}}</span>
-                    </span>
+                {% endfor %}
+              </div>
+            <div class="side-content">
+              <div class="search-field">
+                <form action="{% url 'blogs' %}" method="post" class="sampling_form" style="padding: 20px 0; min-width: auto;">
+                  {% csrf_token %}
+                  <div class="control-group" style="width: 100%;">
+                      <div class="controls" style="width: 100%;">
+                          <input type="text" name="searchKey" placeholder="Search...">
+                      </div>
                   </div>
+                </form>
+              </div>
+              <div class="categories">
+                <h5>Categories</h5>
+                <hr  class="divider" style="margin: 10px 0;"/>
+                <ul>
+                  {% for category in categories %}
+                    <li><a class="link" href="/blog/category/{{category.id}}">{{ category.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="writings">
+                <h5>What we're writing</h5>
+                <hr  class="divider" style="margin: 10px 0;"/>
+                <div class="latest-blogs">
+                  {% for blog in latest_blogs %}
+                    <div class="latest-blog-item">
+                      <p href="/blog/{{blog.id}}" id="{{blog.id}}" class="link">{{blog.title}}</p>
+                      <p class="timestamp">{{blog.timestamp}}</p>
+                    </div>
+                  {% endfor %}
                 </div>
-              {% endfor %}
-            </div>
+              </div>
           </div>
         </div>
     </section>
