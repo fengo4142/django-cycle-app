@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'cycle',
     'blog',
 
+    'tinymce',
     'crispy_forms',
     'widget_tweaks',
 ]
