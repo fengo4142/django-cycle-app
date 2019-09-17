@@ -75,31 +75,30 @@
             prefix: 'has_objectives',
         });
     </script>
+    <script>
 
-  <script>
-    $("#id_cycle_type").change(function () {
-      var objectives_trans = $(this).val();
-      $.ajax({
-        url: '{% url "CycleTransactionGet" %}',
-        type: "get",
-        data: {
-          'objectives_trans' : objectives_trans
-        },
-        success: function(data, status) {
-            console.log(data);
-            // var items = data['objectives_trans']
-            //  $.each(items, function(key, value) {
-            //             console.log(value.objectives_trans);
-            $("#id_has_objectives-0-transaction_objective").replaceWith(data);
-          
-          // $("#id_has_objectives-1-transaction_objective").replaceWith(data);
-          // $("#form-1-Suggested_Sample_Size").replaceWith(data);
-          // $("#form-2-Suggested_Sample_Size").replaceWith(data);
-          // result = data;
-          console.log(data);
-        }
+      $("body").on('change', '#id_cycle_type', function (event) {
+        event.preventDefault()
+        event.stopPropagation()
+        var objectives_trans = $(this).val();
+        $.ajax({
+          url: '{% url "CycleTransactionGet" %}',
+          type: "get",
+          data: {
+            'objectives_trans' : objectives_trans
+          },
+          success: function(response, status) {
+              console.log(response.data);
+              $("#id_has_objectives-0-transaction_objective").val(response.data[0]);                            
+              for (let i = 1; i < response.data.length; i++) {
+                $('.add-row').click()
+                $("#id_has_objectives-" + i + "-transaction_objective").val(response.data[i]);              
+              }
+          }
+        });
+        
       });
-    });
-  </script>
+      
+    </script>
 
   {% endblock content %}
