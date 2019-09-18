@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.views.generic import CreateView
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
@@ -24,33 +24,65 @@ class CycleTransactionCreate(CreateView):
     success_url = reverse_lazy('grapheditor')
     # queryset = Objectives.objects.all()
 
+    def get_success_url(self, **kwargs):
+        return self.success_url
+
     def get_context_data(self, **kwargs):
         data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
         if self.request.POST:
+            self.request.session['cycle_type'] = self.request.POST.get(
+                'cycle_type')
+            self.request.session['client_name'] = self.request.POST.get(
+                'cycle_client')
+            self.request.session['year'] = self.request.POST.get('cycle_year')
             data['titles'] = ObjectivesFormSet(self.request.POST)
 
         else:
             data['titles'] = ObjectivesFormSet()
         return data
 
+    def form_invalid(self, form):
+        # print(form.errors)
+        context = self.get_context_data()
+        titles = context['titles']
+
+        for title in titles:
+            print(form)
+            print(form.cleaned_data.get('cycle_type'))
+        return HttpResponseRedirect(self.get_success_url())
+
     def form_valid(self, form):
         print('HI')
         context = self.get_context_data()
         titles = context['titles']
+        # cycle_type = Cycle.objects.filter(
+        #     cycle_type=form.cleaned_data.get('cycle_type')).last()
+        # cycle_in_objs = [
+        #     x.id for x in Cycle_in_obj.objects.filter(cycle_type=cycle_type)]
+        # Objectives.objects.filter(
+        #     cycle__cycle_type_id__in=cycle_in_objs).delete()
         with transaction.atomic():
             form.instance.user = self.request.user
-            print(form)
+            # print(form)
             self.object = form.save()
 
             if titles.is_valid():
+                print(titles)
                 titles.instance.user = self.request.user
                 titles.instance = self.object
                 titles.save()
-
-            # for title in titles:
-                # print(title.prefix)
-                # print(titles)
+            # else:
+            #     for title in titles:
+            #         if title.is_valid() and title.cleaned_data.get(
+            #                 'transaction_objective') != None:
+            #             x = Objectives()
+            #             x.id = title.cleaned_data.get('id')
+            #             print(title.cleaned_data)
+            #             x.cycle = self.object
+            #             x.transaction_objective = title.cleaned_data.get(
+            #                 'transaction_objective')
+            #             x.save()
         self.request.session['cycle_in_obj'] = self.object.id
 
         return super(CycleTransactionCreate, self).form_valid(form)
@@ -145,7 +177,7 @@ def sugg_samples(request):
     Calculate the minimal sample size to use to achieve a certain margin of error
     and confidence level for a sample estimate of the population mean
 
-    Inputs - 
+    Inputs -
     population_size: integer
             Total size of the population that the sample is to be drawn from.
 
@@ -157,7 +189,7 @@ def sugg_samples(request):
     the true population parametere should lie within this percentage of the intervals (sample parameter -e, sample parameter + e)
     where e is the margin for error
 
-    Confidence level tell you how sure you can be, It is expreseed as a percetange and represents how often 
+    Confidence level tell you how sure you can be, It is expreseed as a percetange and represents how often
     the true percentage of the population would pick an answer lies witihin the confidence interval.
 
     Estimated population exception rate can be same as that of confidence_level
@@ -438,8 +470,24 @@ def report_form(request):
 # mxgraph
 def grapheditor(request):
     form = CycleInObjForm()
+    cycle_client = request.session.get('cycle_client', None)
+    cycle_year = request.session.get('cycle_year', None)
+    cycle_type = request.session.get('cycle_type', None)
+    if cycle_client and cycle_year and cycle_type:
+        print("sdfsdfsdf")
+        from django.db.models import Q
+        ci_obj = Cycle_in_obj.objects.get(
+            Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
+        xml_graph = XMLGraph.objects.filter(
+            Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
+    else:
+        cycle_name = Cycle.objects.get(pk=cycle_type).cycle_type
+        import mysite.settings as settings
+        xml_graph = open(settings.BASE_DIR + settings.STATIC_URL + "resources/" +
+                         cycle_name + ".xml").read()
     context = {
-        "form": form
+        "form": form,
+        "xml_graph": xml_graph.replace("'", "")
     }
     return render(request, 'grapheditor.html', context)
 

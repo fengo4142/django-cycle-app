@@ -39,8 +39,7 @@
                   <div class="general_dropdown-list">
                       {{ field }}
                   </div>
-                {% endfor %}
-                
+                {% endfor %}                
                 </div>
 
                 <table class="table">
@@ -77,6 +76,8 @@
     </script>
     <script>
 
+      let index = 1
+
       $("body").on('change', '#id_cycle_type', function (event) {
         event.preventDefault()
         event.stopPropagation()
@@ -89,10 +90,11 @@
           },
           success: function(response, status) {
               console.log(response.data);
-              $("#id_has_objectives-0-transaction_objective").val(response.data[0]);                            
-              for (let i = 1; i < response.data.length; i++) {
+              $(".formset_row").remove()
+              for (i = 0; i < response.data.length; i++) {
                 $('.add-row').click()
-                $("#id_has_objectives-" + i + "-transaction_objective").val(response.data[i]);              
+                $("#id_has_objectives-" + index + "-transaction_objective").val(response.data[i]);              
+                index++;
               }
           }
         });

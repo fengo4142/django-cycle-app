@@ -227,6 +227,14 @@
 				// 		this.actions.get('export').setEnabled(enabled);					
 				// 	}));
 				// }
+
+				//default graph
+				var content = mxUtils.parseXml('{{xml_graph|safe}}');
+				var graph = editorUIGlobal.editor.graph;
+				var encoder = new mxCodec();
+				var node = content.documentElement;
+				var dec = new mxCodec(node.ownerDocument);
+				dec.decode(node, graph.getModel());
 			};
 			
 			// Adds required resources (disables loading of fallback properties, this can only
@@ -247,10 +255,15 @@
 				
 				// Main
 				new EditorUi(new Editor(urlParams['chrome'] == '0', themes));
+				
 			}, function() {
 				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
-			});			
+			});
+			
+
 		})();
+
+		
 
 		$("#openGraphButton").on('click', function () {
 				$("#openGraphModal").modal();				

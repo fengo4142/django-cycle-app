@@ -15,33 +15,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Client',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('client_name', models.CharField(max_length=20)),
             ],
         ),
         migrations.CreateModel(
             name='Cycle',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('cycle_type', models.CharField(default='sales', max_length=15)),
-                ('client_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cycle.Client')),
+                ('client_name', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='cycle.Client')),
             ],
         ),
         migrations.CreateModel(
             name='Cycle_in_obj',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('client_name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cycle.Client')),
-                ('cycle_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cycle.Cycle')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('client_name', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='cycle.Client')),
+                ('cycle_type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='cycle.Cycle')),
             ],
         ),
         migrations.CreateModel(
             name='Objectives',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('transaction_objective', models.CharField(max_length=100)),
-                ('assessed_cr', models.CharField(choices=[('Med', 'Med'), ('Low', 'Low'), ('High', 'High')], max_length=20)),
-                ('cycle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='has_objectives', to='cycle.Cycle_in_obj')),
+                ('assessed_cr', models.CharField(choices=[
+                 ('Med', 'Med'), ('Low', 'Low'), ('High', 'High')], max_length=20)),
+                ('cycle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                            related_name='has_objectives', to='cycle.Cycle_in_obj')),
             ],
         ),
     ]
