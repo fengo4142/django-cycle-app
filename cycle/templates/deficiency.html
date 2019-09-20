@@ -26,7 +26,7 @@
           <table id='datatable' class="no-spacing">
             <thead>
               <tr>
-                  <th width="10%">Number</th>
+                  <th width="10%">No</th>
                   <th width="20%">Cycle</th>
                   <th width="20%">Deficient Remarks</th>
                   <th width="30%">Financial Statements</th>
@@ -37,7 +37,7 @@
             <tbody>
                 {% for row in deficiencies %}
                   <tr class="row" style="">
-                    <td class="cell id">{{row.id}}</td>
+                    <td class="cell id">{{ forloop.counter }}</td>
                     <td class="cell cycle">{{row.cycle}}</td>
                     <td class="cell remarks">{{row.remarks}}</td>
                     <td class="cell financials">{{row.financials | default_if_none:""}}</td>
@@ -48,6 +48,16 @@
                   <tr class="row">
                     <td class="cell" colspan="6" style="text-align:center;">Sorry, there is no deficiencies!</td>
                   </tr>
+                {% endfor %}
+                {% for each_cycle in cycles %}
+                  {% if deficiencies %}
+                    <td class="cell "></td>
+                    <td class="cell ">{{each_cycle.cycle_type}}</td>
+                    <td class="cell ">pending</td>
+                    <td class="cell "></td>
+                    <td class="cell "></td>
+                    <td class="cell "></td>
+                  {% endif %}
                 {% endfor %}
             </tbody>
           </table>

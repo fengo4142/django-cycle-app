@@ -407,9 +407,13 @@ def deficiency(request):
         sampled_deficiencies = Deficiency.objects.filter(cycle=sampling_data.Cycle).filter(
             client=sampling_data.Client).order_by('-id')[:10]
         deficiencies = [d for d in sampled_deficiencies if d.is_active == True]
+        cycles = Cycle.objects.filter(client_name_id=sampling_data.Client).exclude(
+            id__in=[sampling_data.Cycle.id])
+        print(cycles)
         context = {
             "sampling_data": sampling_data,
-            "deficiencies": deficiencies
+            "deficiencies": deficiencies,
+            "cycles": cycles
         }
     return render(request, "deficiency.html", context)
 
@@ -443,6 +447,7 @@ def report_form(request):
         from django.views.generic import View
 
         from cycle.utils import render_to_pdf
+
         data = {
             'year': X.year,
             'client': X.client,
@@ -474,7 +479,6 @@ def grapheditor(request):
     cycle_year = request.session.get('cycle_year', None)
     cycle_type = request.session.get('cycle_type', None)
     if cycle_client and cycle_year and cycle_type:
-        print("sdfsdfsdf")
         from django.db.models import Q
         ci_obj = Cycle_in_obj.objects.get(
             Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
