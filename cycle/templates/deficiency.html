@@ -6,7 +6,28 @@
 {% block content %}
 <style>
 .cell {
-  line-height: 60px;
+    line-height: 40px;
+}
+.no-spacing {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+thead {
+    border: 1px solid #222;
+    background: #ddd;
+}
+td {
+    text-align: center;
+    border: 1px solid #999;
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#statustable {
+  margin: 30px;
+  width: 400px;
+  float: left;  
 }
 </style>
 <main class="transaction-page">
@@ -49,16 +70,28 @@
                     <td class="cell" colspan="6" style="text-align:center;">Sorry, there is no deficiencies!</td>
                   </tr>
                 {% endfor %}
-                {% for each_cycle in cycles %}
-                  {% if deficiencies %}
-                    <td class="cell "></td>
-                    <td class="cell ">{{each_cycle.cycle_type}}</td>
-                    <td class="cell ">pending</td>
-                    <td class="cell "></td>
-                    <td class="cell "></td>
-                    <td class="cell "></td>
-                  {% endif %}
-                {% endfor %}
+            </tbody>
+          </table>
+          <table id="statustable"  class="no-spacing">
+            <thead>
+              <th width="20%">No</th>
+              <th width="50%">Cycle</th>
+              <th width="30%">Status</th>
+            </thead>
+            <tbody>
+              {% for item in cycles %}
+                <tr class="row">
+                  <td>{{forloop.counter}}</td>
+                  <td>{{item.1}}</td>
+                  <td>
+                    {% if item.2 %}
+                      completed
+                    {% else %}
+                      pending
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
           <div class="form-actions">

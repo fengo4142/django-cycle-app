@@ -407,8 +407,9 @@ def deficiency(request):
         sampled_deficiencies = Deficiency.objects.filter(cycle=sampling_data.Cycle).filter(
             client=sampling_data.Client).order_by('-id')[:10]
         deficiencies = [d for d in sampled_deficiencies if d.is_active == True]
-        cycles = Cycle.objects.filter(client_name_id=sampling_data.Client).exclude(
-            id__in=[sampling_data.Cycle.id])
+        #cycles = Cycle.objects.filter(client_name_id=sampling_data.Client).exclude(id__in=[sampling_data.Cycle.id])
+        cycles = [(x.id, x.cycle_type, Deficiency.objects.filter(cycle_id=x.id).exists())
+                  for x in Cycle.objects.filter(client_name_id=sampling_data.Client)]
         print(cycles)
         context = {
             "sampling_data": sampling_data,
