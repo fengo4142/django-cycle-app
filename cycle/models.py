@@ -28,6 +28,9 @@ class Cycle_in_obj(models.Model):
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE)
     year = models.IntegerField(choices=Option_CHOICES)
 
+    class Meta:
+        unique_together = ('cycle_type', 'client_name', 'year', )
+
 
 class Objectives(models.Model):  # Build
 

@@ -509,12 +509,12 @@ def loadgraph(request):
         ci_obj = Cycle_in_obj.objects.get(
             Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
         xml_graph = XMLGraph.objects.filter(
-            Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
-
+            Q(cycle_in_obj=ci_obj)).order_by('-id')[0]
+        request.session["cycle_in_obj"] = xml_graph.cycle_in_obj_id
     except Exception as e:
         print(e)
         return JsonResponse({'message': str(e)})
-    return JsonResponse({'message': 'success', 'xml_graph': xml_graph})
+    return JsonResponse({'message': 'success', 'xml_graph': xml_graph.XMLGraph})
 
 
 @csrf_exempt
@@ -534,7 +534,7 @@ def savegraph(request):
             X = XMLGraph()
             X.XMLGraph = xmlData
             X.user = member_instance
-            X.cycle_in_obj = request.session["cycle_in_obj"]
+            X.cycle_in_obj_id = request.session["cycle_in_obj"]
             X.save()
 
             from bs4 import BeautifulSoup
@@ -547,7 +547,7 @@ def savegraph(request):
                 if len(t) and len(t[0]) > 1:
                     for styl, val in t:
                         new_object = Mxcell.objects.create(
-                            style=styl, value=val)
+                            style=styl, value=BeautifulSoup(val).text)
     # Get XML data once user presses save
     except Exception as e:
         print(e)
@@ -574,9 +574,7 @@ def xml_to_table(request):
         return JsonResponse({'message': 'success'})
 
     IC_values = Mxcell.objects.filter(
-        style__contains="whiteSpace=wrap;html=1;aspect=fixed;")
-    print(IC_values)
-
+        style__contains="whiteSpace=wrap;html=1;")
     # table = SimpleTable(IC_values)
 
     cycle_in_obj = Cycle_in_obj.objects.get(id=request.session["cycle_in_obj"])
