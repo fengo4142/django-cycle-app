@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db import DatabaseError, transaction
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
-from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
+from cycle.models import Cycle, Client, Cycle_in_obj, Objectives, Procedures, Test_of_Controls, DatafileModel, sampling, testing_of_controls, Deficiency, Report, Mxcell, Member, XMLGraph
 from cycle.forms import ObjectivesForm, ObjectivesFormSet, SamplingForm, samples_form, TOC_Form, ICProcedures, CycleInObjForm
 import os
 import pandas as pd
@@ -407,7 +407,7 @@ def deficiency(request):
         sampled_deficiencies = Deficiency.objects.filter(cycle=sampling_data.Cycle).filter(
             client=sampling_data.Client).order_by('-id')[:10]
         deficiencies = [d for d in sampled_deficiencies if d.is_active == True]
-        #cycles = Cycle.objects.filter(client_name_id=sampling_data.Client).exclude(id__in=[sampling_data.Cycle.id])
+        # cycles = Cycle.objects.filter(client_name_id=sampling_data.Client).exclude(id__in=[sampling_data.Cycle.id])
         cycles = [(x.id, x.cycle_type, Deficiency.objects.filter(cycle_id=x.id).exists())
                   for x in Cycle.objects.filter(client_name_id=sampling_data.Client)]
         print(cycles)
@@ -527,9 +527,26 @@ def savegraph(request):
     try:
         if request.method == "POST":
             # Get user profile
+
             member, _ = Member.objects.get_or_create(user=member_instance)
 
             params = request.POST
+
+            cycle = params.get('cycle', None)
+            client = params.get('client', None)
+            year = params.get('year', None)
+            if cycle and client and year:
+                print(cycle)
+                print(client)
+                print(year)
+                from django.db.models import Q
+                try:
+                    ci_obj = Cycle_in_obj.objects.get(
+                        Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
+                    request.session['cycle_in_obj'] = ci_obj.id
+                except Cycle_in_obj.DoesNotExist as e:
+                    print(e)
+                    return JsonResponse({'message': str(e)})
             xmlData = params.get('xml')
             X = XMLGraph()
             X.XMLGraph = xmlData
@@ -550,7 +567,6 @@ def savegraph(request):
                             style=styl, value=BeautifulSoup(val).text)
     # Get XML data once user presses save
     except Exception as e:
-        print(e)
         return JsonResponse({'message': str(e)})
     return JsonResponse({'message': 'success', 'xml_graph': xmlData})
 
@@ -568,6 +584,8 @@ def xml_to_table(request):
                 X.cycle_in_obj = Cycle_in_obj.objects.get(
                     id=request.session["cycle_in_obj"])
                 X.save()
+
+            request.session['sampling_id'] = X.cycle_in_obj.id
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})
@@ -581,13 +599,16 @@ def xml_to_table(request):
     client = Client.objects.get(id=cycle_in_obj.client_name_id)
     cycle = Cycle.objects.get(id=cycle_in_obj.cycle_type_id)
     objectives = Objectives.objects.filter(cycle_id=cycle_in_obj.id)
-
+    default_procedures = Procedures.objects.filter(
+        cycle_id=cycle_in_obj.cycle_type_id)
+    print(cycle_in_obj.id)
     context = {
         "IC_values": IC_values,
         "cycle_type": cycle.cycle_type,
         "client_name": client.client_name,
         "year": cycle_in_obj.year,
-        "objectives": objectives
+        "objectives": objectives,
+        "default_procedures": default_procedures
     }
     return render(request, "xmltable.html", context)
 

@@ -73,7 +73,7 @@
 			position: absolute;
 			top: 10px;
 			right: 50px;
-			z-index: 100;
+			z-index: 1;
 		}
 		.mxgraph-control-buttons > button {
 			width: 80px;
@@ -198,11 +198,44 @@
 		{% endfor %}
 		<div class="form-group-general">
 			<button id="loadButton">Load</button>
+			<button id="saveButton">Save</button>
 			<button id="closeButton">Close</button>
 		</div>
 	</div>
 	<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 	<script type="text/javascript">
+		function saveGraphAjax (params, graph) {
+				const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+				$.ajax({
+						type: "POST",
+						url:  "{% url 'savegraph' %}",
+						data: params,
+						headers:{
+								"X-CSRFToken": csrftoken
+						},
+						success: function (data) {
+								if (data.message == "success") {
+									//functions in mxgraph to decode the xml back to a graph
+									var xmlDoc = mxUtils.parseXml(data.xml_graph);
+									var node = xmlDoc.documentElement;
+									console.log("node " + node)
+									var dec = new mxCodec(node.ownerDocument);
+									console.log("dec ", dec)
+									console.log("graph model ",graph.getModel())
+									dec.decode(node, graph.getModel());
+									document.location.href = "{% url 'xml_to_table' %}";
+								} else {
+									if (data.message.indexOf("matching") != -1) {
+											alert("No matching cycle pair existed!")	
+									} else if (data.message.indexOf("unique") != -1) {
+										 	alert("Duplicated graph for the cycle pair!")
+									} else {
+										alert(data.message)
+									}
+								}
+						}
+				});
+		}
 		// Extends EditorUi to update I/O action states based on availability of backend
 		let editorUIGlobal;
 		(function()
@@ -278,32 +311,34 @@
 				var xml = mxUtils.getXml(editorUIGlobal.editor.getGraphXml());
 				var node = encoder.encode(graph.getModel());
 //				var xml = mxUtils.getPrettyXml(node); 
-				const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+				
 				console.log(xml)
-				$.ajax({
-						type: "POST",
-						url:  "{% url 'savegraph' %}" ,
-						data: { 'xml': xml},
-						headers:{
-								"X-CSRFToken": csrftoken
-						},
-						success: function (data) {
-								console.log(data)
-								//functions in mxgraph to decode the xml back to a graph
-								var xmlDoc = mxUtils.parseXml(data.xml_graph);
-								var node = xmlDoc.documentElement;
-								console.log("node " + node)
-								var dec = new mxCodec(node.ownerDocument);
-								console.log("dec ", dec)
-								console.log("graph model ",graph.getModel())
-								dec.decode(node, graph.getModel());
-								document.location.href = "{% url 'xml_to_table' %}";
-						}
-				});
+				
+				var params = {
+					'xml': xml					
+				}
+				saveGraphAjax(params, graph)
 		});
+		
 		$("#backButton").on('click', function () {
 			window.history.back();
 		});
+		$("#saveButton").on('click', function () {
+				if (editorUIGlobal.editor.graph.isEditing()) {
+						editorUIGlobal.editor.graph.stopEditing();
+				}
+				var graph = new Graph();
+				var encoder = new mxCodec();
+				var xml = mxUtils.getXml(editorUIGlobal.editor.getGraphXml());
+				var node = encoder.encode(graph.getModel());
+				var params = {
+					'xml': xml,
+					'cycle': $("select[name=cycle_type]").val(),
+					'client': $("select[name=client_name]").val(),
+					'year': $("select[name=year]").val()
+				}
+				saveGraphAjax(params, graph)
+		})
 		$("#loadButton").on('click', function () {
 					if (editorUIGlobal.editor.graph.isEditing()) {
 							editorUIGlobal.editor.graph.stopEditing();

@@ -219,3 +219,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Procedures(models.Model):
+    cycle = models.ForeignKey(Cycle, on_delete=models.CASCADE)
+    activity = models.TextField(null=True)
+    procedure = models.TextField(null=True)
+
+    def __str__(self):
+        return self.procedure

@@ -4,6 +4,14 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+</style>
  	<main class="transaction-page">
     <section class="inner-wrap">
         {% include 'sidebar.html' %}
@@ -21,9 +29,9 @@
                   <table style="padding: 30px; border: 1px solid #afafaf;">
                     <thead>
                       <tr>
-                        <th>Control Activity</th>
-                        <th>Transaction Objective</th>
-                        <th>Control Procedures</th>
+                        <th width="20%">Control Activity</th>
+                        <th width="30%">Transaction Objective</th>
+                        <th width="50%">Control Procedures</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -39,7 +47,13 @@
                               </select>
                             </div>
                           </td>
-                          <td><input class="mxcell" data-id="{{mxcell.id}}" type="text" name="procedures" /></td>
+                          <td>
+                            <select class="select mxcell" data-id="{{mxcell.id}}" style="max-width: 600px;">
+                                {% for p in default_procedures %}
+                                  <option value="{{p.id}}">{{p.procedure}}</option>
+                                {% endfor %}
+                            </select>
+                          </td>
                         </tr>
                       {% endfor %}
                     </tbody>
@@ -65,7 +79,7 @@
         $(".mxcell").map(function () {
           const cell = {
             id: $(this).data("id"),
-            value: $(this).val()
+            value: $(this).find('option:selected').text()
           }
           params.push(cell)
         })
