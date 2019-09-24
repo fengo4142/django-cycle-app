@@ -31,11 +31,20 @@ class CycleTransactionCreate(CreateView):
         data = super(CycleTransactionCreate, self).get_context_data(**kwargs)
 
         if self.request.POST:
+            cycle_in_objs = ','.join(str(x.id) for x in Cycle_in_obj.objects.filter(
+                cycle_type_id=self.request.POST.get('cycle_type')))
+            from django.db import connection
+            cursor = connection.cursor()
+            query = '''DELETE FROM ''' + Objectives._meta.db_table + \
+                ''' where cycle_id in (''' + cycle_in_objs + ''')'''
+            # print(query)
+            cursor.execute(query)
+
             self.request.session['cycle_type'] = self.request.POST.get(
                 'cycle_type')
             self.request.session['client_name'] = self.request.POST.get(
-                'cycle_client')
-            self.request.session['year'] = self.request.POST.get('cycle_year')
+                'client_name')
+            self.request.session['year'] = self.request.POST.get('year')
             data['titles'] = ObjectivesFormSet(self.request.POST)
 
         else:
@@ -47,42 +56,30 @@ class CycleTransactionCreate(CreateView):
         context = self.get_context_data()
         titles = context['titles']
 
-        for title in titles:
-            print(form)
-            print(form.cleaned_data.get('cycle_type'))
+        from django.db.models import Q
+        ci_obj = Cycle_in_obj.objects.get(
+            Q(client_name_id=self.request.session['client_name']), Q(cycle_type_id=self.request.session['cycle_type']), Q(year=self.request.session['year']))
+        if ci_obj and titles.is_valid():
+            titles.instance.user = self.request.user
+            titles.instance = ci_obj
+            titles.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def form_valid(self, form):
         print('HI')
         context = self.get_context_data()
         titles = context['titles']
-        # cycle_type = Cycle.objects.filter(
-        #     cycle_type=form.cleaned_data.get('cycle_type')).last()
-        # cycle_in_objs = [
-        #     x.id for x in Cycle_in_obj.objects.filter(cycle_type=cycle_type)]
-        # Objectives.objects.filter(
-        #     cycle__cycle_type_id__in=cycle_in_objs).delete()
+
         with transaction.atomic():
             form.instance.user = self.request.user
             # print(form)
             self.object = form.save()
 
             if titles.is_valid():
-                print(titles)
                 titles.instance.user = self.request.user
                 titles.instance = self.object
                 titles.save()
-            # else:
-            #     for title in titles:
-            #         if title.is_valid() and title.cleaned_data.get(
-            #                 'transaction_objective') != None:
-            #             x = Objectives()
-            #             x.id = title.cleaned_data.get('id')
-            #             print(title.cleaned_data)
-            #             x.cycle = self.object
-            #             x.transaction_objective = title.cleaned_data.get(
-            #                 'transaction_objective')
-            #             x.save()
+
         self.request.session['cycle_in_obj'] = self.object.id
 
         return super(CycleTransactionCreate, self).form_valid(form)
@@ -95,11 +92,15 @@ def saveData(request):
 def CycleTransactionGet(request):
     try:
         if request.method == "GET":
-            print(request.GET.get('objectives_trans'))
-            cc = request.GET.get('objectives_trans')
-            # cycle_id = Cycle.objects.get(cycle_name=cc).id
+            print(request.GET.get('cycle_type'))
+            ct = request.GET.get('cycle_type', None)
+            cn = request.GET.get('client_name', None)
+            y = request.GET.get('year', None)
+            #cycle_id = Cycle.objects.get(cycle_name=cc).id
+            from django.db.models import Q
+
             objectives_trans = Objectives.objects.filter(
-                cycle__cycle_type_id=cc)
+                Q(cycle__cycle_type_id=ct), Q(cycle__client_name_id=cn), Q(cycle__year=y))
             objs = [x.transaction_objective for x in objectives_trans]
     except Exception as e:
         print(e)
@@ -480,17 +481,21 @@ def grapheditor(request):
     cycle_client = request.session.get('cycle_client', None)
     cycle_year = request.session.get('cycle_year', None)
     cycle_type = request.session.get('cycle_type', None)
-    if cycle_client and cycle_year and cycle_type:
-        from django.db.models import Q
-        ci_obj = Cycle_in_obj.objects.get(
-            Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
-        xml_graph = XMLGraph.objects.filter(
-            Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
-    else:
-        cycle_name = Cycle.objects.get(pk=cycle_type).cycle_type
-        import mysite.settings as settings
-        xml_graph = open(settings.BASE_DIR + settings.STATIC_URL + "resources/" +
-                         cycle_name + ".xml").read()
+    xml_graph = ""
+    try:
+        if cycle_client and cycle_year and cycle_type:
+            from django.db.models import Q
+            ci_obj = Cycle_in_obj.objects.get(
+                Q(client_name_id=client), Q(cycle_type_id=cycle), Q(year=year))
+            xml_graph = XMLGraph.objects.filter(
+                Q(cycle_in_obj=ci_obj)).order_by('-id')[0].XMLGraph
+        else:
+            cycle_name = Cycle.objects.get(pk=cycle_type).cycle_type
+            import mysite.settings as settings
+            xml_graph = open(settings.BASE_DIR + settings.STATIC_URL + "resources/" +
+                             cycle_name + ".xml").read()
+    except Exception as e:
+        print(e)
     context = {
         "form": form,
         "xml_graph": xml_graph.replace("'", "")

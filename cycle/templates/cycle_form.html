@@ -78,15 +78,20 @@
 
       let index = 1
 
-      $("body").on('change', '#id_cycle_type', function (event) {
+      $("body").on('change', 'select', function (event) {
         event.preventDefault()
         event.stopPropagation()
-        var objectives_trans = $(this).val();
+        var cycle_type = $("#id_cycle_type").val();
+        var client_name =  $("#id_client_name").val();
+        var year = $("#id_year").val()
+
         $.ajax({
           url: '{% url "CycleTransactionGet" %}',
           type: "get",
           data: {
-            'objectives_trans' : objectives_trans
+            'cycle_type' : cycle_type,
+            'client_name': client_name,
+            'year': year
           },
           success: function(response, status) {
               console.log(response.data);
