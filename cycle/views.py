@@ -253,6 +253,7 @@ def sugg_samples(request):
 
 
 def upload_sample(request):
+    print(request.session['sampling_id'])
     sampling_id = request.session['sampling_id']
     sampling_data = sampling.objects.get(pk=sampling_id)
     if request.method == 'POST':
@@ -577,6 +578,7 @@ def xml_to_table(request):
     if request.method == "POST":
         try:
             procedures = json.loads(request.POST.get("procedures"))
+
             for p in procedures:
                 X = Test_of_Controls()
                 X.control_procedures = p['value']
@@ -585,7 +587,21 @@ def xml_to_table(request):
                     id=request.session["cycle_in_obj"])
                 X.save()
 
-            request.session['sampling_id'] = X.cycle_in_obj.id
+            Y = sampling()
+            Y.Tolerable_Exception_Rate = 0
+            Y.Estimated_Population_Exception_Rate = 0
+            Y.Population_Size = 0
+            Y.Actual_Sample_Size = 0
+            Y.Suggested_Sample_Size = 0
+
+            Y.Cycle_id = X.cycle_in_obj.cycle_type_id
+            Y.Client_id = X.cycle_in_obj.client_name_id
+            Y.Year = X.cycle_in_obj.year
+            Y.save()
+
+            request.session['sampling_id'] = Y.id
+            print(request.session['sampling_id'])
+
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})
@@ -601,7 +617,6 @@ def xml_to_table(request):
     objectives = Objectives.objects.filter(cycle_id=cycle_in_obj.id)
     default_procedures = Procedures.objects.filter(
         cycle_id=cycle_in_obj.cycle_type_id)
-    print(cycle_in_obj.id)
     context = {
         "IC_values": IC_values,
         "cycle_type": cycle.cycle_type,
