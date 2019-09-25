@@ -8,6 +8,14 @@ verify_ssl = true
 [packages]
 gunicorn = "*"
 django-heroku = "*"
+django-crispy-forms = "*"
+django-next-prev = "*"
+django-picklefield= "*"
+django-tinymce = "*"
+django-widget-tweaks = "*"
+numpy = "*"
+pandas = "*"
+Pillow = "*"
 
 [requires]
 python_version = "3.7"
