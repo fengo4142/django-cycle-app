@@ -9,3 +9,4 @@ cycle/migrations/__pycache__/*
 mysite/__pycache__/*
 local_settings.py
 *.cpython-37.pyc
+staticfiles/*
