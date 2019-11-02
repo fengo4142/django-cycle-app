@@ -10,7 +10,7 @@ django-widget-tweaks==1.4.5
 gunicorn==19.9.0
 numpy==1.17.0
 pandas==0.25.1
-Pillow==6.1.0
+Pillow==6.2.0
 pipenv==2018.11.26
 psycopg2==2.8.3
 python-dateutil==2.8.0
